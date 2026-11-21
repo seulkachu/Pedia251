@@ -1,0 +1,3331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Clerk Balay — UP-PGH Pediatrics 251 (LU6)</title>
+  <style>
+    /* =========================================================================
+       1. DESIGN TOKENS & LIGHT / DARK THEME VARIABLES
+       ========================================================================= */
+    :root {
+      --bg: #f6f9f8;
+      --surface: #ffffff;
+      --surface-soft: #f1f5f9;
+      --border: #dce4ee;
+      --text: #0f172a;
+      --text-muted: #52627a;
+      --primary: #0f766e;
+      --primary-hover: #115e59;
+      --primary-soft: #ccfbf1;
+      --primary-text: #115e59;
+
+      --ward: #d97706;
+      --ward-soft: #fef3c7;
+      --ward-text: #92400e;
+
+      --er: #e11d48;
+      --er-soft: #ffe4e6;
+      --er-text: #9f1239;
+
+      --dri: #7c3aed;
+      --dri-soft: #ede9fe;
+      --dri-text: #5b21b6;
+
+      --ok: #15803d;
+      --ok-soft: #dcfce7;
+      --ok-text: #166534;
+
+      --warn: #b45309;
+      --warn-soft: #fef3c7;
+      --warn-text: #92400e;
+
+      --crit: #dc2626;
+      --crit-soft: #fee2e2;
+      --crit-text: #991b1b;
+
+      --tg: #0284c7;
+      --tg-soft: #e0f2fe;
+      --tg-text: #075985;
+
+      /* Pastel Doodle Palette */
+      --ink: #1e293b;
+      --d-mint: #a7f3d0;
+      --d-sky: #bae6fd;
+      --d-lav: #ddd6fe;
+      --d-peach: #fed7aa;
+      --d-butter: #fef08a;
+      --d-rose: #fbcfe8;
+
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 8px 22px rgba(15, 23, 42, 0.10);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-pill: 999px;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    html.dark {
+      --bg: #0b1120;
+      --surface: #131d31;
+      --surface-soft: #1b2842;
+      --border: #263550;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #14b8a6;
+      --primary-hover: #2dd4bf;
+      --primary-soft: rgba(20, 184, 166, 0.16);
+      --primary-text: #5eead4;
+
+      --ward: #f59e0b;
+      --ward-soft: rgba(245, 158, 11, 0.16);
+      --ward-text: #fcd34d;
+
+      --er: #fb7185;
+      --er-soft: rgba(244, 63, 94, 0.18);
+      --er-text: #fda4af;
+
+      --dri: #a78bfa;
+      --dri-soft: rgba(167, 139, 250, 0.16);
+      --dri-text: #ddd6fe;
+
+      --ok: #22c55e;
+      --ok-soft: rgba(34, 197, 94, 0.16);
+      --ok-text: #86efac;
+
+      --warn: #f59e0b;
+      --warn-soft: rgba(245, 158, 11, 0.16);
+      --warn-text: #fde68a;
+
+      --crit: #ef4444;
+      --crit-soft: rgba(239, 68, 68, 0.20);
+      --crit-text: #fca5a5;
+
+      --tg: #38bdf8;
+      --tg-soft: rgba(56, 189, 248, 0.16);
+      --tg-text: #7dd3fc;
+
+      --ink: #e2e8f0;
+      --d-mint: #0f766e;
+      --d-sky: #0369a1;
+      --d-lav: #5b21b6;
+      --d-peach: #9a3412;
+      --d-butter: #a16207;
+      --d-rose: #9d174d;
+
+      --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.35);
+      --shadow-md: 0 10px 26px rgba(0, 0, 0, 0.45);
+    }
+
+    /* =========================================================================
+       2. BASE & ANTI-ERRATIC SVG SAFETY
+       ========================================================================= */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.48;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    svg, svg * { pointer-events: none !important; }
+    svg { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+    button, input, select, textarea { font-family: inherit; color: inherit; }
+    button { cursor: pointer; }
+    a { color: var(--primary-text); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* =========================================================================
+       3. HEADER & NAVIGATION
+       ========================================================================= */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .brand-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--d-mint), var(--d-sky));
+      border: 1.5px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 2px 2px 0 rgba(15, 23, 42, 0.12);
+    }
+    .brand-title {
+      margin: 0;
+      font-size: 14.5px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .brand-sub-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 1px;
+    }
+    .brand-sub {
+      margin: 0;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .storage-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 1px 7px;
+      border-radius: var(--radius-pill);
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .storage-pill.ok { background: var(--ok-soft); color: var(--ok-text); }
+    .storage-pill.warn { background: var(--warn-soft); color: var(--warn-text); }
+
+    .desktop-nav {
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+    @media (min-width: 860px) {
+      .desktop-nav { display: flex; }
+      .bottom-nav { display: none !important; }
+    }
+    .dnav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 11px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+    .dnav-btn:hover { background: var(--surface-soft); color: var(--text); }
+    .dnav-btn.active {
+      background: var(--primary-soft);
+      color: var(--primary-text);
+      border-color: rgba(15, 118, 110, 0.25);
+    }
+    .dnav-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: var(--radius-pill);
+      background: var(--primary);
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 800;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Fixed Mobile 5-Tab Bottom Nav */
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 100;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+      box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.08);
+    }
+    .bottom-nav-inner {
+      max-width: 560px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+    }
+    .bnav-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 6px 2px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 10.5px;
+      font-weight: 700;
+      min-height: 48px;
+    }
+    .bnav-btn.active {
+      background: var(--primary-soft);
+      color: var(--primary-text);
+    }
+    .bnav-badge {
+      position: absolute;
+      top: 3px;
+      right: 12%;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: var(--radius-pill);
+      background: var(--er);
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* =========================================================================
+       4. LAYOUT, CARDS, BUTTONS, INPUTS & BADGES
+       ========================================================================= */
+    .main-wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 14px 96px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .stack { display: flex; flex-direction: column; gap: 12px; }
+    .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .row-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    @media (min-width: 760px) {
+      .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .sub-box {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+    }
+    .sec-title { margin: 0; font-size: 16px; font-weight: 800; }
+    .sub-title { margin: 0; font-size: 13.5px; font-weight: 800; }
+    .muted { color: var(--text-muted); font-size: 12px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 12.5px;
+      font-weight: 700;
+      min-height: 36px;
+    }
+    .btn:hover { background: var(--surface-soft); }
+    .btn-sm { padding: 5px 9px; font-size: 11.5px; min-height: 32px; }
+    .btn-xs { padding: 3px 7px; font-size: 11px; min-height: 26px; }
+    .btn-icon { width: 34px; height: 34px; padding: 0; }
+    .btn-primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-tg { background: var(--tg); border-color: var(--tg); color: #fff; }
+    .btn-tg-soft { background: var(--tg-soft); border-color: transparent; color: var(--tg-text); }
+    .btn-ward { background: var(--ward-soft); border-color: transparent; color: var(--ward-text); }
+    .btn-dri { background: var(--dri-soft); border-color: transparent; color: var(--dri-text); }
+    .btn-crit { background: var(--crit-soft); border-color: transparent; color: var(--crit-text); }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      min-height: 32px;
+    }
+    .pill.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge-ward { background: var(--ward-soft); color: var(--ward-text); }
+    .badge-er { background: var(--er-soft); color: var(--er-text); }
+    .badge-dri { background: var(--dri-soft); color: var(--dri-text); }
+    .badge-ok { background: var(--ok-soft); color: var(--ok-text); }
+    .badge-warn { background: var(--warn-soft); color: var(--warn-text); }
+    .badge-crit { background: var(--crit-soft); color: var(--crit-text); }
+    .badge-crit-solid { background: var(--crit); color: #fff; }
+    .badge-neutral { background: var(--surface-soft); color: var(--text-muted); }
+
+    .input, .select, .textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 13px;
+    }
+    .input:focus, .select:focus, .textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+    .field-label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 9px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+    .chip.active {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      color: var(--primary-text);
+    }
+    .chip.flag-active {
+      background: var(--crit-soft);
+      border-color: var(--crit);
+      color: var(--crit-text);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 9px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-soft);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #14b8a6);
+      border-radius: var(--radius-pill);
+      transition: width 0.25s ease;
+    }
+
+    /* =========================================================================
+       5. SCHEDULE & DAILY PEARL STYLES
+       ========================================================================= */
+    .hero-banner {
+      background: linear-gradient(135deg, #0f766e, #0e7490);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 15px 16px;
+      box-shadow: var(--shadow-md);
+    }
+    .hero-banner .muted { color: rgba(255, 255, 255, 0.88); }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.2);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .pearl-card {
+      background: linear-gradient(135deg, rgba(254, 240, 138, 0.25), rgba(204, 251, 241, 0.28));
+      border: 1.5px solid var(--border);
+      border-left: 4px solid #eab308;
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    html.dark .pearl-card {
+      background: linear-gradient(135deg, rgba(161, 98, 7, 0.18), rgba(15, 118, 110, 0.18));
+      border-left-color: #facc15;
+    }
+    .pearl-body {
+      margin: 6px 0 0;
+      font-size: 12.8px;
+      line-height: 1.5;
+    }
+
+    .week-heading {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--primary-text);
+      margin: 4px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .day-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 12px 13px;
+      box-shadow: var(--shadow-sm);
+    }
+    .day-card.post-ward { border-left-color: var(--ward); }
+    .day-card.post-er { border-left-color: var(--er); }
+    .day-card.post-dri { border-left-color: var(--dri); }
+    .day-card.done { opacity: 0.62; }
+
+    .day-check {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .collapsible {
+      display: none;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+    .collapsible.open { display: block; }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: var(--surface-soft);
+      font-size: 12.5px;
+    }
+    .task-item.checked span { text-decoration: line-through; color: var(--text-muted); }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    @media (min-width: 760px) {
+      .cal-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+    }
+    .cal-cell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--primary);
+      border-radius: 12px;
+      padding: 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 11.5px;
+      box-shadow: var(--shadow-sm);
+    }
+    .cal-cell.post-ward { border-top-color: var(--ward); }
+    .cal-cell.post-er { border-top-color: var(--er); }
+    .cal-cell.post-dri { border-top-color: var(--dri); }
+    .cal-cell.done { opacity: 0.58; }
+
+    /* =========================================================================
+       6. PATIENTS, LAB COMBINER & TABLES
+       ========================================================================= */
+    .pt-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--ward);
+      border-radius: var(--radius);
+      padding: 13px;
+      box-shadow: var(--shadow-sm);
+    }
+    .pt-card.area-er { border-left-color: var(--er); }
+    .pt-card.area-dri { border-left-color: var(--dri); }
+
+    .dri-care-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      padding: 7px 9px;
+      border-radius: 9px;
+      background: var(--dri-soft);
+      border: 1px solid rgba(124, 58, 237, 0.22);
+    }
+    .dri-care-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .dri-care-btn.done {
+      background: var(--dri);
+      border-color: var(--dri);
+      color: #fff;
+    }
+
+    .vs-strip { display: flex; flex-wrap: wrap; gap: 6px; }
+    .vs-box {
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .vs-box.abn {
+      background: var(--crit-soft);
+      border-color: var(--crit);
+      color: var(--crit-text);
+    }
+
+    .lab-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 7px 9px;
+      border-radius: 9px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .submit-tag {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .status-pill {
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: none;
+      font-size: 10.5px;
+      font-weight: 800;
+    }
+    .st-pending { background: var(--warn-soft); color: var(--warn-text); }
+    .st-extracted { background: var(--tg-soft); color: var(--tg-text); }
+    .st-sent { background: var(--dri-soft); color: var(--dri-text); }
+    .st-done { background: var(--ok-soft); color: var(--ok-text); }
+
+    .combine-box {
+      background: var(--primary-soft);
+      border: 1px solid rgba(15, 118, 110, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+    }
+    .combine-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 7px 9px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .lab-alert {
+      margin-top: 3px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--crit-text);
+    }
+
+    .order-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .order-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 7px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td {
+      padding: 7px 9px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    thead th { background: var(--surface-soft); font-weight: 800; white-space: nowrap; }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .grade-bar {
+      display: flex;
+      width: 100%;
+      height: 14px;
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      gap: 2px;
+    }
+
+    details.card summary {
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 13.5px;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    details.card summary::-webkit-details-marker { display: none; }
+
+    /* =========================================================================
+       7. STRICT MODALS, AREA FIELD TOGGLES & TOASTS
+       ========================================================================= */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(15, 23, 42, 0.58);
+      padding: 14px;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-dialog {
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow-md);
+    }
+    .tg-preview {
+      width: 100%;
+      min-height: 230px;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.48;
+      resize: vertical;
+    }
+    .area-fields { display: none; }
+    .area-fields.active { display: flex; flex-direction: column; gap: 10px; }
+
+    .backup-status {
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .backup-status.ok {
+      background: var(--ok-soft);
+      border-color: rgba(21, 128, 61, 0.3);
+      color: var(--ok-text);
+    }
+    .backup-status.warn {
+      background: var(--warn-soft);
+      border-color: rgba(180, 83, 9, 0.35);
+      color: var(--warn-text);
+    }
+    .code-box {
+      width: 100%;
+      min-height: 86px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11.5px;
+      resize: vertical;
+    }
+
+    #toast-wrap {
+      position: fixed;
+      left: 50%;
+      bottom: 76px;
+      transform: translateX(-50%);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      pointer-events: none;
+      width: min(92vw, 380px);
+    }
+    .toast {
+      background: #0f172a;
+      color: #fff;
+      padding: 9px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 12.5px;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+    }
+    html.dark .toast { background: #e2e8f0; color: #0f172a; }
+
+    @media print {
+      .app-header, .bottom-nav, #toast-wrap, .modal-backdrop { display: none !important; }
+      .main-wrap { padding: 0; max-width: 100%; }
+      body { background: #fff; color: #000; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== STICKY HEADER ==================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-avatar" aria-hidden="true">
+          <!-- Smiling pastel dinosaur wearing a stethoscope -->
+          <svg width="34" height="34" viewBox="0 0 40 40" fill="none">
+            <path d="M12 31c-2.5 0-4.5-1.6-4.5-4 0-2 1.2-3.5 3-4.2l1.5-8.5C12.6 10 15.6 7.5 20 7.5c4.2 0 7.2 2.4 7.2 6.2 0 3.2-2.2 5.4-5.4 5.7l.6 4.4c2.4.8 4.4 2.7 4.4 5.4 0 1.4-.6 2.8-2 2.8H12z" fill="var(--d-mint)" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13 11.5l-2.4-1.2 1.5-2.1M11.6 16.2l-2.6-.5 1.1-2.2" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="22.8" cy="13.5" r="1.4" fill="var(--d-rose)"/>
+            <circle cx="19.5" cy="12" r="1.1" fill="var(--ink)"/>
+            <path d="M21 15c1.1.8 2.3.8 3.2 0" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M15.2 20.5c1.4 3 5.2 3.2 6.8.5M18.6 22.8v3.2" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="18.6" cy="27.3" r="2.1" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.6"/>
+            <path d="M32 7v4M30 9h4" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div style="min-width:0;">
+          <h1 class="brand-title">Clk Balay &bull; Pedia 251</h1>
+          <div class="brand-sub-row">
+            <p class="brand-sub">Block 1 (Nov 23 – Dec 20, 2026) &bull; UP-PGH</p>
+            <span id="header-storage-pill" class="storage-pill ok">Saved locally</span>
+          </div>
+        </div>
+      </div>
+
+      <nav class="desktop-nav" aria-label="Desktop Navigation">
+        <button type="button" class="dnav-btn active" data-action="switch-tab" data-tab="schedule">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2"/><path d="M3.5 10h17M8 3.2v3.2M16 3.2v3.2" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/><path d="M12 12.6l.9 1.8 2 .3-1.4 1.4.3 2-1.8-1-1.8 1 .3-2-1.4-1.4 2-.3z" fill="var(--d-peach)" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Schedule
+        </button>
+        <button type="button" class="dnav-btn" data-action="switch-tab" data-tab="patients">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="4.5" width="14" height="16.5" rx="3" fill="var(--d-sky)" stroke="var(--ink)" stroke-width="2"/><rect x="8.5" y="2.8" width="7" height="3.2" rx="1.4" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.8"/><path d="M12 16.5s-3.3-2-3.3-4.1c0-1.1.9-1.9 1.9-1.9.7 0 1.2.4 1.4 1 .2-.6.7-1 1.4-1 1 0 1.9.8 1.9 1.9 0 2.1-3.3 4.1-3.3 4.1z" fill="var(--d-rose)" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          Patients <span class="dnav-pill" id="dnav-pt-badge">0</span>
+        </button>
+        <button type="button" class="dnav-btn" data-action="switch-tab" data-tab="vscalc">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-7.5-10A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7.5 3c0 5.3-7.5 10-7.5 10z" fill="var(--d-rose)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M6.8 12.2h2.4l1.3-2.6 1.8 4.8 1.3-2.2h3.4" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          VS Calc
+        </button>
+        <button type="button" class="dnav-btn" data-action="switch-tab" data-tab="reqs">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="13.5" height="17" rx="2.8" fill="var(--d-lav)" stroke="var(--ink)" stroke-width="2"/><path d="M7.5 9l1.3 1.3 2.7-2.7M7.5 14.5l1.3 1.3 2.7-2.7" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 13.5l4-4 1.8 1.8-4 4-2.3.5z" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          Reqs
+        </button>
+        <button type="button" class="dnav-btn" data-action="switch-tab" data-tab="ref">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3.5 6.5c2.5-1.2 5.8-1.2 8.5.5 2.7-1.7 6-1.7 8.5-.5v12.5c-2.5-1.2-5.8-1.2-8.5.5-2.7-1.7-6-1.7-8.5-.5z" fill="var(--d-mint)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M12 7v12.5M6.5 10h2.8M14.7 10h2.8" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Ref
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" class="btn btn-sm" data-action="open-backup" title="Backup &amp; Restore">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" fill="var(--d-lav)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><rect x="7.5" y="4" width="8.5" height="6" rx="1" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.8"/><rect x="7.5" y="13" width="9" height="7" rx="1.2" fill="#fff" stroke="var(--ink)" stroke-width="1.8"/><path d="M13.2 5.8v2.4M9.8 16.5h4.4" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round"/></svg>
+          Backup
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" data-action="export-ics" title="Export .ics Calendar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15.5" rx="3.2" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2"/><path d="M3.5 10h17M8 3.2v3M16 3.2v3M12 12.5v4.5M9.8 15l2.2 2.2 2.2-2.2" stroke="var(--ink)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          .ics
+        </button>
+        <button type="button" class="btn btn-icon btn-sm" data-action="print-page" aria-label="Print / Save PDF" title="Print / Save PDF">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M7 8V4h10v4" fill="var(--d-sky)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><rect x="4" y="8" width="16" height="8" rx="2.5" fill="var(--d-lav)" stroke="var(--ink)" stroke-width="2"/><rect x="7" y="13" width="10" height="7" rx="1.5" fill="#fff" stroke="var(--ink)" stroke-width="2"/><path d="M9.5 16h5" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </button>
+        <button type="button" class="btn btn-icon btn-sm" data-action="toggle-theme" aria-label="Toggle Light/Dark Mode" title="Toggle Light/Dark Mode">
+          <span id="theme-icon"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="main-wrap">
+
+    <!-- ==================== TAB 1: SCHEDULE & DAILY TASKS ==================== -->
+    <section id="tab-schedule" class="tab-panel active">
+      <div class="stack">
+        <div id="hero-banner" class="hero-banner"></div>
+        <div id="daily-pearl-card" class="pearl-card"></div>
+
+        <div class="card stack" style="gap:9px;">
+          <div class="row-between">
+            <div>
+              <strong style="font-size:13px;">Rotation Progress</strong>
+              <span id="sched-progress-text" class="muted" style="margin-left:8px;">0 / 28 days (0%)</span>
+            </div>
+            <div class="row" style="gap:6px;">
+              <button type="button" class="btn btn-sm" data-action="toggle-sched-view" id="btn-sched-view">Calendar View</button>
+              <button type="button" class="btn btn-sm" data-action="reset-sched" id="btn-reset-sched">Reset Checks</button>
+            </div>
+          </div>
+          <div class="progress-track"><div id="sched-progress-bar" class="progress-fill" style="width:0%;"></div></div>
+          <div class="row" id="sched-summary-badges"></div>
+        </div>
+
+        <div class="row" id="sched-filters"></div>
+        <div id="schedule-output" class="stack"></div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: PATIENTS (WARD 9, PER, DRI) ==================== -->
+    <section id="tab-patients" class="tab-panel">
+      <div class="stack">
+        <div class="card stack" style="gap:10px;">
+          <div class="row-between">
+            <div>
+              <h2 class="sec-title">Monitored Patients (Ward 9, PER &amp; DRI)</h2>
+              <p class="muted" style="margin:2px 0 0;">Track vitals, carry-overs, auto-combined labs &amp; copy concise TG RIC referrals.</p>
+            </div>
+            <div class="row" style="gap:6px;">
+              <button type="button" class="btn btn-sm btn-ward" id="btn-clear-samples" data-action="clear-samples">Clear Samples</button>
+              <button type="button" class="btn btn-primary" data-action="open-add-pt">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="10" cy="8" r="3.5" fill="var(--d-peach)" stroke="var(--ink)" stroke-width="2"/><path d="M4 19c.6-3.4 3-5 6-5s5.4 1.6 6 5" fill="var(--d-mint)" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/><path d="M18.5 7v5M16 9.5h5" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>
+                + Add Patient
+              </button>
+            </div>
+          </div>
+
+          <div class="row-between">
+            <div class="row" id="pt-filters"></div>
+            <div class="row" style="gap:6px;">
+              <button type="button" class="btn btn-tg-soft btn-sm" data-action="bulk-tg" data-area="Ward 9">Copy All Ward TG</button>
+              <button type="button" class="btn btn-tg-soft btn-sm" data-action="bulk-tg" data-area="PER">Copy All PER TG</button>
+              <button type="button" class="btn btn-dri btn-sm" data-action="bulk-tg" data-area="DRI">Copy All DRI TG</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="patients-output" class="stack"></div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: BEDSIDE VS CALC ==================== -->
+    <section id="tab-vscalc" class="tab-panel">
+      <div class="stack">
+        <div class="card stack">
+          <div class="row-between">
+            <div>
+              <h2 class="sec-title">Bedside Pediatric VS, Equipment &amp; Action Plan</h2>
+              <p class="muted" style="margin:2px 0 0;">UP-PGH normal ranges, BP/MAP/ETT formulas &amp; instant TG referral.</p>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" data-action="vscalc-save-pt">+ Save to Patients</button>
+          </div>
+
+          <div>
+            <span class="field-label">Age Group Preset</span>
+            <div class="chip-group" id="vscalc-presets">
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset="Premie">Premie</button>
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset="Newborn">Newborn</button>
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset="0-3 mo">0–3 mo</button>
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset="3-6 mo">3–6 mo</button>
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset="6-12 mo">6–12 mo</button>
+              <button type="button" class="chip active" data-action="vscalc-preset" data-preset="1-3 yrs">1–3 yrs</button>
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset="3-6 yrs">3–6 yrs</button>
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset="6-12 yrs">6–12 yrs</button>
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset=">12 yrs">&gt;12 yrs</button>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div>
+              <label class="field-label" for="vc-label">Patient Label (Ward-Bed-Last)</label>
+              <input id="vc-label" class="input" type="text" value="W9-Bed-Pt" data-input="vscalc" />
+            </div>
+            <div>
+              <label class="field-label" for="vc-age">Exact Age (years)</label>
+              <input id="vc-age" class="input" type="number" step="0.1" min="0" max="18" value="2" data-input="vscalc" />
+            </div>
+            <div>
+              <label class="field-label" for="vc-wt">Weight (kg)</label>
+              <input id="vc-wt" class="input" type="number" step="0.1" min="0.5" max="100" value="13" data-input="vscalc" />
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div><label class="field-label" for="vc-hr">HR (bpm)</label><input id="vc-hr" class="input" type="number" value="145" data-input="vscalc" /></div>
+            <div><label class="field-label" for="vc-rr">RR (cpm)</label><input id="vc-rr" class="input" type="number" value="38" data-input="vscalc" /></div>
+            <div><label class="field-label" for="vc-sbp">SBP (mmHg)</label><input id="vc-sbp" class="input" type="number" value="88" data-input="vscalc" /></div>
+            <div><label class="field-label" for="vc-dbp">DBP (mmHg)</label><input id="vc-dbp" class="input" type="number" value="54" data-input="vscalc" /></div>
+            <div><label class="field-label" for="vc-temp">Temp (&deg;C)</label><input id="vc-temp" class="input" type="number" step="0.1" value="38.8" data-input="vscalc" /></div>
+            <div><label class="field-label" for="vc-spo2">SpO2 (%)</label><input id="vc-spo2" class="input" type="number" min="40" max="100" value="93" data-input="vscalc" /></div>
+          </div>
+
+          <div>
+            <span class="field-label">Optional Red Flags (tap to toggle)</span>
+            <div class="chip-group" id="vc-flags">
+              <button type="button" class="chip" data-action="vscalc-flag" data-flag="Poor perfusion / CRT >2s">Poor perfusion / CRT &gt;2s</button>
+              <button type="button" class="chip" data-action="vscalc-flag" data-flag="Altered sensorium">Altered sensorium</button>
+              <button type="button" class="chip" data-action="vscalc-flag" data-flag="Severe retractions / stridor">Severe retractions / stridor</button>
+              <button type="button" class="chip" data-action="vscalc-flag" data-flag="Active seizure">Active seizure</button>
+              <button type="button" class="chip" data-action="vscalc-flag" data-flag="Cyanosis">Cyanosis</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="vscalc-results" class="stack"></div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: REQUIREMENTS ==================== -->
+    <section id="tab-reqs" class="tab-panel">
+      <div class="stack">
+        <div class="card stack" style="gap:10px;">
+          <div class="row-between">
+            <div>
+              <h2 class="sec-title">Pediatrics 251 Grading Breakdown</h2>
+              <p class="muted" style="margin:2px 0 0;">LU6 Integrated Clinical Clerkship II &middot; AY 2026–2027</p>
+            </div>
+            <span class="badge badge-ok" id="reqs-progress-badge">0% Done</span>
+          </div>
+          <div class="grade-bar">
+            <div style="width:5%; background:#0ea5e9;" title="Quizzes 5%"></div>
+            <div style="width:20%; background:#0f766e;" title="Preceptorials 20%"></div>
+            <div style="width:20%; background:#d97706;" title="Supervisor Eval 20%"></div>
+            <div style="width:20%; background:#e11d48;" title="Oral Exam 20%"></div>
+            <div style="width:15%; background:#7c3aed;" title="Final Exam 15%"></div>
+            <div style="width:10%; background:#475569;" title="Comprehensive Exam 10%"></div>
+            <div style="width:10%; background:#15803d;" title="Portfolio 10%"></div>
+          </div>
+          <div class="row" style="gap:6px;">
+            <span class="badge badge-neutral">Quizzes 5%</span>
+            <span class="badge badge-ok">Preceptorials 20%</span>
+            <span class="badge badge-ward">Supervisor Eval 20%</span>
+            <span class="badge badge-er">Oral Exam 20%</span>
+            <span class="badge badge-dri">Final Exam 15%</span>
+            <span class="badge badge-neutral">Comp Exam 10%</span>
+            <span class="badge badge-ok">Portfolio 10%</span>
+          </div>
+        </div>
+
+        <div id="reqs-checklists" class="grid-2"></div>
+
+        <div class="card stack" style="gap:10px;">
+          <div class="row-between">
+            <h3 class="sub-title">Oral Exam 18 Must-Know Topics (20% of Grade)</h3>
+            <span class="badge badge-dri" id="oral-count-badge">0 / 18 Reviewed</span>
+          </div>
+          <div class="chip-group" id="oral-topics-wrap"></div>
+        </div>
+
+        <div class="card stack" style="gap:10px;">
+          <h3 class="sub-title">Block 1 Contacts &amp; Rotation Logistics</h3>
+          <div class="grid-3">
+            <div>
+              <strong style="font-size:12px; color:var(--primary-text);">Faculty &amp; Block 1 Preceptors</strong>
+              <ul style="margin:5px 0 0 16px; padding:0; font-size:12.5px;">
+                <li><strong>LU6 Coordinator:</strong> Dr. Lourdes Paula Resontoc</li>
+                <li><strong>Asst. Coordinator:</strong> Dr. Ma Cristina Lozada</li>
+                <li><strong>Block 1 Preceptors:</strong> Dr. Lorna Abad &amp; Dr. Lourdes Paula Resontoc</li>
+                <li><strong>Bioethics:</strong> Dr. Mary Ann Abacan (Wk 2–3)</li>
+              </ul>
+            </div>
+            <div>
+              <strong style="font-size:12px; color:var(--primary-text);">Resident Monitors &amp; UPHS</strong>
+              <ul style="margin:5px 0 0 16px; padding:0; font-size:12.5px;">
+                <li><strong>Dr. Joice So:</strong> <a href="tel:09190683989">0919-068-3989</a></li>
+                <li><strong>Dr. Nikka Costales:</strong> <a href="tel:09959630130">0995-963-0130</a></li>
+                <li><strong>UPHS:</strong> <a href="tel:09617321764">0961-732-1764</a> &middot; <a href="mailto:hs.uppgh@up.edu.ph">hs.uppgh@up.edu.ph</a></li>
+                <li><strong>Mess Hall:</strong> Signed by Resident Monitor</li>
+              </ul>
+            </div>
+            <div>
+              <strong style="font-size:12px; color:var(--primary-text);">Deadlines &amp; Policies</strong>
+              <ul style="margin:5px 0 0 16px; padding:0; font-size:12.5px;">
+                <li><strong>VLE Quizzes:</strong> Open Day 1 7AM – Last Day 5PM (Dec 20).</li>
+                <li><strong>Portfolio:</strong> Handwritten daily SOAP &amp; orders, due Dec 20.</li>
+                <li><strong>Reflection Paper:</strong> Due Dec 27 (1 wk post) &rarr; upcmlu6pediatrics@gmail.com.</li>
+                <li><strong>Priority &amp; Absences:</strong> Lectures/preceptorials take priority. Absences 1:1 excused, 1:2 unexcused.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <details class="card">
+            <summary>
+              <span>Preceptorial Grading Rubric (100 pts)</span>
+              <span class="badge badge-neutral">Tap to expand</span>
+            </summary>
+            <div class="table-wrap" style="margin-top:10px;">
+              <table>
+                <thead><tr><th>Category</th><th>Pts</th></tr></thead>
+                <tbody>
+                  <tr><td>Complete &amp; relevant history</td><td><strong>15</strong></td></tr>
+                  <tr><td>Physical examination findings to look out for</td><td><strong>15</strong></td></tr>
+                  <tr><td>Differential diagnosis</td><td><strong>15</strong></td></tr>
+                  <tr><td>Working impression &amp; patient problem list</td><td><strong>10</strong></td></tr>
+                  <tr><td>Appropriate management plan</td><td><strong>5</strong></td></tr>
+                  <tr><td>Answers pertinent questions adequately</td><td><strong>5</strong></td></tr>
+                  <tr><td>Utilizes critically appraised medical literature</td><td><strong>5</strong></td></tr>
+                  <tr><td>Organized, integrated &amp; clear presentation</td><td><strong>5</strong></td></tr>
+                  <tr><td>Appropriate, concise visual aids</td><td><strong>5</strong></td></tr>
+                  <tr><td>Good communication skills</td><td><strong>5</strong></td></tr>
+                  <tr><td>Enthusiasm &amp; initiative</td><td><strong>5</strong></td></tr>
+                  <tr><td>Respect for preceptor &amp; peers</td><td><strong>5</strong></td></tr>
+                  <tr><td>Good time management</td><td><strong>5</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+          <details class="card">
+            <summary>
+              <span>Reflection Paper Guide Questions (Due Dec 27)</span>
+              <span class="badge badge-neutral">Tap to expand</span>
+            </summary>
+            <ul style="margin:10px 0 0 18px; padding:0; font-size:12.5px; display:flex; flex-direction:column; gap:6px;">
+              <li>What did I learn from my clerkship rotation in Pediatrics?</li>
+              <li>How were my interactions with my blockmates and with the preceptors?</li>
+              <li>Did I maximize my rotation? How could I have maximized it more?</li>
+              <li>How do I feel rotating in Pedia now compared to when I was an LU5 student?</li>
+              <li>What are my suggestions to improve my rotation in Pedia?</li>
+              <li>What other teaching-learning activities could I suggest?</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 5: REFERENCE TABLES ==================== -->
+    <section id="tab-ref" class="tab-panel">
+      <div class="stack">
+        <div class="card stack" style="gap:8px;">
+          <h2 class="sec-title">UP-PGH Pediatric Quick Reference</h2>
+          <input id="ref-search" class="input" type="search" placeholder="Search age, ETT, Glidescope, BP, lab test, MRL, Nuclear Med, ice, tourniquet, IGRA..." data-input="ref-search" />
+        </div>
+        <div id="ref-tables-wrap" class="stack"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== STICKY 5-TAB MOBILE BOTTOM NAV ==================== -->
+  <nav class="bottom-nav" aria-label="Mobile Navigation">
+    <div class="bottom-nav-inner">
+      <button type="button" class="bnav-btn active" data-action="switch-tab" data-tab="schedule">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2"/><path d="M3.5 10h17M8 3.2v3.2M16 3.2v3.2" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/><path d="M12 12.6l.9 1.8 2 .3-1.4 1.4.3 2-1.8-1-1.8 1 .3-2-1.4-1.4 2-.3z" fill="var(--d-peach)" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span>Schedule</span>
+      </button>
+      <button type="button" class="bnav-btn" data-action="switch-tab" data-tab="patients">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="5" y="4.5" width="14" height="16.5" rx="3" fill="var(--d-sky)" stroke="var(--ink)" stroke-width="2"/><rect x="8.5" y="2.8" width="7" height="3.2" rx="1.4" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.8"/><path d="M12 16.5s-3.3-2-3.3-4.1c0-1.1.9-1.9 1.9-1.9.7 0 1.2.4 1.4 1 .2-.6.7-1 1.4-1 1 0 1.9.8 1.9 1.9 0 2.1-3.3 4.1-3.3 4.1z" fill="var(--d-rose)" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <span>Patients</span>
+        <span id="bnav-pt-badge" class="bnav-badge">0</span>
+      </button>
+      <button type="button" class="bnav-btn" data-action="switch-tab" data-tab="vscalc">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-7.5-10A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7.5 3c0 5.3-7.5 10-7.5 10z" fill="var(--d-rose)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M6.8 12.2h2.4l1.3-2.6 1.8 4.8 1.3-2.2h3.4" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>VS Calc</span>
+      </button>
+      <button type="button" class="bnav-btn" data-action="switch-tab" data-tab="reqs">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="13.5" height="17" rx="2.8" fill="var(--d-lav)" stroke="var(--ink)" stroke-width="2"/><path d="M7.5 9l1.3 1.3 2.7-2.7M7.5 14.5l1.3 1.3 2.7-2.7" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 13.5l4-4 1.8 1.8-4 4-2.3.5z" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <span>Reqs</span>
+      </button>
+      <button type="button" class="bnav-btn" data-action="switch-tab" data-tab="ref">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3.5 6.5c2.5-1.2 5.8-1.2 8.5.5 2.7-1.7 6-1.7 8.5-.5v12.5c-2.5-1.2-5.8-1.2-8.5.5-2.7-1.7-6-1.7-8.5-.5z" fill="var(--d-mint)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M12 7v12.5M6.5 10h2.8M14.7 10h2.8" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Ref</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==================== MODAL 1: ADD / EDIT PATIENT ==================== -->
+  <div id="modal-pt" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-dialog stack">
+      <div class="row-between">
+        <h3 class="sec-title" id="modal-pt-title">Add Patient</h3>
+        <button type="button" class="btn btn-icon btn-sm" data-action="close-modal" data-modal="modal-pt">&times;</button>
+      </div>
+      <input type="hidden" id="pt-edit-id" />
+
+      <div class="grid-2">
+        <div>
+          <label class="field-label" for="pt-area">Area</label>
+          <select id="pt-area" class="select" data-change="pt-area-switch">
+            <option value="Ward 9">Ward 9</option>
+            <option value="PER">PER (ER)</option>
+            <option value="DRI">DRI (Newborn)</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="pt-age-preset">Age Group Preset</label>
+          <select id="pt-age-preset" class="select">
+            <option value="Premie">Premie</option>
+            <option value="Newborn">Newborn</option>
+            <option value="0-3 mo">0–3 mo</option>
+            <option value="3-6 mo">3–6 mo</option>
+            <option value="6-12 mo">6–12 mo</option>
+            <option value="1-3 yrs">1–3 yrs</option>
+            <option value="3-6 yrs" selected>3–6 yrs</option>
+            <option value="6-12 yrs">6–12 yrs</option>
+            <option value=">12 yrs">&gt;12 yrs</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="pt-wardbed">Ward / Bed (e.g., W9-4, PER-B2, W15-3)</label>
+          <input id="pt-wardbed" class="input" type="text" placeholder="W9-4" />
+        </div>
+        <div>
+          <label class="field-label" for="pt-last">Last Name (e.g., Reyes, BO Cruz)</label>
+          <input id="pt-last" class="input" type="text" placeholder="Reyes" />
+        </div>
+        <div>
+          <label class="field-label" for="pt-age-disp">Display Age (e.g., 4 yo, 18 hrs)</label>
+          <input id="pt-age-disp" class="input" type="text" placeholder="4 yo" />
+        </div>
+        <div>
+          <label class="field-label" for="pt-wt">Weight (kg)</label>
+          <input id="pt-wt" class="input" type="number" step="0.1" min="0.5" value="15" />
+        </div>
+      </div>
+
+      <div>
+        <label class="field-label" for="pt-dx">Chart / Working Diagnosis</label>
+        <input id="pt-dx" class="input" type="text" placeholder="e.g., PCAP C" />
+      </div>
+
+      <!-- WARD 9 FIELDS -->
+      <div id="fields-ward" class="area-fields active">
+        <div class="grid-2">
+          <div>
+            <label class="field-label" for="pt-hd">Hospital Day (HD)</label>
+            <input id="pt-hd" class="input" type="text" placeholder="HD 2" />
+          </div>
+          <div>
+            <label class="field-label" for="pt-status">Status</label>
+            <select id="pt-status" class="select">
+              <option value="Non-Toxic">Non-Toxic</option>
+              <option value="Toxic">Toxic</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="field-label" for="pt-meds-ward">Active Meds / IVF</label>
+          <input id="pt-meds-ward" class="input" type="text" placeholder="D5 0.3 NaCl @ 48 cc/hr; Ampicillin + Gentamicin" />
+        </div>
+        <div>
+          <label class="field-label" for="pt-carry-ward">Initial Carry-Over (optional)</label>
+          <input id="pt-carry-ward" class="input" type="text" placeholder="e.g., Follow up repeat CXR" />
+        </div>
+      </div>
+
+      <!-- PER FIELDS -->
+      <div id="fields-er" class="area-fields">
+        <div class="grid-2">
+          <div>
+            <label class="field-label" for="pt-acuity">Acuity</label>
+            <select id="pt-acuity" class="select">
+              <option value="Resus">Resus</option>
+              <option value="Urgent" selected>Urgent</option>
+              <option value="Stable">Stable</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label" for="pt-dispo">Disposition Target</label>
+            <input id="pt-dispo" class="input" type="text" placeholder="e.g., Admit to Ward 9" />
+          </div>
+        </div>
+        <div>
+          <label class="field-label" for="pt-cc">Chief Complaint</label>
+          <input id="pt-cc" class="input" type="text" placeholder="e.g., Watery stools, vomiting" />
+        </div>
+        <div>
+          <label class="field-label" for="pt-er-tx">Interventions / Workup</label>
+          <input id="pt-er-tx" class="input" type="text" placeholder="e.g., ORS / IVF bolus, CBC, Electrolytes" />
+        </div>
+      </div>
+
+      <!-- DRI FIELDS -->
+      <div id="fields-dri" class="area-fields">
+        <div class="grid-2">
+          <div>
+            <label class="field-label" for="pt-aog">AOG / Delivery / APGAR</label>
+            <input id="pt-aog" class="input" type="text" placeholder="Term 39w NSD, APGAR 8,9" />
+          </div>
+          <div>
+            <label class="field-label" for="pt-matrisk">Maternal Risks</label>
+            <input id="pt-matrisk" class="input" type="text" placeholder="e.g., PROM 20h, GDM, None" />
+          </div>
+        </div>
+        <div>
+          <label class="field-label" for="pt-feeding">Feeding / Urine &amp; Stool Output</label>
+          <input id="pt-feeding" class="input" type="text" placeholder="e.g., Direct BF, poor latch; 1 urine, 1 meconium" />
+        </div>
+        <div class="sub-box stack" style="gap:6px;">
+          <strong style="font-size:12px; color:var(--dri-text);">Newborn Care Checklist</strong>
+          <div class="chip-group" id="modal-dri-checks">
+            <label class="chip"><input type="checkbox" value="Vit K" /> Vit K</label>
+            <label class="chip"><input type="checkbox" value="Hep B" /> Hep B</label>
+            <label class="chip"><input type="checkbox" value="BCG" /> BCG</label>
+            <label class="chip"><input type="checkbox" value="Eye Ointment" /> Eye Ointment</label>
+            <label class="chip"><input type="checkbox" value="NBS" /> NBS</label>
+            <label class="chip"><input type="checkbox" value="Hearing/CCHD" /> Hearing/CCHD</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- INITIAL / CURRENT VS & SUBJECTIVE -->
+      <div class="sub-box stack" style="gap:8px;">
+        <strong style="font-size:12px;">Current Vital Signs &amp; Subjective Notes</strong>
+        <div class="grid-3">
+          <div><label class="field-label" for="pt-hr">HR</label><input id="pt-hr" class="input" type="number" placeholder="110" /></div>
+          <div><label class="field-label" for="pt-rr">RR</label><input id="pt-rr" class="input" type="number" placeholder="26" /></div>
+          <div><label class="field-label" for="pt-bp">BP (e.g. 96/60)</label><input id="pt-bp" class="input" type="text" placeholder="96/60" /></div>
+          <div><label class="field-label" for="pt-temp">Temp (&deg;C)</label><input id="pt-temp" class="input" type="number" step="0.1" placeholder="37.2" /></div>
+          <div><label class="field-label" for="pt-spo2">SpO2 (%)</label><input id="pt-spo2" class="input" type="number" placeholder="98" /></div>
+        </div>
+        <div>
+          <label class="field-label" for="pt-subj">Latest Subjective Complaints</label>
+          <input id="pt-subj" class="input" type="text" placeholder="e.g., Fever, tachypnea, poor PO intake" />
+        </div>
+        <div>
+          <label class="field-label" for="pt-pe">Pertinent PE / Notes</label>
+          <input id="pt-pe" class="input" type="text" placeholder="e.g., Crackles R base, CRT 2s" />
+        </div>
+      </div>
+
+      <div class="row-between">
+        <button type="button" class="btn" data-action="close-modal" data-modal="modal-pt">Cancel</button>
+        <button type="button" class="btn btn-primary" data-action="save-pt">Save Patient</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 2: LOG VS / UPDATE ==================== -->
+  <div id="modal-log" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-dialog stack">
+      <div class="row-between">
+        <h3 class="sec-title" id="modal-log-title">Log VS &amp; Update</h3>
+        <button type="button" class="btn btn-icon btn-sm" data-action="close-modal" data-modal="modal-log">&times;</button>
+      </div>
+      <input type="hidden" id="log-pt-id" />
+      <div class="grid-3">
+        <div><label class="field-label" for="log-hr">HR (bpm)</label><input id="log-hr" class="input" type="number" /></div>
+        <div><label class="field-label" for="log-rr">RR (cpm)</label><input id="log-rr" class="input" type="number" /></div>
+        <div><label class="field-label" for="log-bp">BP (SBP/DBP)</label><input id="log-bp" class="input" type="text" placeholder="90/60" /></div>
+        <div><label class="field-label" for="log-temp">Temp (&deg;C)</label><input id="log-temp" class="input" type="number" step="0.1" /></div>
+        <div><label class="field-label" for="log-spo2">SpO2 (%)</label><input id="log-spo2" class="input" type="number" /></div>
+      </div>
+      <div>
+        <span class="field-label" id="log-chips-label">Quick Subjective Complaints (tap to toggle)</span>
+        <div class="chip-group" id="log-subj-chips"></div>
+      </div>
+      <div>
+        <label class="field-label" for="log-subj-text">Additional Subjective Notes</label>
+        <input id="log-subj-text" class="input" type="text" placeholder="e.g., 3 episodes loose stools" />
+      </div>
+      <div>
+        <label class="field-label" for="log-pe">Pertinent PE / I&amp;O</label>
+        <input id="log-pe" class="input" type="text" placeholder="e.g., crackles R base, CRT 2s" />
+      </div>
+      <div>
+        <label class="field-label" for="log-plan">Custom Plan Note (optional)</label>
+        <input id="log-plan" class="input" type="text" placeholder="e.g., ff-up CXR result" />
+      </div>
+      <div class="row-between">
+        <button type="button" class="btn" data-action="close-modal" data-modal="modal-log">Cancel</button>
+        <button type="button" class="btn btn-primary" data-action="save-log">Save VS Log</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 3: ADD LAB PICKER ==================== -->
+  <div id="modal-lab" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-dialog stack">
+      <div class="row-between">
+        <h3 class="sec-title">Add Pediatric Lab (UP-PGH Order of Draw)</h3>
+        <button type="button" class="btn btn-icon btn-sm" data-action="close-modal" data-modal="modal-lab">&times;</button>
+      </div>
+      <input type="hidden" id="lab-pt-id" />
+      <div id="lab-quick-groups" class="stack" style="gap:8px;"></div>
+      <div class="sub-box stack" style="gap:8px;">
+        <strong style="font-size:12px;">Or Add Custom Lab</strong>
+        <div class="grid-2">
+          <input id="custom-lab-name" class="input" type="text" placeholder="Lab name (e.g., Urinalysis, HGT)" />
+          <select id="custom-lab-top" class="select">
+            <option value="red">Red-Top (Serum)</option>
+            <option value="purple">Purple-Top (EDTA)</option>
+            <option value="green">Green-Top (Heparin)</option>
+            <option value="blue">Blue-Top (Citrate)</option>
+            <option value="bloodcs">Blood CS</option>
+            <option value="igra">IGRA (4 tubes)</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" data-action="add-custom-lab">+ Add Custom Lab</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 4: TG RIC REFERRAL ==================== -->
+  <div id="modal-tg" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-dialog stack">
+      <div class="row-between">
+        <h3 class="sec-title">TG RIC Referral</h3>
+        <button type="button" class="btn btn-icon btn-sm" data-action="close-modal" data-modal="modal-tg">&times;</button>
+      </div>
+      <textarea id="tg-textarea" class="tg-preview"></textarea>
+      <div class="row-between">
+        <button type="button" class="btn" data-action="close-modal" data-modal="modal-tg">Close</button>
+        <button type="button" class="btn btn-tg" data-action="copy-tg-modal">Copy to Clipboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 5: BACKUP & RESTORE ==================== -->
+  <div id="modal-backup" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-dialog stack">
+      <div class="row-between">
+        <h3 class="sec-title">Backup &amp; Restore Progress</h3>
+        <button type="button" class="btn btn-icon btn-sm" data-action="close-modal" data-modal="modal-backup">&times;</button>
+      </div>
+
+      <div id="backup-status-box" class="backup-status ok"></div>
+
+      <div class="sub-box stack" style="gap:8px;">
+        <strong style="font-size:12.5px;">1. Download / Upload .json Backup File</strong>
+        <div class="row" style="gap:8px;">
+          <button type="button" class="btn btn-primary btn-sm" data-action="download-backup">Download Backup (.json)</button>
+          <button type="button" class="btn btn-sm" data-action="trigger-restore-file">Restore from .json File</button>
+          <input type="file" id="backup-file-input" accept=".json,application/json" style="display:none;" />
+        </div>
+      </div>
+
+      <div class="sub-box stack" style="gap:8px;">
+        <div class="row-between">
+          <strong style="font-size:12.5px;">2. Copy / Paste Backup Text (Telegram / Notes)</strong>
+          <button type="button" class="btn btn-tg btn-sm" data-action="copy-backup-text">Generate &amp; Copy Backup Text</button>
+        </div>
+        <textarea id="backup-text-area" class="code-box" placeholder="Paste saved backup JSON text here..."></textarea>
+        <div class="row-between">
+          <span class="muted" style="font-size:11px;">Great for iPhone/Android if file downloads are restricted.</span>
+          <button type="button" class="btn btn-primary btn-sm" data-action="restore-backup-text">Restore from Pasted Text</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-wrap" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* =======================================================================
+         1. SAFE STORAGE WRAPPER (pedia251_balay_v7) + IN-MEMORY FALLBACK
+         ======================================================================= */
+      const STORAGE_KEY = 'pedia251_balay_v7';
+      let memoryStore = null;
+      let isPersistent = false;
+
+      function getDefaultState() {
+        return {
+          theme: 'light',
+          doneDays: [],
+          doneTasks: [],
+          customTasks: {},
+          doneReqs: [],
+          doneOrals: [],
+          patients: getSamplePatients(),
+          lastBackup: null
+        };
+      }
+
+      function normalizeState(rawObj) {
+        if (!rawObj || typeof rawObj !== 'object') return getDefaultState();
+        return {
+          theme: rawObj.theme === 'dark' ? 'dark' : 'light',
+          doneDays: Array.isArray(rawObj.doneDays) ? rawObj.doneDays : [],
+          doneTasks: Array.isArray(rawObj.doneTasks) ? rawObj.doneTasks : [],
+          customTasks: rawObj.customTasks && typeof rawObj.customTasks === 'object' ? rawObj.customTasks : {},
+          doneReqs: Array.isArray(rawObj.doneReqs) ? rawObj.doneReqs : [],
+          doneOrals: Array.isArray(rawObj.doneOrals) ? rawObj.doneOrals : [],
+          patients: Array.isArray(rawObj.patients) ? rawObj.patients : getSamplePatients(),
+          lastBackup: typeof rawObj.lastBackup === 'string' ? rawObj.lastBackup : null
+        };
+      }
+
+      function safeLoad() {
+        try {
+          const testK = '__pedia251_chk__';
+          window.localStorage.setItem(testK, '1');
+          window.localStorage.removeItem(testK);
+          const isFile = window.location && window.location.protocol === 'file:';
+          isPersistent = !isFile;
+
+          const raw = window.localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            const fresh = getDefaultState();
+            safeSave(fresh);
+            return fresh;
+          }
+          return normalizeState(JSON.parse(raw));
+        } catch (err) {
+          isPersistent = false;
+          if (!memoryStore) memoryStore = getDefaultState();
+          return memoryStore;
+        }
+      }
+
+      function safeSave(obj) {
+        memoryStore = obj;
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+        } catch (err) {
+          isPersistent = false;
+        }
+      }
+
+      /* =======================================================================
+         2. DOODLE SVGs, 30 DAILY PEARLS, SCHEDULE & CLINICAL TABLES
+         ======================================================================= */
+      const DOODLE = {
+        ward: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="8" width="18" height="8" rx="4" transform="rotate(-25 12 12)" fill="var(--d-peach)" stroke="var(--ink)" stroke-width="2"/><rect x="9" y="9" width="6" height="6" rx="1" transform="rotate(-25 12 12)" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.6"/></svg>',
+        er: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 15V8.5A2 2 0 0 1 5 6.5h9v9.5H3z" fill="var(--d-rose)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M14 9.5h4l2.8 3.2V16H14z" fill="var(--d-sky)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M8.5 9v4M6.5 11h4" stroke="var(--ink)" stroke-width="1.9" stroke-linecap="round"/><circle cx="7" cy="17.2" r="2" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.8"/><circle cx="17" cy="17.2" r="2" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.8"/></svg>',
+        dri: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="13.2" rx="6.5" ry="7.8" fill="var(--d-lav)" stroke="var(--ink)" stroke-width="2"/><circle cx="12" cy="9.5" r="3.6" fill="var(--d-peach)" stroke="var(--ink)" stroke-width="1.8"/><circle cx="10.8" cy="9.2" r=".7" fill="var(--ink)"/><circle cx="13.2" cy="9.2" r=".7" fill="var(--ink)"/><path d="M7 14.5c3.2 1.2 6.8 1.2 10 0" stroke="var(--ink)" stroke-width="1.5" stroke-linecap="round"/></svg>',
+        moon: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M16.5 15.8A7.2 7.2 0 0 1 8.8 5.2a7.5 7.5 0 1 0 10.2 10.2 6.5 6.5 0 0 1-2.5.4z" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M18.5 5v3M17 6.5h3" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/></svg>',
+        sun: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.8" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4" stroke="var(--ink)" stroke-width="1.9" stroke-linecap="round"/></svg>',
+        star: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 3.2l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.2-4.1 5.8-.8z" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/></svg>',
+        bulb: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 17.5h6M9.8 20.5h4.4M12 4.5a5.5 5.5 0 0 0-3.5 9.7c.7.6 1 1.4 1 2.3h5c0-.9.3-1.7 1-2.3A5.5 5.5 0 0 0 12 4.5z" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 1.8v1.2M4.8 5.2l1 .8M19.2 5.2l-1 .8" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round"/></svg>',
+        plane: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M21 4L3.5 11.2l6.2 2.4L19 6.5l-6.6 8.3 4.8 4.2z" fill="var(--d-sky)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/></svg>',
+        copy: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="13" rx="2.5" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2"/><path d="M16 8V5.5A2.5 2.5 0 0 0 13.5 3h-7A2.5 2.5 0 0 0 4 5.5v9A2.5 2.5 0 0 0 6.5 17H8" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/></svg>',
+        pulse: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2.2-6 3.6 12 2.2-6H21" stroke="var(--ink)" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        alert: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3.5L21 19.5H3z" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M12 9.5v4.5M12 16.8v.4" stroke="var(--ink)" stroke-width="2.1" stroke-linecap="round"/></svg>'
+      };
+
+      function postDoodle(area) {
+        if (area === 'Ward 9' || area === 'Ward') return DOODLE.ward;
+        if (area === 'PER' || area === 'ER') return DOODLE.er;
+        return DOODLE.dri;
+      }
+
+      function tubeDoodle(top) {
+        const capMap = { bloodcs: '#94a3b8', blue: '#38bdf8', red: '#ef4444', green: '#16a34a', purple: '#9333ea', igra: '#eab308' };
+        const cap = capMap[top] || '#ef4444';
+        return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="7.5" y="3" width="9" height="4" rx="1.4" fill="${cap}" stroke="var(--ink)" stroke-width="1.8"/><path d="M8.5 7v10.2a3.5 3.5 0 0 0 7 0V7z" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.8 13.5h6.4v3.5a3.2 3.2 0 0 1-6.4 0z" fill="${cap}" opacity="0.45"/></svg>`;
+      }
+
+      const DAILY_PEARLS = [
+        { cat: 'Fluids / GI', title: 'Dehydration & Holliday-Segar', body: 'Maintenance IVF: 100 mL/kg (first 10 kg) + 50 mL/kg (next 10 kg) + 20 mL/kg (>20 kg). Some dehydration: ORS 75 mL/kg over 4h; Severe: PNSS/PLR 20 mL/kg fast drip & reassess.' },
+        { cat: 'Infectious', title: 'Dengue with Warning Signs', body: 'Watch for abdominal pain, persistent vomiting, fluid accumulation, mucosal bleed, lethargy, hepatomegaly >2 cm, rising Hct + falling platelets. Start isotonic crystalloid 5–7 mL/kg/hr then titrate down.' },
+        { cat: 'Pulmo', title: 'PCAP C/D Tachypnea Cutoffs', body: 'WHO tachypnea: >=60 (<2m), >=50 (2–12m), >=40 (1–5y), >=30 (>5y). PCAP C: IV Pen G/Ampicillin; PCAP D: Ceftriaxone (+ Oxacillin/Clindamycin if Staph suspected).' },
+        { cat: 'Pulmo', title: 'Asthma Exacerbation', body: 'O2 for SpO2 >=94%, Salbutamol neb q20min x3 (+ Ipratropium if mod-severe), early systemic steroids (Prednisone 1–2 mg/kg or Hydrocortisone IV). Silent chest = impending arrest!' },
+        { cat: 'Endo', title: 'DKA Management', body: '10–20 mL/kg PNSS bolus (avoid excess boluses -> cerebral edema). Regular insulin drip 0.05–0.1 U/kg/hr AFTER 1h of fluids—NEVER bolus insulin. Add K+ once UO established & K+ <5.5.' },
+        { cat: 'Endo', title: 'CAH in Adrenal Crisis', body: 'Triad: hyponatremia, hyperkalemia, metabolic acidosis (+ hypoglycemia/ambiguous genitalia). STAT: PNSS 20 mL/kg bolus, IV Hydrocortisone (25–50 mg), D10W if hypoglycemic.' },
+        { cat: 'Genetics', title: 'MSUD in Crisis', body: 'Newborn w/ poor feeding, lethargy, opisthotonus & maple-syrup odor. STOP protein immediately, start high-GIR D10W (8–10 mg/kg/min) to halt catabolism, refer early for dialysis.' },
+        { cat: 'Neuro', title: 'Febrile Seizures vs Meningitis', body: 'Simple febrile seizure: 6m–5y, generalized, <15 min, once/24h, normal neuro. Rule out meningitis if <12m unimmunized, focal/prolonged, bulging fontanel, petechiae, or persistent lethargy.' },
+        { cat: 'Neuro', title: 'Status Epilepticus (>5 min)', body: 'ABC + O2 + STAT CBG! 0–5 min: IV Diazepam (0.2–0.3 mg/kg) or Midazolam (0.1–0.2 mg/kg). Repeat once after 5 min. 2nd-line: Levetiracetam (40–60 mg/kg) or Phenobarbital (20 mg/kg).' },
+        { cat: 'Neonatology', title: 'NRP Golden Minute', body: 'Warm, dry, stimulate. If apneic, gasping, or HR <100 at 60 sec -> PPV (21% O2 for >=35w, 40–60/min). MR. SOPA if chest not rising; 3:1 compressions if HR <60 despite effective PPV.' },
+        { cat: 'Neonatology', title: 'Neonatal Jaundice', body: 'Jaundice in first 24 HOL is ALWAYS pathologic (hemolysis/sepsis)! Confirm with light-protected TB/DB/IB red top and plot on Bhutani/AAP nomogram.' },
+        { cat: 'Neonatology', title: 'Hyaline Membrane Disease (RDS)', body: 'Preterm with grunting, flaring, retractions, cyanosis; CXR shows ground-glass pattern + air bronchograms. Early CPAP, surfactant therapy, avoid hyperoxia.' },
+        { cat: 'Neonatology', title: 'Early-Onset Neonatal Sepsis', body: 'Risks: PROM >=18h, chorioamnionitis, maternal fever, GBS+. Subtle signs (temp instability, apnea, poor suck). Draw Blood CS (2 sites) & start empiric Ampicillin + Gentamicin.' },
+        { cat: 'GI', title: 'Biliary Atresia Red Flags', body: 'Jaundice >14 DOL + acholic stools + dark urine + conjugated hyperbilirubinemia (DB >20% or >1 mg/dL). Early Kasai (<60 DOL) dramatically improves outcomes.' },
+        { cat: 'Cardio', title: 'Rheumatic Fever & RHD', body: 'Jones Criteria: preceding GAS + 2 Major (or 1 Major + 2 Minor). High-risk PH: monoarthritis/polyarthralgia is Major! Secondary prophylaxis: Benzathine Pen G IM q3–4 wks.' },
+        { cat: 'Cardio', title: 'Kawasaki Disease', body: 'Fever >=5 days + >=4/5: bilateral conjunctivitis, strawberry tongue/cracked lips, cervical LAD >=1.5 cm, extremity edema/peeling, polymorphous rash. Treat early w/ IVIG 2 g/kg + Aspirin.' },
+        { cat: 'Allergy', title: 'Anaphylaxis — IM Epinephrine', body: 'Give IM Epinephrine 1:1000 (0.01 mg/kg, max 0.3 mg child / 0.5 mg teen) into anterolateral thigh IMMEDIATELY. Antihistamines & steroids are only adjuncts.' },
+        { cat: 'Nephro', title: 'Nephritic vs Nephrotic', body: 'Nephritic (PSGN): tea-colored urine, HTN, oliguria, low C3 -> fluid/Na restriction + furosemide. Nephrotic: heavy proteinuria, low albumin, edema -> Prednisone 2 mg/kg/day.' },
+        { cat: 'Nephro', title: 'Pediatric UTI Pearls', body: 'Suspect in unexplained fever <2y! Bagged urine only rules OUT UTI; confirm w/ catheterized/midstream UA + Urine CS. Febrile UTI = pyelonephritis -> treat 7–14 days.' },
+        { cat: 'GI', title: 'AGE & Zinc Therapy', body: 'ORS is cornerstone; avoid anti-motility agents. Give Zinc for 10–14 days: 10 mg/day (<6 mo) or 20 mg/day (>=6 mo) to shorten diarrhea and prevent recurrence.' },
+        { cat: 'Resus', title: 'Pediatric Shock Recognition', body: 'Hypotension is a LATE sign! Early shock shows tachycardia, cool extremities, CRT >2s. Give 20 mL/kg PNSS/PLR bolus IV/IO (10 mL/kg if cardiogenic/SAM) & reassess.' },
+        { cat: 'PALS', title: 'BP & ETT Formulas', body: '5th% SBP: <60 (neonate), <70 (1m–1y), <70+(2xage) (1–10y), <90 (>10y). ETT: Uncuffed = age/4 + 4; Cuffed = age/4 + 3; Depth = size x 3.' },
+        { cat: 'Hema-Onco', title: 'Tumor Lysis Syndrome', body: 'High K+, High PO4, High Uric Acid, Low Ca2+. Aggressive hydration (2–3x maintenance, NO K+ in IVF), Allopurinol/Rasburicase, and close ECG/electrolyte monitoring.' },
+        { cat: 'Infectious', title: 'Pediatric Pulmonary TB', body: 'Paucibacillary — rely on exposure hx, cough/fever/weight loss >=2 wks, TST/IGRA & CXR (hilar LAD). Standard regimen: 2HRZE / 4HR (12 mos for TBM).' },
+        { cat: 'Electrolytes', title: 'Hyponatremia & Hyperkalemia', body: 'Seizures from hyponatremia: 3% NaCl 2–3 mL/kg over 10–15 min. Hyperkalemia w/ ECG changes: IV Ca Gluconate 10% (0.5–1 mL/kg) first, then Insulin+D50W / Salbutamol neb.' },
+        { cat: 'Neonatology', title: 'DRI Breastfeeding Cues', body: 'Unang Yakap: skin-to-skin & BF within 1h. Good latch = wide mouth, flanged lips, slow deep sucks. Expected wet diapers: >=1 Day 1, >=2 Day 2, >=6/day by Day 5.' },
+        { cat: 'Neonatology', title: 'ENBS & CCHD Screening', body: 'ENBS heel-prick at 24–72 HOL. CCHD pulse ox at >=24 HOL on right hand & either foot: pass if >=95% AND <=3% difference.' },
+        { cat: 'Neonatology', title: 'PPHN', body: 'Term/post-term newborn with labile hypoxemia and pre- vs post-ductal SpO2 gradient >5–10%. Maintain normothermia, adequate BP, gentle ventilation, prepare iNO/sildenafil.' },
+        { cat: 'Neonatology', title: 'Necrotizing Enterocolitis', body: 'Preterm with feeding intolerance, bilious residuals, abdominal distension/erythema & bloody stools. X-ray: pneumatosis intestinalis! NPO, OGT decompression, IVF, broad-spectrum Abx.' },
+        { cat: 'Neonatology', title: 'Hemorrhagic Disease of Newborn', body: 'Vit K deficiency (prolonged PT/PTT, normal platelets). Prevent EVERY newborn with Vit K 1 mg IM (0.5 mg if <1.5 kg) at birth; active bleeding needs IV Vit K + FFP.' }
+      ];
+
+      const SCHEDULE = [
+        // Week 1 — Ward 9 (w/ Abarca)
+        { date: '2026-11-23', disp: 'Nov 23', day: 'Mon', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Duty', time: '7AM–12NN; 5PM–5AM', co: 'Abarca', overnight: true, truePost: false, solo: false, tasks: ['7:30–8AM Admission Conf (Student presenters)', 'SIC morning rounds & handwritten SOAP/orders', 'Rest 12NN–5PM; 5PM endorsement & overnight duty (5PM–5AM)', 'Start VLE pre-tests & 5 videos'] },
+        { date: '2026-11-24', disp: 'Nov 24', day: 'Tue', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Post', time: '7AM–12NN (Adm Conf 7:30–8AM, rest 8–9AM, SIC 9AM–12NN)', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['7:30–8AM Admission Conf (Resident presenters)', 'Rest 8–9AM; SIC rounds & carry-overs 9AM–12NN', 'Endorse crit patients to Pre-Duty clerk at 12NN'] },
+        { date: '2026-11-25', disp: 'Nov 25', day: 'Wed', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Pre-Duty', time: '7AM–5PM', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['SIC rounds & handwritten portfolio charting', 'Cover Ward 9 patients during Duty PM break / Post', '5PM endorsement of crit patients to Duty team'] },
+        { date: '2026-11-26', disp: 'Nov 26', day: 'Thu', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Duty', time: '7AM–12NN; 5PM–5AM', co: 'Abarca', overnight: true, truePost: false, solo: false, tasks: ['7:30–8AM Admission Conf (Student presenters)', 'SIC rounds & handwritten SOAP/orders', 'Rest 12NN–5PM; 5PM endorsement & overnight duty'] },
+        { date: '2026-11-27', disp: 'Nov 27', day: 'Fri', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Post', time: '7AM–12NN (Ward Wars w/ Dr. Abad)', co: 'Abarca', overnight: false, truePost: false, solo: false, tag: 'Ward Wars w/ Dr. Abad', tasks: ['7:30–8AM Admission Conf & Friday Ward Wars w/ Dr. Abad', 'SIC rounds 9AM–12NN & endorse to Pre-Duty'] },
+        { date: '2026-11-28', disp: 'Nov 28', day: 'Sat', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Pre-Duty', time: '7AM–5PM', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['SIC morning rounds & portfolio SOAP update', 'Cover Ward 9 afternoon carry-overs; 5PM endorsement'] },
+        { date: '2026-11-29', disp: 'Nov 29', day: 'Sun', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Duty', time: '7AM–12NN; 5PM–5AM', co: 'Abarca', overnight: true, truePost: false, solo: false, tasks: ['SIC morning rounds & orders (7AM–12NN)', 'Rest 12NN–5PM; 5PM endorsement & overnight duty'] },
+
+        // Week 2 — Ward 9 (w/ Abarca)
+        { date: '2026-11-30', disp: 'Nov 30', day: 'Mon', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Post', time: '7AM–12NN', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['7:30–8AM Admission Conf (Student presenters)', 'SIC rounds 9AM–12NN; schedule Bioethics w/ Dr. Abacan'] },
+        { date: '2026-12-01', disp: 'Dec 1', day: 'Tue', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Pre-Duty', time: '7AM–5PM', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['7:30–8AM Admission Conf (Resident presenters)', 'SIC rounds, handwritten charting & 5PM endorsement'] },
+        { date: '2026-12-02', disp: 'Dec 2', day: 'Wed', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Duty', time: '7AM–12NN; 5PM–5AM', co: 'Abarca', overnight: true, truePost: false, solo: false, tasks: ['SIC rounds & portfolio check w/ service senior', 'Rest 12NN–5PM; 5PM endorsement & overnight duty'] },
+        { date: '2026-12-03', disp: 'Dec 3', day: 'Thu', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Post', time: '7AM–12NN', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['7:30–8AM Admission Conf (Student presenters)', 'SIC rounds 9AM–12NN; prep Graded Preceptorial #1'] },
+        { date: '2026-12-04', disp: 'Dec 4', day: 'Fri', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Pre-Duty', time: '7AM–5PM (Ward Wars w/ Dr. Abad)', co: 'Abarca', overnight: false, truePost: false, solo: false, tag: 'Ward Wars w/ Dr. Abad', tasks: ['Friday Ward Wars w/ Dr. Lorna Abad', 'SIC rounds, cover PM break & 5PM endorsement'] },
+        { date: '2026-12-05', disp: 'Dec 5', day: 'Sat', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Duty', time: '7AM–12NN; 5PM–5AM', co: 'Abarca', overnight: true, truePost: false, solo: false, tag: "Intern's Hour — Proxy for Interns!", tasks: ["Proxy for interns during Intern's Hour (cover ward errands & patient monitoring)", 'SIC rounds 7AM–12NN; rest 12NN–5PM', '5PM endorsement & final Ward 9 overnight duty'] },
+        { date: '2026-12-06', disp: 'Dec 6', day: 'Sun', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Post', time: '7AM–12NN', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['Final Ward 9 SIC rounds & endorse patients to next SIC', 'Request Ward Senior & Junior Resident Evaluations'] },
+
+        // Week 3 — PER
+        { date: '2026-12-07', disp: 'Dec 7', day: 'Mon', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'AM', time: '7AM–7PM', co: 'Solo', overnight: false, truePost: false, solo: true, tasks: ['PER AM Duty (Solo): resuscitations, procedures & VS monitoring', 'Join PER service/consultant rounds'] },
+        { date: '2026-12-08', disp: 'Dec 8', day: 'Tue', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'AM', time: '7AM–7PM', co: 'Solo', overnight: false, truePost: false, solo: true, tasks: ['PER AM Duty (Solo — 2nd consecutive AM)', 'Facilitate PER workups, labs & endorsements'] },
+        { date: '2026-12-09', disp: 'Dec 9', day: 'Wed', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'PM', time: '7PM–7AM', co: 'Solo', overnight: true, truePost: false, solo: true, tasks: ['Daytime rest before 7PM shift', 'PER PM Overnight Duty (Solo): resuscitations & admissions'] },
+        { date: '2026-12-10', disp: 'Dec 10', day: 'Thu', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'Post', time: 'True Post — OFF', co: 'Solo', overnight: false, truePost: true, solo: true, tasks: ['Full True Post recovery day', 'Prep Graded Preceptorial #2 / catch up on VLE quizzes'] },
+        { date: '2026-12-11', disp: 'Dec 11', day: 'Fri', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'AM', time: '7AM–7PM', co: 'Solo', overnight: false, truePost: false, solo: true, tasks: ['Final solo PER shift (AM 7AM–7PM)', 'PER rounds, procedures & lab follow-ups'] },
+        { date: '2026-12-12', disp: 'Dec 12', day: 'Sat', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'AM', time: '7AM–7PM', co: 'Alarin', overnight: false, truePost: false, solo: false, tasks: ['PER AM Duty (paired w/ Alarin)', 'Split PER monitoring, admissions & carry-overs'] },
+        { date: '2026-12-13', disp: 'Dec 13', day: 'Sun', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'PM', time: '7PM–7AM', co: 'Alarin', overnight: true, truePost: false, solo: false, tasks: ['Final PER PM Overnight Duty (w/ Alarin)', 'Request ER Senior Resident Evaluation before leaving'] },
+
+        // Week 4 — DR/DRI (w/ Alarin)
+        { date: '2026-12-14', disp: 'Dec 14', day: 'Mon', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'Post', time: 'True Post — OFF', co: 'Alarin', overnight: false, truePost: true, solo: false, tasks: ['Full True Post recovery after PER PM', 'Review Oral Exam 18 must-know topics'] },
+        { date: '2026-12-15', disp: 'Dec 15', day: 'Tue', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'AM', time: '7AM–7PM (DR Catcher)', co: 'Alarin', overnight: false, truePost: false, solo: false, tasks: ['DR Catcher AM: assist deliveries & newborn resuscitation', 'Delivery paperwork, recovery room monitoring & breastfeeding support'] },
+        { date: '2026-12-16', disp: 'Dec 16', day: 'Wed', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'PM', time: 'DRI 7AM–12NN; DR/C 7PM–7AM', co: 'Alarin', overnight: true, truePost: false, solo: false, tasks: ['DRI (Wards 15–16) 7AM–12NN: newborn care, vaccinations & rounds', 'Rest 12NN–7PM; DR Catcher Overnight 7PM–7AM'] },
+        { date: '2026-12-17', disp: 'Dec 17', day: 'Thu', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'Post', time: 'True Post — OFF', co: 'Alarin', overnight: false, truePost: true, solo: false, tasks: ['Full True Post recovery day', 'Finalize Oral Exam review & compile handwritten Portfolio'] },
+        { date: '2026-12-18', disp: 'Dec 18', day: 'Fri', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'AM', time: '7AM–7PM (DR Catcher)', co: 'Alarin', overnight: false, truePost: false, solo: false, tasks: ['DR Catcher AM: deliveries, procedures & recovery room', 'Check Oral Exam schedule w/ Block 1 preceptors'] },
+        { date: '2026-12-19', disp: 'Dec 19', day: 'Sat', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'PM', time: 'DRI 7AM–12NN; DR/C 7PM–7AM', co: 'Alarin', overnight: true, truePost: false, solo: false, tasks: ['DRI 7AM–12NN (newborn care & vaccinations); rest 12NN–7PM', 'Final DR Catcher Overnight 7PM–7AM; request Catcher Resident Eval'] },
+        { date: '2026-12-20', disp: 'Dec 20', day: 'Sun', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'Post', time: 'True Post — Last Day! Portfolio due!', co: 'Alarin', overnight: false, truePost: true, solo: false, tag: 'Portfolio Due & VLE Closes 5PM', tasks: ['Last Day of Rotation — True Post!', 'Submit handwritten Portfolio to service senior', 'Complete all 5 VLE post-test quizzes before 5PM (Reflection Paper due Dec 27)'] }
+      ];
+
+      const VS_NORMS = {
+        'Premie': { label: 'Premie', ageYr: 0, wt: 2.5, hr: [120, 170], rr: [40, 70], sbp: [55, 75], dbp: [35, 45], bvm: 'Infant', nasal: '12 Fr', oral: 'Infant 50mm', blade: 'MIL 0', ett: '2.5–3.0', lma: '1', glide: '1', iv: '22–24 ga', cvl: '3 Fr', ngt: '5 Fr', ct: '10–12 Fr', foley: '6 Fr' },
+        'Newborn': { label: 'Newborn', ageYr: 0.01, wt: 3.5, hr: [110, 160], rr: [30, 60], sbp: [65, 85], dbp: [45, 55], bvm: 'Infant', nasal: '12 Fr', oral: 'Small 60mm', blade: 'MIL 0', ett: '3.0–3.5', lma: '1', glide: '1 or 2', iv: '22–24 ga', cvl: '3–4 Fr', ngt: '5–8 Fr', ct: '10–12 Fr', foley: '8 Fr' },
+        '0-3 mo': { label: '0–3 mo', ageYr: 0.15, wt: 4.5, hr: [110, 160], rr: [30, 60], sbp: [65, 85], dbp: [45, 55], bvm: 'Infant', nasal: '12–14 Fr', oral: 'Small 60mm', blade: 'MIL 0–1', ett: '3.0–3.5', lma: '1', glide: '1 or 2', iv: '22–24 ga', cvl: '3–4 Fr', ngt: '5–8 Fr', ct: '10–12 Fr', foley: '8 Fr' },
+        '3-6 mo': { label: '3–6 mo', ageYr: 0.4, wt: 7.0, hr: [100, 150], rr: [30, 45], sbp: [70, 90], dbp: [50, 65], bvm: 'Small Child', nasal: '14–16 Fr', oral: 'Small 60mm', blade: 'MIL 1', ett: '3.5–4.0', lma: '1.5', glide: '2', iv: '20–24 ga', cvl: '4 Fr', ngt: '8 Fr', ct: '12–18 Fr', foley: '8 Fr' },
+        '6-12 mo': { label: '6–12 mo', ageYr: 0.8, wt: 10.0, hr: [90, 130], rr: [25, 40], sbp: [80, 100], dbp: [55, 65], bvm: 'Small Child', nasal: '14–16 Fr', oral: 'Small 60mm', blade: 'MIL 1 / MAC 2', ett: '4.0–4.5', lma: '2', glide: '2', iv: '20–24 ga', cvl: '4–5 Fr', ngt: '10 Fr', ct: '16–20 Fr', foley: '8 Fr' },
+        '1-3 yrs': { label: '1–3 yrs', ageYr: 2, wt: 13.0, hr: [80, 125], rr: [20, 30], sbp: [90, 105], dbp: [55, 70], bvm: 'Child', nasal: '14–18 Fr', oral: 'Small 70mm', blade: 'MIL 1–2 / MAC 2', ett: '4.5–5.0', lma: '2', glide: '2 or 3', iv: '18–22 ga', cvl: '4–5 Fr', ngt: '10–12 Fr', ct: '16–24 Fr', foley: '8 Fr' },
+        '3-6 yrs': { label: '3–6 yrs', ageYr: 5, wt: 20.0, hr: [70, 115], rr: [20, 25], sbp: [95, 110], dbp: [60, 75], bvm: 'Child', nasal: '14–18 Fr', oral: 'Small 70–80mm', blade: 'MIL 2 / MAC 2–3', ett: '5.0–5.5', lma: '2.5', glide: '3', iv: '18–22 ga', cvl: '5 Fr', ngt: '12–14 Fr', ct: '20–28 Fr', foley: '8 Fr' },
+        '6-12 yrs': { label: '6–12 yrs', ageYr: 9, wt: 30.0, hr: [60, 100], rr: [14, 22], sbp: [100, 120], dbp: [60, 75], bvm: 'Child / Sm Adult', nasal: '16–20 Fr', oral: 'Med 80–90mm', blade: 'MIL 2 / MAC 3', ett: '5.5–6.5', lma: '2.5–3', glide: '3', iv: '18–22 ga', cvl: '5 Fr', ngt: '12–14 Fr', ct: '20–32 Fr', foley: '8–10 Fr' },
+        '>12 yrs': { label: '>12 yrs', ageYr: 14, wt: 50.0, hr: [60, 100], rr: [12, 18], sbp: [100, 120], dbp: [70, 80], bvm: 'Adult', nasal: '18–36 Fr', oral: 'Med 90mm', blade: 'MIL 2 / MAC 3', ett: '6.5–8.0', lma: '3–4', glide: '3 or 4', iv: '16–20 ga', cvl: '7 Fr', ngt: '14–18 Fr', ct: '28–42 Fr', foley: '10–12 Fr' }
+      };
+
+      const DRI_CARE_ITEMS = ['Vit K', 'Hep B', 'BCG', 'Eye Ointment', 'NBS', 'Hearing/CCHD'];
+      const WARD_ER_CHIPS = ['Fever', 'Tachypnea / retractions', 'Vomiting', 'Loose stools', 'Poor PO intake', 'Lethargy / irritable', 'Seizure', 'Decreased UO', 'No acute complaints'];
+      const DRI_CHIPS = ['Poor latch / suck', 'Mild jaundice', 'Grunting / retractions', 'Hypothermia', 'Fever', 'Low HGT', 'No urine >24h', 'No meconium >24h', 'Active / good cry'];
+
+      const TUBE_META = {
+        bloodcs: { order: 1, label: 'Blood CS', banner: 'Draw FIRST! Done twice: different sites AND different sides (R & L).' },
+        blue: { order: 2, label: 'Blue-Top (Citrated)', banner: 'Invert 5x. Check tube line: 1.8 mL or 2.7 mL.' },
+        red: { order: 3, label: 'Red-Top (No Anticoag)', banner: 'Routine Central Lab tests combine; check separate/special tubes below.' },
+        green: { order: 4, label: 'Green-Top (Heparin)', banner: 'DO NOT TOURNIQUET after backflow for Lactate/NH3/Plasma K! Strict 4 mL line.' },
+        purple: { order: 5, label: 'Purple-Top (EDTA)', banner: 'Invert 8x. Separate purple tops for Blood Typing & Renin.' },
+        igra: { order: 6, label: 'IGRA (4 Tubes)', banner: 'Immunopathology (behind Central Labs): Gray->Green->Yellow->Purple to line; mix 10x; Radish-ed; <=3PM.' }
+      };
+
+      const LAB_CATALOG = [
+        { id: 'blood_cs', name: 'Blood CS (2 sites, R & L)', top: 'bloodcs', submit: 'Central Lab / Micro', volMl: 2, volLabel: '1–3 mL x2', combineKey: null, note: 'Done twice: different sites AND different sides (R & L).' },
+        { id: 'pt_ptt', name: 'PT / PTT', top: 'blue', submit: 'Central Lab', volMl: 2.7, volLabel: '1.8 or 2.7 mL', combineKey: 'blue_central', note: 'Invert 5x; fill strictly to tube line (1.8 or 2.7 mL).' },
+        { id: 'ddimer_fib', name: 'D-dimer / Fibrinogen', top: 'blue', submit: 'Central Lab', volMl: 2.7, volLabel: '1.8 or 2.7 mL', combineKey: 'blue_central', note: 'Invert 5x; combinable with PT/PTT in 1 blue top.' },
+        { id: 'factor_ix', name: 'Factor IX / Bethesda', top: 'blue', submit: 'MRL', volMl: 2.7, volLabel: '2.7 mL', combineKey: null, alert: 'MRL: Pt & unrelated reference person both fast 8h.', note: 'Submit to MRL; pt & unrelated reference person both fasted 8h.' },
+        { id: 'electrolytes', name: 'All Serum Electrolytes', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2–3 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'bun_crea', name: 'BUN / Creatinine', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'ast_alt', name: 'AST / ALT', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'albumin', name: 'Albumin', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'rbs', name: 'RBS', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'tco2', name: 'TCO2', top: 'red', submit: 'Central Lab', volMl: 4, volLabel: '4 mL (FILL TO LINE)', combineKey: 'red_central', alert: 'FILL TO 4 mL LINE!', note: 'May combine with red-top tests BUT fill strictly to 4 mL line.' },
+        { id: 'tb_db_ib', name: 'TB / DB / IB', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'red_central', alert: 'COVER W/ PAPER FOR LIGHT!', note: 'Cover tube with paper to protect from light.' },
+        { id: 'trop_i', name: 'Trop I / Cardiac Biomarkers', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2–3 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'iron_panel', name: 'Serum Iron / Ferritin / TIBC', top: 'red', submit: 'Central Lab', volMl: 3, volLabel: '3 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'hepa_prof', name: 'Hepatitis Profile', top: 'red', submit: 'Central Lab', volMl: 3, volLabel: '3 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'var_rub', name: 'Varicella IgG / Rubella IgG', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'ldh_crp_pct', name: 'LDH / CRP / Procalcitonin', top: 'red', submit: 'Central Lab', volMl: 3, volLabel: '3 mL (Separate)', combineKey: 'red_inflam', alert: 'Separate red top (3 mL).', note: 'Separate red top for LDH, CRP, Procalcitonin (ensure 3 mL).' },
+        { id: 'phenobarb', name: 'Phenobarbital (pb) Assay', top: 'red', submit: 'Clinical Chemistry', volMl: 3, volLabel: '>=3 mL Adult Red', combineKey: null, alert: 'Call Clin Chem (3212) first! Adult red tube >=3 cc (NO microtainer).', note: 'Call Clinical Chemistry (3212) first; adult red tube >=3 cc.' },
+        { id: 'vanco_trough', name: 'Vancomycin Trough', top: 'red', submit: 'Central Lab', volMl: 3, volLabel: '3 mL', combineKey: null, alert: 'Cover in carbon paper BEFORE filling!', note: 'Cover tube in carbon paper before filling.' },
+        { id: 'ana', name: 'ANA (Anti-Nuclear Ab)', top: 'red', submit: 'MRL', volMl: 3, volLabel: '3 mL', combineKey: null, alert: 'MRL + resident sig; fasting 6h.', note: 'Submit to MRL with resident signature; fasting 6h.' },
+        { id: 'c3', name: 'C3', top: 'red', submit: 'MRL', volMl: 3, volLabel: '3 mL', combineKey: null, alert: 'Submit to MRL.', note: 'Submit to MRL (Medical Research Laboratory).' },
+        { id: 'tsh_ft4_ft3', name: 'TSH / FT3 / FT4', top: 'red', submit: 'Nuclear Medicine', volMl: 3, volLabel: '3 mL', combineKey: 'red_nucmed_thyroid', alert: 'Nuc Med: TSH/FT4 daily; FT3 M/W/F only.', note: 'Submit to Nuclear Medicine. TSH/FT4 daily; FT3 Mon/Wed/Fri only.' },
+        { id: 'aldosterone', name: 'Aldosterone', top: 'red', submit: 'Nuclear Medicine', volMl: 3, volLabel: '3 mL', combineKey: null, alert: 'Submit to Nuclear Medicine.', note: 'Submitted to Nuclear Medicine.' },
+        { id: 'cortisol', name: 'Serum Cortisol', top: 'red', submit: 'Nuclear Medicine', volMl: 3, volLabel: '3 mL', combineKey: null, alert: 'Submit to Nuclear Medicine.', note: 'Submitted to Nuclear Medicine.' },
+        { id: 'vitd_ipth', name: 'Vitamin D / iPTH', top: 'red', submit: 'Nuclear Medicine', volMl: 4, volLabel: '3–5 mL (1 tube)', combineKey: 'red_vitd_ipth', alert: 'Nuc Med: 8h fasting; Mon & Wed only (3–5 cc each).', note: '1 red top for both (3–5 cc each); 8h fasting; Mon & Wed only.' },
+        { id: 'ica_nh3_lac', name: 'iCa / Ammonia (NH3) / Lactate', top: 'green', submit: 'Central Lab (Direct)', volMl: 4, volLabel: '4 mL (Strict)', combineKey: 'green_ice', alert: 'DO NOT TOURNIQUET! Glove in ICE ONLY (no water); direct <15 min!', note: 'Strict 4 mL line; glove in ICE only (no water); direct to lab <15 min.' },
+        { id: 'plasma_k', name: 'Plasma Potassium', top: 'green', submit: 'Central Lab', volMl: 4, volLabel: '4 mL (Strict)', combineKey: null, alert: 'DO NOT TOURNIQUET! 4 mL line (no ice).', note: '4 mL line; no ice needed; remove tourniquet right after backflow.' },
+        { id: 'cbc', name: 'CBC / ESR / PBS', top: 'purple', submit: 'Central Lab', volMl: 2, volLabel: '1–2 mL', combineKey: 'purple_central', note: 'Invert 8x. Combinable with HbA1c.' },
+        { id: 'hba1c', name: 'HbA1c', top: 'purple', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'purple_central', note: 'Invert 8x. Combinable with CBC/ESR/PBS.' },
+        { id: 'blood_typing', name: 'Blood Typing', top: 'purple', submit: 'Blood Bank / Central Lab', volMl: 2, volLabel: '2 mL (Separate)', combineKey: null, alert: 'Separate purple top! Invert 8x.', note: 'Separate purple top required for blood typing.' },
+        { id: 'renin', name: 'Renin', top: 'purple', submit: 'Nuclear Medicine', volMl: 3, volLabel: '3 mL', combineKey: null, alert: 'Nuc Med: 8–12h fasting; Fridays only!', note: 'Submit to Nuclear Medicine; 8–12h fasting; Fridays only.' },
+        { id: 'igra', name: 'IGRA (4 Special Tubes)', top: 'igra', submit: 'Immunopathology (<=3PM)', volMl: 4, volLabel: '4 tubes to line', combineKey: null, alert: 'Gray->Green->Yellow->Purple to line; mix 10x; Radish-ed; <=3PM!', note: 'Immunopathology (behind Central Labs); mix 10x; Radish-ed; submit until 3PM only.' }
+      ];
+
+      const REQ_GROUPS = [
+        {
+          title: 'VLE Videos & Quizzes (5% — Open Day 1 7AM, Close Dec 20 5PM)',
+          items: [
+            { id: 'vle_hx', text: 'History & PE of Pediatric Patients (Pre-test -> Video -> 10-pt Quiz -> Post-test)' },
+            { id: 'vle_fe', text: 'Basic Fluids & Electrolytes (Pre-test -> Video -> 10-pt Quiz -> Post-test)' },
+            { id: 'vle_abg', text: 'ABG Interpretation (Pre-test -> Video -> 10-pt Quiz -> Post-test)' },
+            { id: 'vle_cxr', text: 'Chest X-Ray Reading (Pre-test -> Video -> 10-pt Quiz -> Post-test)' },
+            { id: 'vle_ecg', text: 'ECG Interpretation (Pre-test -> Video -> 10-pt Quiz -> Post-test)' }
+          ]
+        },
+        {
+          title: 'Preceptorials (20%) & Bioethics',
+          items: [
+            { id: 'prec_1', text: 'Preceptorial #1 — Non-graded (Week 1: How to Present)' },
+            { id: 'prec_2', text: 'Preceptorial #2 — Graded Case Presentation (Week 2)' },
+            { id: 'prec_3', text: 'Preceptorial #3 — Graded Case Presentation (Week 3)' },
+            { id: 'bioeth', text: 'Bioethics Encounter w/ Dr. Mary Ann Abacan (Week 2–3, Non-graded)' }
+          ]
+        },
+        {
+          title: 'Portfolio (10%) & Reflection Paper',
+          items: [
+            { id: 'port_chart', text: 'Handwritten daily SOAP & orders (1–2 ward patients, checked by senior)' },
+            { id: 'port_sub', text: 'Submit compiled Portfolio folder on Last Day (Dec 20)' },
+            { id: 'refl_sub', text: 'Reflection Paper -> upcmlu6pediatrics@gmail.com (Due Dec 27)' }
+          ]
+        },
+        {
+          title: 'Supervisor Evals (20%) & Exams (45%)',
+          items: [
+            { id: 'eval_ward', text: 'Ward 9 Senior & Junior Resident Evaluation' },
+            { id: 'eval_er', text: 'PER Senior Resident Evaluation' },
+            { id: 'eval_dr', text: 'DR Catcher Resident Evaluation' },
+            { id: 'exam_oral', text: 'Oral Exam — 15-min case w/ Block 1 preceptor (20%, Week 4)' },
+            { id: 'exam_final', text: '100-pt Final Written Exam (15%, End of Year)' },
+            { id: 'exam_comp', text: 'UPCM LU6 Comprehensive Exam (10%)' }
+          ]
+        }
+      ];
+
+      const ORAL_TOPICS = [
+        'Anaphylaxis', 'AGE w/ dehydration', 'Anemia', 'RHD',
+        'CAH in crisis', 'DKA', 'Biliary atresia', 'MSUD in crisis',
+        'Dengue w/ warning signs', 'PTB', 'Febrile seizures', 'Meningitis',
+        'PCAP C/D', 'Asthma exacerbation', 'Nephritic syndrome', 'UTI',
+        'HMD', 'Neonatal jaundice'
+      ];
+
+      function getSamplePatients() {
+        return [
+          {
+            id: 'sample_w9',
+            sample: true,
+            area: 'Ward 9',
+            wardBed: 'W9-4',
+            lastName: 'Reyes',
+            agePreset: '3-6 yrs',
+            ageDisp: '4 yo',
+            weight: 15,
+            dx: 'PCAP C',
+            hd: 'HD 2',
+            status: 'Non-Toxic',
+            meds: 'D5 0.3 NaCl @ 50 cc/hr; Ampicillin + Gentamicin; O2 @ 2 LPM NC',
+            todos: [{ id: 't1', text: 'Follow up repeat CXR AP/L', done: false }],
+            labs: [
+              { id: 'l1', cid: 'cbc', name: 'CBC / ESR / PBS', top: 'purple', submit: 'Central Lab', volMl: 2, volLabel: '1–2 mL', combineKey: 'purple_central', status: 'Pending' },
+              { id: 'l2', cid: 'electrolytes', name: 'All Serum Electrolytes', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2–3 mL', combineKey: 'red_central', status: 'Pending' },
+              { id: 'l3', cid: 'tco2', name: 'TCO2', top: 'red', submit: 'Central Lab', volMl: 4, volLabel: '4 mL (FILL TO LINE)', combineKey: 'red_central', alert: 'FILL TO 4 mL LINE!', status: 'Pending' }
+            ],
+            logs: [{ ts: 'Nov 23, 08:30', hr: 128, rr: 34, sbp: 96, dbp: 60, temp: 38.6, spo2: 94, subj: ['Fever', 'Tachypnea / retractions'], pe: 'mild subcostal retractions, crackles R base', plan: '' }]
+          },
+          {
+            id: 'sample_er',
+            sample: true,
+            area: 'PER',
+            wardBed: 'PER-B2',
+            lastName: 'Santos',
+            agePreset: '6-12 mo',
+            ageDisp: '8 mo',
+            weight: 7.5,
+            dx: 'AGE with some dehydration',
+            acuity: 'Urgent',
+            cc: 'Loose watery stools x5, vomiting',
+            dispo: 'Ward 9 admission',
+            meds: 'ORS 75 mL/kg trial; D5 0.3 NaCl standby',
+            todos: [{ id: 't2', text: 'Monitor stool frequency & reassess hydration', done: false }],
+            labs: [
+              { id: 'l4', cid: 'ica_nh3_lac', name: 'iCa / Ammonia (NH3) / Lactate', top: 'green', submit: 'Central Lab (Direct)', volMl: 4, volLabel: '4 mL (Strict)', combineKey: 'green_ice', alert: 'DO NOT TOURNIQUET! Glove in ICE ONLY (no water); direct <15 min!', status: 'Pending' }
+            ],
+            logs: [{ ts: 'Dec 7, 10:15', hr: 148, rr: 38, sbp: 84, dbp: 52, temp: 37.9, spo2: 97, subj: ['Loose stools', 'Vomiting'], pe: 'sunken eyeballs, dry lips, CRT 2s', plan: '' }]
+          },
+          {
+            id: 'sample_dri',
+            sample: true,
+            area: 'DRI',
+            wardBed: 'W15-3',
+            lastName: 'BO Cruz',
+            agePreset: 'Newborn',
+            ageDisp: '18 hrs',
+            weight: 3.1,
+            dx: 'Term AGA via NSD, r/o pathologic jaundice',
+            aog: 'Term 39w NSD, APGAR 8,9',
+            matRisk: 'None',
+            feeding: 'Direct BF, poor latch; 1 urine, 1 meconium',
+            driCare: ['Vit K', 'Hep B', 'Eye Ointment'],
+            todos: [{ id: 't3', text: 'Assist mother w/ latching; complete BCG & NBS (>24h)', done: false }],
+            labs: [
+              { id: 'l5', cid: 'tb_db_ib', name: 'TB / DB / IB', top: 'red', submit: 'Central Lab', volMl: 1.5, volLabel: '2 mL', combineKey: 'red_central', alert: 'COVER W/ PAPER FOR LIGHT!', status: 'Pending' }
+            ],
+            logs: [{ ts: 'Dec 16, 08:00', hr: 142, rr: 48, sbp: 70, dbp: 45, temp: 36.8, spo2: 97, subj: ['Mild jaundice', 'Poor latch / suck'], pe: 'icteric face & upper chest, active cry', plan: '' }]
+          }
+        ];
+      }
+
+      /* =======================================================================
+         3. RUNTIME STATE
+         ======================================================================= */
+      function getTodayPearlIndex() {
+        const now = new Date();
+        const start = new Date(now.getFullYear(), 0, 0);
+        return Math.floor((now - start) / 86400000) % DAILY_PEARLS.length;
+      }
+
+      const store = safeLoad();
+      const ui = {
+        tab: 'schedule',
+        pearlIdx: getTodayPearlIndex(),
+        schedFilter: 'all',
+        schedView: 'cards',
+        expandedDays: new Set(),
+        ptFilter: 'all',
+        openWork: new Set(),
+        openHist: new Set(),
+        vcPreset: '1-3 yrs',
+        vcFlags: new Set(),
+        refQuery: '',
+        confirmResetSched: false,
+        confirmClearSamples: false
+      };
+
+      /* =======================================================================
+         4. UTILITIES, VS EVALUATION, TG FORMAT & LAB COMBINER
+         ======================================================================= */
+      function esc(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function toast(msg) {
+        const wrap = document.getElementById('toast-wrap');
+        if (!wrap) return;
+        const div = document.createElement('div');
+        div.className = 'toast';
+        div.textContent = msg;
+        wrap.appendChild(div);
+        setTimeout(() => { if (div.parentNode) div.parentNode.removeChild(div); }, 2400);
+      }
+
+      function copyText(text) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          toast('Copied to clipboard!');
+        } catch (err) {
+          toast('Select and copy manually.');
+        }
+      }
+
+      function parseBP(str) {
+        const parts = String(str || '').split('/');
+        return { sbp: parseFloat(parts[0]) || 0, dbp: parseFloat(parts[1]) || 0 };
+      }
+
+      function evaluateVS(presetKey, exactAgeYr, wt, vs, flagsArr, area) {
+        const norm = VS_NORMS[presetKey] || VS_NORMS['1-3 yrs'];
+        const ageYr = (exactAgeYr != null && !isNaN(exactAgeYr)) ? exactAgeYr : norm.ageYr;
+        const isNb = area === 'DRI' || presetKey === 'Premie' || presetKey === 'Newborn' || ageYr < 0.08;
+        const sbp5 = isNb ? 60 : (ageYr < 1 ? 70 : (ageYr <= 10 ? Math.round(70 + ageYr * 2) : 90));
+        const sbp50 = Math.round(90 + ageYr * 2);
+        const map50 = Math.round(55 + ageYr * 1.5);
+        const map5 = Math.round(40 + ageYr * 1.5);
+        const mapVal = (vs.sbp && vs.dbp) ? Math.round((vs.sbp + 2 * vs.dbp) / 3) : null;
+
+        const flags = [];
+        const abn = { hr: false, rr: false, bp: false, temp: false, spo2: false };
+        if (vs.hr > norm.hr[1]) { abn.hr = true; flags.push(`tachycardia (HR ${vs.hr})`); }
+        else if (vs.hr > 0 && vs.hr < norm.hr[0]) { abn.hr = true; flags.push(`bradycardia (HR ${vs.hr})`); }
+
+        if (vs.rr > norm.rr[1]) { abn.rr = true; flags.push(`tachypnea (RR ${vs.rr})`); }
+        else if (vs.rr > 0 && vs.rr < norm.rr[0]) { abn.rr = true; flags.push(`bradypnea (RR ${vs.rr})`); }
+
+        if (vs.sbp > 0 && vs.sbp < sbp5) { abn.bp = true; flags.push(`hypotension (BP ${vs.sbp}/${vs.dbp || '?'})`); }
+        else if (vs.sbp > norm.sbp[1] + 10) { abn.bp = true; flags.push(`elevated BP (${vs.sbp}/${vs.dbp || '?'})`); }
+
+        if (vs.temp >= 37.8) { abn.temp = true; flags.push(`febrile (T ${vs.temp}C)`); }
+        else if (vs.temp > 0 && vs.temp < (isNb ? 36.5 : 36.0)) { abn.temp = true; flags.push(`hypothermia (T ${vs.temp}C)`); }
+
+        if (vs.spo2 > 0 && vs.spo2 < 95) { abn.spo2 = true; flags.push(`desaturation (SpO2 ${vs.spo2}%)`); }
+
+        const bolusMl = Math.min(1000, Math.round((wt || 10) * 20));
+        const paraLow = Math.min(1000, Math.round((wt || 10) * 10));
+        const paraHigh = Math.min(1000, Math.round((wt || 10) * 15));
+
+        const plan = [];
+        const rf = (flagsArr || []).join(' ').toLowerCase();
+
+        if (area === 'DRI') {
+          if ((vs.spo2 > 0 && vs.spo2 < 95) || rf.includes('grunting') || rf.includes('retraction')) plan.push('Provide O2 support / prepare NRP resuscitation if worsening');
+          if (abn.temp && vs.temp < 36.5) plan.push('Thermoregulation (radiant warmer / skin-to-skin); check STAT HGT');
+          if (abn.temp && vs.temp >= 37.8) plan.push('Septic workup (CBC, Blood CS) & evaluate for empiric antibiotics');
+          if (rf.includes('jaundice')) plan.push('Check TB/DB/IB (light-protected) & prepare phototherapy if indicated');
+          if (rf.includes('latch') || rf.includes('suck') || rf.includes('hgt')) plan.push('Check STAT HGT; assist breastfeeding latch / D10W if hypoglycemic');
+          if (!plan.length) plan.push('Continue routine DRI newborn care, thermoregulation & breastfeeding support');
+          else plan.push('Close newborn VS/WOB monitoring & refer to RIC');
+        } else {
+          const needAir = (vs.spo2 > 0 && vs.spo2 < 90) || (vs.rr > 0 && vs.rr < norm.rr[0]) || rf.includes('altered') || rf.includes('cyanosis');
+          const needO2 = (vs.spo2 > 0 && vs.spo2 < 95) || vs.rr > norm.rr[1] || rf.includes('retraction') || rf.includes('stridor') || rf.includes('tachypnea');
+          const needShock = (vs.sbp > 0 && vs.sbp < sbp5) || rf.includes('perfusion') || rf.includes('crt');
+
+          if (needAir) plan.push('Intubate / BVM ventilation w/ 100% O2 if worsening');
+          if (needO2) plan.push('Start/titrate O2 support (target SpO2 >=95%); suction secretions, elevate HOB');
+          if (needShock) plan.push(`Secure IV access; give PNSS 20 mL/kg (${bolusMl} mL) bolus IV & reassess perfusion`);
+          else if (abn.hr && vs.hr > norm.hr[1] && !abn.temp) plan.push('Assess hydration/perfusion; consider ECG if persistent tachycardia');
+          if (abn.temp && vs.temp >= 37.8) plan.push(`Give Paracetamol 10–15 mg/kg (${paraLow}–${paraHigh} mg) + tepid sponge bath`);
+          if (abn.temp && vs.temp < 36.0) plan.push('Active rewarming; check stat CBG & evaluate for sepsis');
+          if (rf.includes('seizure')) plan.push('Protect airway, check stat CBG, prepare IV benzodiazepine');
+          if (!plan.length) plan.push('Continue current meds/IVF & routine VS/I&O monitoring');
+          else plan.push(area === 'PER' ? 'Close PER reassessment; expedite workup & disposition; refer to RIC' : 'Close VS & I&O monitoring; refer to RIC');
+        }
+
+        const ettUncuffed = ageYr >= 1 ? ((ageYr / 4) + 4).toFixed(1) : norm.ett;
+        const ettCuffed = ageYr >= 1 ? ((ageYr / 4) + 3).toFixed(1) : norm.ett;
+        const ettDepth = ageYr >= 1 ? (parseFloat(ettCuffed) * 3).toFixed(1) : 'Size x 3';
+
+        return { norm, sbp5, sbp50, map50, map5, mapVal, abn, flags, anyAbn: flags.length > 0, plan, bolusMl, paraLow, paraHigh, ettUncuffed, ettCuffed, ettDepth };
+      }
+
+      /* EXACT TG RIC REFERRAL FORMAT — NO equipment sizes, NO "Handwritten SOAP note before RIC rounds", ends w/ Thank you! */
+      function buildTGReferral(pt) {
+        const latest = (pt.logs && pt.logs.length) ? pt.logs[0] : null;
+        const vs = latest || { hr: 0, rr: 0, sbp: 0, dbp: 0, temp: 0, spo2: 0 };
+        const subjArr = latest ? (latest.subj || []) : [];
+        const ev = evaluateVS(pt.agePreset || '1-3 yrs', null, pt.weight, vs, subjArr, pt.area);
+
+        const activeSubj = subjArr.filter(x => !/no acute|active \/ good cry/i.test(x));
+        const reasonParts = [];
+        if (ev.flags.length) reasonParts.push(ev.flags.join(', '));
+        if (activeSubj.length) reasonParts.push(activeSubj.join(', '));
+        const reasonStr = reasonParts.length ? reasonParts.join(' and ') : 'routine monitoring update';
+
+        const sBullets = [];
+        if (pt.area === 'PER' && pt.cc) sBullets.push(`- CC: ${pt.cc}`);
+        if (pt.area === 'DRI' && pt.feeding) sBullets.push(`- Feeding/Output: ${pt.feeding}`);
+        if (activeSubj.length) sBullets.push(...activeSubj.map(s => `- ${s}`));
+        if (!sBullets.length) sBullets.push('- No acute complaints');
+
+        const oBullets = [];
+        if (latest) {
+          oBullets.push(`- VS: HR ${vs.hr}, RR ${vs.rr}, BP ${vs.sbp}/${vs.dbp}, T ${vs.temp}C, SpO2 ${vs.spo2}%${ev.flags.length ? ' [' + ev.flags.join('; ') + ']' : ''}`);
+          if (latest.pe) oBullets.push(`- PE: ${latest.pe}`);
+        } else {
+          oBullets.push('- No VS logged yet');
+        }
+        if (pt.area === 'DRI' && pt.aog) oBullets.push(`- Birth hx: ${pt.aog}${pt.matRisk ? '; Maternal risk: ' + pt.matRisk : ''}`);
+
+        const aBullets = [`- ${pt.dx || 'Pending Dx'}`];
+        if (ev.flags.length) aBullets.push(`- Acute: ${ev.flags.join(', ')}`);
+        else aBullets.push('- Currently stable VS');
+
+        const pList = ev.plan.slice();
+        if (pt.area === 'PER' && pt.dispo) pList.push(`Target dispo: ${pt.dispo}`);
+        if (latest && latest.plan) pList.push(latest.plan);
+        const pendingLabs = (pt.labs || []).filter(l => l.status !== 'Result In').map(l => l.name);
+        if (pendingLabs.length) pList.push(`Pending labs: ${pendingLabs.join(', ')}`);
+        const pendingTodos = (pt.todos || []).filter(t => !t.done).map(t => t.text);
+        if (pendingTodos.length) pList.push(`Carry-overs: ${pendingTodos.join('; ')}`);
+
+        const pBullets = pList
+          .filter(line => !/handwritten\s+soap/i.test(line))
+          .map(line => `- ${line}`);
+
+        return [
+          `Respectfully referring pt ${pt.wardBed}-${pt.lastName} for ${reasonStr}.`,
+          '',
+          'S>',
+          sBullets.join('\n'),
+          '',
+          'O>',
+          oBullets.join('\n'),
+          '',
+          'A>',
+          aBullets.join('\n'),
+          '',
+          'P>',
+          pBullets.join('\n'),
+          '',
+          'Thank you!'
+        ].join('\n');
+      }
+
+      function computeLabPlan(labs) {
+        const active = (labs || []).filter(l => l.status === 'Pending');
+        const groups = {};
+        let sepIdx = 0;
+
+        active.forEach(l => {
+          const meta = TUBE_META[l.top] || TUBE_META.red;
+          const key = l.combineKey ? `${l.top}__${l.combineKey}` : `${l.top}__sep_${sepIdx++}`;
+          if (!groups[key]) {
+            groups[key] = { top: l.top, order: meta.order, label: meta.label, submit: l.submit, names: [], alerts: new Set(), canCombine: Boolean(l.combineKey), maxMl: 0, tco2Flag: false };
+          }
+          const g = groups[key];
+          g.names.push(l.name);
+          if (l.alert) g.alerts.add(l.alert);
+          if (l.cid === 'tco2') g.tco2Flag = true;
+          const v = parseFloat(l.volMl) || 2;
+          if (v > g.maxMl) g.maxMl = v;
+        });
+
+        const tubes = Object.values(groups).sort((a, b) => a.order - b.order).map(g => {
+          const combined = g.canCombine && g.names.length > 1;
+          let estMl = g.maxMl;
+          if (g.top === 'bloodcs') estMl = 4;
+          else if (g.tco2Flag) estMl = 4;
+          else if (combined && g.top === 'red') estMl = Math.min(4, g.maxMl + 0.5 * (g.names.length - 1));
+          const volNote = g.tco2Flag ? '4 mL (FILL TO LINE)' : (g.top === 'igra' ? '4 tubes to line' : `${estMl} mL`);
+          return { ...g, combined, estMl, volNote, alerts: Array.from(g.alerts) };
+        });
+
+        const totalMl = Math.round(tubes.reduce((s, t) => s + t.estMl, 0) * 10) / 10;
+        return { tubes, totalMl };
+      }
+
+      /* =======================================================================
+         5. RENDER FUNCTIONS
+         ======================================================================= */
+      function updateStorageBadge() {
+        const pill = document.getElementById('header-storage-pill');
+        if (!pill) return;
+        if (isPersistent) {
+          pill.className = 'storage-pill ok';
+          pill.textContent = 'Saved locally';
+        } else {
+          pill.className = 'storage-pill warn';
+          pill.textContent = 'Temp mode — use Backup';
+        }
+      }
+
+      function applyTheme(mode) {
+        const dark = mode === 'dark';
+        document.documentElement.classList.toggle('dark', dark);
+        const iconEl = document.getElementById('theme-icon');
+        if (iconEl) iconEl.innerHTML = dark ? DOODLE.sun : DOODLE.moon;
+        store.theme = mode;
+        safeSave(store);
+      }
+
+      function updatePatientBadges() {
+        const count = store.patients.length;
+        const dB = document.getElementById('dnav-pt-badge');
+        const bB = document.getElementById('bnav-pt-badge');
+        if (dB) dB.textContent = count;
+        if (bB) bB.textContent = count;
+        const cBtn = document.getElementById('btn-clear-samples');
+        if (cBtn) cBtn.style.display = store.patients.some(p => p.sample) ? 'inline-flex' : 'none';
+      }
+
+      function renderDailyPearl() {
+        const todayIdx = getTodayPearlIndex();
+        const pearl = DAILY_PEARLS[ui.pearlIdx] || DAILY_PEARLS[0];
+        const isToday = ui.pearlIdx === todayIdx;
+        document.getElementById('daily-pearl-card').innerHTML = `
+          <div class="row-between" style="gap:6px;">
+            <div class="row" style="gap:6px;">
+              ${DOODLE.bulb}
+              <strong style="font-size:13px;">Daily Must-Know Pearl</strong>
+              <span class="badge badge-warn">${esc(pearl.cat)}</span>
+              <span class="muted" style="font-size:11px;">#${ui.pearlIdx + 1}/${DAILY_PEARLS.length}${isToday ? ' (Today)' : ''}</span>
+            </div>
+            <div class="row" style="gap:4px;">
+              <button type="button" class="btn btn-xs" data-action="pearl-prev">&lsaquo;</button>
+              <button type="button" class="btn btn-xs" data-action="pearl-next">&rsaquo;</button>
+              <button type="button" class="btn btn-xs" data-action="pearl-shuffle">Shuffle</button>
+              ${!isToday ? '<button type="button" class="btn btn-xs btn-primary" data-action="pearl-today">Today</button>' : ''}
+            </div>
+          </div>
+          <p class="pearl-body"><strong>${esc(pearl.title)}:</strong> ${esc(pearl.body)}</p>
+        `;
+      }
+
+      function renderSchedule() {
+        const nowIso = new Date().toISOString().slice(0, 10);
+        const todayShift = SCHEDULE.find(d => d.date === nowIso);
+        const target = todayShift || SCHEDULE.find(d => d.date >= nowIso) || SCHEDULE[0];
+        const heroLabel = todayShift ? "Today's Shift" : 'Up Next — Rotation Kickoff';
+
+        document.getElementById('hero-banner').innerHTML = `
+          <div class="row-between">
+            <div>
+              <span class="hero-pill">${heroLabel}</span>
+              <h2 style="margin:6px 0 2px; font-size:18px; font-weight:800;">
+                ${esc(target.day)}, ${esc(target.disp)} &mdash; ${esc(target.post)} (${esc(target.type)})
+              </h2>
+              <div class="muted" style="font-size:12.5px;">
+                Time: <strong>${esc(target.time)}</strong> &bull; Co-clerk: <strong>${esc(target.co)}</strong>
+              </div>
+            </div>
+            <div style="text-align:right; font-size:11.5px; opacity:0.95;">
+              <div><strong>Portfolio &amp; VLE Close:</strong> Dec 20 (5PM)</div>
+              <div><strong>Reflection Paper Due:</strong> Dec 27</div>
+            </div>
+          </div>
+        `;
+
+        renderDailyPearl();
+
+        const doneSet = new Set(store.doneDays);
+        const pct = Math.round((doneSet.size / SCHEDULE.length) * 100);
+        document.getElementById('sched-progress-text').textContent = `${doneSet.size} / ${SCHEDULE.length} days (${pct}%)`;
+        document.getElementById('sched-progress-bar').style.width = pct + '%';
+        document.getElementById('btn-sched-view').textContent = ui.schedView === 'cards' ? 'Calendar View' : 'Cards View';
+        document.getElementById('btn-reset-sched').textContent = ui.confirmResetSched ? 'Tap again to confirm' : 'Reset Checks';
+        document.getElementById('sched-summary-badges').innerHTML = `
+          <span class="badge badge-crit">${DOODLE.moon} 9 Overnights</span>
+          <span class="badge badge-ok">${DOODLE.sun} 4 True Posts</span>
+          <span class="badge badge-warn">${DOODLE.star} 5 Solo Days (PER)</span>
+        `;
+
+        const filters = [
+          { id: 'all', label: 'All (28)' },
+          { id: 'w1', label: 'Wk 1' },
+          { id: 'w2', label: 'Wk 2' },
+          { id: 'w3', label: 'Wk 3' },
+          { id: 'w4', label: 'Wk 4' },
+          { id: 'overnight', label: 'Overnights (9)' },
+          { id: 'truepost', label: 'True Posts (4)' },
+          { id: 'solo', label: 'Solo (5)' }
+        ];
+        document.getElementById('sched-filters').innerHTML = filters.map(f =>
+          `<button type="button" class="pill ${ui.schedFilter === f.id ? 'active' : ''}" data-action="sched-filter" data-filter="${f.id}">${esc(f.label)}</button>`
+        ).join('');
+
+        const items = SCHEDULE.filter(d => {
+          if (ui.schedFilter === 'w1') return d.week === 1;
+          if (ui.schedFilter === 'w2') return d.week === 2;
+          if (ui.schedFilter === 'w3') return d.week === 3;
+          if (ui.schedFilter === 'w4') return d.week === 4;
+          if (ui.schedFilter === 'overnight') return d.overnight;
+          if (ui.schedFilter === 'truepost') return d.truePost;
+          if (ui.schedFilter === 'solo') return d.solo;
+          return true;
+        });
+
+        const weeks = [1, 2, 3, 4].map(w => items.filter(x => x.week === w)).filter(g => g.length);
+        const taskDoneSet = new Set(store.doneTasks);
+
+        if (ui.schedView === 'calendar') {
+          document.getElementById('schedule-output').innerHTML = weeks.map(g => {
+            const cells = g.map(day => {
+              const isDone = doneSet.has(day.date);
+              const borderCls = day.post === 'Ward 9' ? 'post-ward' : (day.post === 'PER' ? 'post-er' : 'post-dri');
+              const badgeCls = day.post === 'Ward 9' ? 'badge-ward' : (day.post === 'PER' ? 'badge-er' : 'badge-dri');
+              return `
+                <div class="cal-cell ${borderCls} ${isDone ? 'done' : ''}">
+                  <div class="row-between" style="gap:4px;">
+                    <strong>${esc(day.day)} ${esc(day.disp)}</strong>
+                    <input type="checkbox" class="day-check" style="width:15px;height:15px;" data-change="toggle-day-done" data-date="${day.date}" ${isDone ? 'checked' : ''} />
+                  </div>
+                  <span class="badge ${badgeCls}" style="align-self:flex-start;">${postDoodle(day.post)} ${esc(day.type)}</span>
+                  <div class="muted" style="font-size:10.5px;">${esc(day.time)}</div>
+                  ${day.tag ? `<div style="font-size:10px; font-weight:700; color:var(--warn-text);">${esc(day.tag)}</div>` : ''}
+                  <div class="row" style="gap:4px; margin-top:auto;">
+                    ${day.overnight ? DOODLE.moon : ''}
+                    ${day.truePost ? DOODLE.sun : ''}
+                    ${day.solo ? DOODLE.star : ''}
+                    <span class="muted" style="font-size:10.5px;">${esc(day.co)}</span>
+                  </div>
+                </div>
+              `;
+            }).join('');
+            return `<div><div class="week-heading">${esc(g[0].wLabel)}</div><div class="cal-grid">${cells}</div></div>`;
+          }).join('');
+          return;
+        }
+
+        document.getElementById('schedule-output').innerHTML = weeks.map(g => {
+          const cards = g.map(day => {
+            const isDone = doneSet.has(day.date);
+            const isOpen = ui.expandedDays.has(day.date);
+            const borderCls = day.post === 'Ward 9' ? 'post-ward' : (day.post === 'PER' ? 'post-er' : 'post-dri');
+            const badgeCls = day.post === 'Ward 9' ? 'badge-ward' : (day.post === 'PER' ? 'badge-er' : 'badge-dri');
+            const customs = store.customTasks[day.date] || [];
+            const allTasks = day.tasks.map((t, i) => ({ id: `${day.date}_t${i}`, text: t, custom: false }))
+              .concat(customs.map((t, i) => ({ id: `${day.date}_c${i}`, text: t, custom: true, idx: i })));
+            const tDone = allTasks.filter(t => taskDoneSet.has(t.id)).length;
+
+            return `
+              <article class="day-card ${borderCls} ${isDone ? 'done' : ''}">
+                <div class="row-between">
+                  <div class="row" style="align-items:flex-start;">
+                    <input type="checkbox" class="day-check" data-change="toggle-day-done" data-date="${day.date}" ${isDone ? 'checked' : ''} />
+                    <div>
+                      <div class="row" style="gap:5px;">
+                        <strong>${esc(day.day)}, ${esc(day.disp)}</strong>
+                        <span class="badge ${badgeCls}">${postDoodle(day.post)} ${esc(day.post)} &middot; ${esc(day.type)}</span>
+                        ${day.overnight ? `<span class="badge badge-crit">${DOODLE.moon} Overnight</span>` : ''}
+                        ${day.truePost ? `<span class="badge badge-ok">${DOODLE.sun} True Post</span>` : ''}
+                        ${day.solo ? `<span class="badge badge-warn">${DOODLE.star} Solo</span>` : ''}
+                        ${day.tag ? `<span class="badge badge-warn">${esc(day.tag)}</span>` : ''}
+                      </div>
+                      <div class="muted" style="margin-top:2px;">${esc(day.time)} &bull; Co-clerk: <strong>${esc(day.co)}</strong></div>
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-sm" data-action="toggle-day-tasks" data-date="${day.date}">
+                    Tasks (${tDone}/${allTasks.length}) ${isOpen ? '&#9652;' : '&#9662;'}
+                  </button>
+                </div>
+
+                <div class="collapsible ${isOpen ? 'open' : ''}">
+                  <div class="stack" style="gap:6px;">
+                    ${allTasks.map(t => `
+                      <label class="task-item ${taskDoneSet.has(t.id) ? 'checked' : ''}">
+                        <input type="checkbox" data-change="toggle-task-done" data-tid="${t.id}" ${taskDoneSet.has(t.id) ? 'checked' : ''} />
+                        <span style="flex:1;">${esc(t.text)}</span>
+                        ${t.custom ? `<button type="button" class="btn btn-xs" data-action="del-ctask" data-date="${day.date}" data-idx="${t.idx}">&times;</button>` : ''}
+                      </label>
+                    `).join('')}
+                    <div class="row" style="margin-top:4px;">
+                      <input type="text" class="input" id="ctask-in-${day.date}" placeholder="Add custom task for ${esc(day.disp)}..." style="flex:1; padding:6px 9px; font-size:12px;" />
+                      <button type="button" class="btn btn-primary btn-sm" data-action="add-ctask" data-date="${day.date}">+ Add</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            `;
+          }).join('');
+          return `<div><div class="week-heading">${esc(g[0].wLabel)}</div><div class="stack" style="gap:9px;">${cards}</div></div>`;
+        }).join('');
+      }
+
+      function renderPatients() {
+        updatePatientBadges();
+        const clearBtn = document.getElementById('btn-clear-samples');
+        if (clearBtn) clearBtn.textContent = ui.confirmClearSamples ? 'Tap again to clear' : 'Clear Samples';
+
+        const pFilters = [
+          { id: 'all', label: `All (${store.patients.length})` },
+          { id: 'Ward 9', label: `Ward 9 (${store.patients.filter(p => p.area === 'Ward 9').length})` },
+          { id: 'PER', label: `PER (${store.patients.filter(p => p.area === 'PER').length})` },
+          { id: 'DRI', label: `DRI (${store.patients.filter(p => p.area === 'DRI').length})` },
+          { id: 'toxic', label: 'Toxic / Unstable' }
+        ];
+        document.getElementById('pt-filters').innerHTML = pFilters.map(f =>
+          `<button type="button" class="pill ${ui.ptFilter === f.id ? 'active' : ''}" data-action="pt-filter" data-filter="${f.id}">${esc(f.label)}</button>`
+        ).join('');
+
+        const list = store.patients.filter(pt => {
+          if (ui.ptFilter === 'Ward 9') return pt.area === 'Ward 9';
+          if (ui.ptFilter === 'PER') return pt.area === 'PER';
+          if (ui.ptFilter === 'DRI') return pt.area === 'DRI';
+          if (ui.ptFilter === 'toxic') {
+            const latest = pt.logs && pt.logs[0];
+            const ev = latest ? evaluateVS(pt.agePreset, null, pt.weight, latest, latest.subj, pt.area) : { anyAbn: false };
+            return pt.status === 'Toxic' || pt.acuity === 'Resus' || ev.anyAbn;
+          }
+          return true;
+        });
+
+        const out = document.getElementById('patients-output');
+        if (!list.length) {
+          out.innerHTML = `<div class="card" style="text-align:center; padding:26px;"><strong>No patients in this filter.</strong><p class="muted" style="margin:6px 0 0;">Tap "+ Add Patient" above to monitor Ward 9, PER, or DRI patients.</p></div>`;
+          return;
+        }
+
+        const stCls = s => s === 'Pending' ? 'st-pending' : (s === 'Extracted' ? 'st-extracted' : (s === 'Sent' ? 'st-sent' : 'st-done'));
+
+        out.innerHTML = list.map(pt => {
+          const areaCls = pt.area === 'PER' ? 'area-er' : (pt.area === 'DRI' ? 'area-dri' : '');
+          const badgeCls = pt.area === 'PER' ? 'badge-er' : (pt.area === 'DRI' ? 'badge-dri' : 'badge-ward');
+          const latest = (pt.logs && pt.logs[0]) || null;
+          const ev = latest ? evaluateVS(pt.agePreset, null, pt.weight, latest, latest.subj, pt.area) : { anyAbn: false, abn: {} };
+          const workOpen = ui.openWork.has(pt.id);
+          const histOpen = ui.openHist.has(pt.id);
+          const todos = pt.todos || [];
+          const labs = pt.labs || [];
+          const pTodos = todos.filter(t => !t.done).length;
+          const pLabs = labs.filter(l => l.status !== 'Result In').length;
+          const labPlan = computeLabPlan(labs);
+          const babyWarn = (pt.area === 'DRI' || pt.agePreset === 'Premie' || pt.agePreset === 'Newborn') && labPlan.totalMl > 3;
+
+          let metaLine = '';
+          if (pt.area === 'Ward 9') {
+            metaLine = `${pt.hd ? `<strong>${esc(pt.hd)}</strong> &bull; ` : ''}${esc(pt.meds || '')}`;
+          } else if (pt.area === 'PER') {
+            metaLine = `<strong>${esc(pt.acuity || 'PER')}</strong>${pt.cc ? ` &bull; CC: ${esc(pt.cc)}` : ''}${pt.dispo ? ` &bull; Dispo: ${esc(pt.dispo)}` : ''}`;
+          } else {
+            metaLine = `${esc(pt.aog || '')}${pt.matRisk ? ` &bull; Risk: <strong>${esc(pt.matRisk)}</strong>` : ''}${pt.feeding ? ` &bull; ${esc(pt.feeding)}` : ''}`;
+          }
+
+          const driDoneSet = new Set(pt.driCare || []);
+
+          return `
+            <article class="pt-card ${areaCls} stack" style="gap:9px;">
+              <div class="row-between" style="align-items:flex-start;">
+                <div>
+                  <div class="row" style="gap:5px;">
+                    <span class="badge ${badgeCls}">${postDoodle(pt.area)} ${esc(pt.wardBed)}-${esc(pt.lastName)}</span>
+                    <span class="muted">${esc(pt.ageDisp || pt.agePreset)} &middot; ${esc(pt.weight)} kg</span>
+                    ${ev.anyAbn ? `<span class="badge badge-crit-solid">${DOODLE.alert} DERANGED VS</span>` : '<span class="badge badge-ok">VS Stable</span>'}
+                    ${pt.status === 'Toxic' ? '<span class="badge badge-crit">Toxic</span>' : ''}
+                    ${pt.sample ? '<span class="badge badge-neutral">[Sample]</span>' : ''}
+                  </div>
+                  <div style="margin-top:4px; font-weight:800; color:var(--primary-text); font-size:13px;">Dx: ${esc(pt.dx)}</div>
+                  ${metaLine ? `<div class="muted" style="margin-top:2px;">${metaLine}</div>` : ''}
+                  ${pt.area === 'PER' && pt.meds ? `<div class="muted" style="margin-top:2px;">Tx: ${esc(pt.meds)}</div>` : ''}
+                </div>
+                <div class="row" style="gap:4px;">
+                  <button type="button" class="btn btn-xs" data-action="edit-pt" data-id="${pt.id}">Edit</button>
+                  <button type="button" class="btn btn-xs btn-crit" data-action="del-pt" data-id="${pt.id}">Delete</button>
+                </div>
+              </div>
+
+              ${pt.area === 'DRI' ? `
+                <div class="dri-care-bar">
+                  <strong style="font-size:11px; color:var(--dri-text); align-self:center; margin-right:3px;">Newborn Care:</strong>
+                  ${DRI_CARE_ITEMS.map(item => `
+                    <button type="button" class="dri-care-btn ${driDoneSet.has(item) ? 'done' : ''}" data-action="toggle-dri-care" data-id="${pt.id}" data-item="${esc(item)}">
+                      ${driDoneSet.has(item) ? '&#10003;' : '+'} ${esc(item)}
+                    </button>
+                  `).join('')}
+                </div>
+              ` : ''}
+
+              ${latest ? `
+                <div class="vs-strip">
+                  <span class="vs-box ${ev.abn.hr ? 'abn' : ''}">HR ${latest.hr}</span>
+                  <span class="vs-box ${ev.abn.rr ? 'abn' : ''}">RR ${latest.rr}</span>
+                  <span class="vs-box ${ev.abn.bp ? 'abn' : ''}">BP ${latest.sbp}/${latest.dbp}</span>
+                  <span class="vs-box ${ev.abn.temp ? 'abn' : ''}">T ${latest.temp}&deg;C</span>
+                  <span class="vs-box ${ev.abn.spo2 ? 'abn' : ''}">SpO2 ${latest.spo2}%</span>
+                  <span class="muted" style="align-self:center;">(${esc(latest.ts)})</span>
+                </div>
+                <div class="muted">
+                  <strong>S:</strong> ${esc((latest.subj || []).join(', ') || 'None')}
+                  ${latest.pe ? ` &bull; <strong>PE:</strong> ${esc(latest.pe)}` : ''}
+                </div>
+              ` : '<div class="muted">No vital signs logged yet. Tap "+ Log VS / Update".</div>'}
+
+              <div class="row-between">
+                <div class="row" style="gap:6px;">
+                  <button type="button" class="btn btn-primary btn-sm" data-action="open-log" data-id="${pt.id}">${DOODLE.pulse} + Log VS / Update</button>
+                  <button type="button" class="btn btn-tg btn-sm" data-action="open-tg" data-id="${pt.id}">${DOODLE.plane} TG Referral (RIC)</button>
+                  <button type="button" class="btn btn-tg-soft btn-sm" data-action="quick-tg" data-id="${pt.id}">${DOODLE.copy} Quick Copy TG</button>
+                </div>
+                <div class="row" style="gap:6px;">
+                  <button type="button" class="btn btn-sm" data-action="toggle-work" data-id="${pt.id}">${tubeDoodle('red')} To-Dos (${pTodos}) &amp; Labs (${pLabs}) ${workOpen ? '&#9652;' : '&#9662;'}</button>
+                  <button type="button" class="btn btn-sm" data-action="toggle-hist" data-id="${pt.id}">VS History (${(pt.logs || []).length}) ${histOpen ? '&#9652;' : '&#9662;'}</button>
+                </div>
+              </div>
+
+              <div class="collapsible ${workOpen ? 'open' : ''}">
+                <div class="grid-2">
+                  <div class="sub-box stack" style="gap:7px;">
+                    <strong style="font-size:12.5px;">Carry-Over To-Dos</strong>
+                    ${todos.length ? todos.map(t => `
+                      <label class="task-item ${t.done ? 'checked' : ''}" style="background:var(--surface); border:1px solid var(--border);">
+                        <input type="checkbox" data-change="toggle-pt-todo" data-id="${pt.id}" data-tid="${t.id}" ${t.done ? 'checked' : ''} />
+                        <span style="flex:1;">${esc(t.text)}</span>
+                        <button type="button" class="btn btn-xs" data-action="del-pt-todo" data-id="${pt.id}" data-tid="${t.id}">&times;</button>
+                      </label>
+                    `).join('') : '<span class="muted">No carry-overs yet.</span>'}
+                    <div class="row">
+                      <input id="pt-todo-in-${pt.id}" class="input" type="text" placeholder="Add carry-over..." style="flex:1; padding:6px 8px; font-size:12px;" />
+                      <button type="button" class="btn btn-primary btn-sm" data-action="add-pt-todo" data-id="${pt.id}">+ Add</button>
+                    </div>
+                  </div>
+
+                  <div class="sub-box stack" style="gap:7px;">
+                    <div class="row-between">
+                      <strong style="font-size:12.5px;">Labs (tap status to cycle)</strong>
+                      <button type="button" class="btn btn-primary btn-xs" data-action="open-lab" data-id="${pt.id}">+ Add Lab</button>
+                    </div>
+                    ${labs.length ? labs.map(l => `
+                      <div class="lab-row">
+                        <div style="flex:1; min-width:120px;">
+                          <div class="row" style="gap:5px;">${tubeDoodle(l.top)} <strong>${esc(l.name)}</strong></div>
+                          <div class="row" style="gap:5px; margin-top:2px;">
+                            <span class="submit-tag">${esc(l.submit)}</span>
+                            <span class="muted" style="font-size:10.5px;">${esc(l.volLabel)}</span>
+                          </div>
+                        </div>
+                        <div class="row" style="gap:4px;">
+                          <button type="button" class="status-pill ${stCls(l.status)}" data-action="cycle-lab" data-id="${pt.id}" data-lid="${l.id}">${esc(l.status)}</button>
+                          <button type="button" class="btn btn-xs" data-action="del-lab" data-id="${pt.id}" data-lid="${l.id}">&times;</button>
+                        </div>
+                      </div>
+                    `).join('') : '<span class="muted">No labs ordered yet.</span>'}
+
+                    ${labPlan.tubes.length ? `
+                      <div class="combine-box stack" style="gap:6px;">
+                        <div class="row-between">
+                          <strong style="font-size:12px; color:var(--primary-text);">Auto-Combine (Order of Draw)</strong>
+                          <span class="badge ${babyWarn ? 'badge-crit-solid' : 'badge-ok'}">Est. Total: ${labPlan.totalMl} mL</span>
+                        </div>
+                        ${babyWarn ? '<div class="lab-alert">Premie/Newborn alert: &gt;3 mL planned — minimize extraction volume!</div>' : ''}
+                        ${labPlan.tubes.map(t => `
+                          <div class="combine-row">
+                            <div style="flex:1; min-width:130px;">
+                              <div class="row" style="gap:5px;">
+                                ${tubeDoodle(t.top)} <strong>${esc(t.label)}</strong>
+                                <span class="submit-tag">${esc(t.submit)}</span>
+                              </div>
+                              <div style="font-weight:700; margin-top:2px;">${esc(t.names.join(' + '))}</div>
+                              ${t.alerts.length ? `<div class="lab-alert">${esc(t.alerts.join(' • '))}</div>` : ''}
+                            </div>
+                            <div style="text-align:right;">
+                              <span class="badge ${t.combined ? 'badge-ok' : (t.canCombine ? 'badge-neutral' : 'badge-warn')}">
+                                ${t.combined ? 'COMBINE (1 tube)' : (t.canCombine ? '1 tube' : 'SEPARATE TUBE')}
+                              </span>
+                              <div style="font-weight:800; font-size:11.5px; margin-top:2px;">${esc(t.volNote)}</div>
+                            </div>
+                          </div>
+                        `).join('')}
+                      </div>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
+
+              <div class="collapsible ${histOpen ? 'open' : ''}">
+                <strong style="font-size:12px; display:block; margin-bottom:6px;">VS History (${(pt.logs || []).length})</strong>
+                ${(pt.logs && pt.logs.length) ? `
+                  <div class="table-wrap">
+                    <table>
+                      <thead><tr><th>Time</th><th>HR</th><th>RR</th><th>BP</th><th>Temp</th><th>SpO2</th><th>Subjective / PE</th></tr></thead>
+                      <tbody>
+                        ${pt.logs.map(lg => `
+                          <tr>
+                            <td style="white-space:nowrap;">${esc(lg.ts)}</td>
+                            <td>${lg.hr}</td><td>${lg.rr}</td><td>${lg.sbp}/${lg.dbp}</td>
+                            <td>${lg.temp}&deg;C</td><td>${lg.spo2}%</td>
+                            <td>${esc((lg.subj || []).join(', '))}${lg.pe ? ' — ' + esc(lg.pe) : ''}</td>
+                          </tr>
+                        `).join('')}
+                      </tbody>
+                    </table>
+                  </div>
+                ` : '<span class="muted">No history entries yet.</span>'}
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      function renderVSCalcResults() {
+        const ageYr = parseFloat(document.getElementById('vc-age').value) || 0;
+        const wt = parseFloat(document.getElementById('vc-wt').value) || 10;
+        const vs = {
+          hr: parseFloat(document.getElementById('vc-hr').value) || 0,
+          rr: parseFloat(document.getElementById('vc-rr').value) || 0,
+          sbp: parseFloat(document.getElementById('vc-sbp').value) || 0,
+          dbp: parseFloat(document.getElementById('vc-dbp').value) || 0,
+          temp: parseFloat(document.getElementById('vc-temp').value) || 0,
+          spo2: parseFloat(document.getElementById('vc-spo2').value) || 0
+        };
+        const ev = evaluateVS(ui.vcPreset, ageYr, wt, vs, Array.from(ui.vcFlags), 'Ward 9');
+        const n = ev.norm;
+
+        document.getElementById('vscalc-results').innerHTML = `
+          <div class="grid-2">
+            <div class="card stack" style="gap:9px;">
+              <div class="row-between">
+                <h3 class="sub-title">Normal VS &amp; Thresholds (${esc(n.label)})</h3>
+                ${ev.anyAbn ? `<span class="badge badge-crit-solid">${DOODLE.alert} DERANGED</span>` : '<span class="badge badge-ok">Within Normal</span>'}
+              </div>
+              <div class="vs-strip">
+                <span class="vs-box ${ev.abn.hr ? 'abn' : ''}">HR: ${vs.hr} (N: ${n.hr[0]}–${n.hr[1]})</span>
+                <span class="vs-box ${ev.abn.rr ? 'abn' : ''}">RR: ${vs.rr} (N: ${n.rr[0]}–${n.rr[1]})</span>
+                <span class="vs-box ${ev.abn.bp ? 'abn' : ''}">BP: ${vs.sbp}/${vs.dbp} (5th% SBP: ${ev.sbp5})</span>
+                <span class="vs-box ${ev.abn.temp ? 'abn' : ''}">T: ${vs.temp}&deg;C</span>
+                <span class="vs-box ${ev.abn.spo2 ? 'abn' : ''}">SpO2: ${vs.spo2}%</span>
+              </div>
+              <div class="sub-box" style="font-size:12px;">
+                <strong>BP / MAP:</strong> 50th% SBP = <strong>${ev.sbp50}</strong> | 5th% SBP = <strong>${ev.sbp5}</strong> |
+                MAP 50th% = <strong>${ev.map50}</strong> (5th%: <strong>${ev.map5}</strong>)${ev.mapVal ? ` | Current MAP: <strong>${ev.mapVal}</strong>` : ''}
+              </div>
+              <div class="sub-box" style="font-size:12px;">
+                <strong>Weight-Based Doses (${wt} kg):</strong>
+                PNSS Bolus (20 mL/kg): <strong>${ev.bolusMl} mL</strong> &bull;
+                Paracetamol (10–15 mg/kg): <strong>${ev.paraLow}–${ev.paraHigh} mg</strong>
+              </div>
+            </div>
+
+            <div class="card stack" style="gap:9px;">
+              <div class="row-between">
+                <h3 class="sub-title">Concise Action Plan</h3>
+                <button type="button" class="btn btn-tg btn-sm" data-action="vscalc-copy-tg">${DOODLE.plane} Copy TG Referral</button>
+              </div>
+              <ul style="margin:0 0 0 18px; padding:0; font-size:12.5px; display:flex; flex-direction:column; gap:5px;">
+                ${ev.plan.map(p => `<li>${esc(p)}</li>`).join('')}
+              </ul>
+              <div class="muted" style="font-size:11px;">TG referral copy excludes equipment sizes automatically and ends with "Thank you!".</div>
+            </div>
+          </div>
+
+          <div class="card stack" style="gap:8px;">
+            <h3 class="sub-title">On-Screen Pediatric Equipment Sizes (${esc(n.label)} / ${ageYr} yr)</h3>
+            <div class="grid-3" style="font-size:12px;">
+              <div class="sub-box"><strong>ETT Uncuffed:</strong> ${esc(ev.ettUncuffed)}<br><strong>ETT Cuffed:</strong> ${esc(ev.ettCuffed)}<br><strong>Depth (lip):</strong> ${esc(ev.ettDepth)} cm</div>
+              <div class="sub-box"><strong>BVM:</strong> ${esc(n.bvm)} &middot; <strong>Glidescope:</strong> ${esc(n.glide)}<br><strong>Blade:</strong> ${esc(n.blade)} &middot; <strong>LMA:</strong> ${esc(n.lma)}<br><strong>Nasal / Oral:</strong> ${esc(n.nasal)} / ${esc(n.oral)}</div>
+              <div class="sub-box"><strong>IV Cath:</strong> ${esc(n.iv)} &middot; <strong>CVL:</strong> ${esc(n.cvl)}<br><strong>NGT/OGT:</strong> ${esc(n.ngt)} &middot; <strong>Foley:</strong> ${esc(n.foley)}<br><strong>Chest Tube:</strong> ${esc(n.ct)}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderReqs() {
+        const doneReqs = new Set(store.doneReqs);
+        const totalReqs = REQ_GROUPS.reduce((s, g) => s + g.items.length, 0);
+        const pct = Math.round((doneReqs.size / totalReqs) * 100);
+        document.getElementById('reqs-progress-badge').textContent = `${doneReqs.size}/${totalReqs} (${pct}%)`;
+
+        document.getElementById('reqs-checklists').innerHTML = REQ_GROUPS.map(g => `
+          <div class="card stack" style="gap:7px;">
+            <h3 class="sub-title">${esc(g.title)}</h3>
+            ${g.items.map(it => `
+              <label class="task-item ${doneReqs.has(it.id) ? 'checked' : ''}">
+                <input type="checkbox" data-change="toggle-req" data-rid="${it.id}" ${doneReqs.has(it.id) ? 'checked' : ''} />
+                <span>${esc(it.text)}</span>
+              </label>
+            `).join('')}
+          </div>
+        `).join('');
+
+        const doneOrals = new Set(store.doneOrals);
+        document.getElementById('oral-count-badge').textContent = `${doneOrals.size} / ${ORAL_TOPICS.length} Reviewed`;
+        document.getElementById('oral-topics-wrap').innerHTML = ORAL_TOPICS.map(topic => `
+          <button type="button" class="chip ${doneOrals.has(topic) ? 'active' : ''}" data-action="toggle-oral" data-topic="${esc(topic)}">
+            ${doneOrals.has(topic) ? '&#10003; ' : ''}${esc(topic)}
+          </button>
+        `).join('');
+      }
+
+      function renderRef() {
+        const q = (ui.refQuery || '').trim().toLowerCase();
+        const match = str => !q || String(str).toLowerCase().includes(q);
+
+        const vsRows = Object.values(VS_NORMS).filter(n => match(`${n.label} ${n.hr.join('-')} ${n.rr.join('-')} ${n.sbp.join('-')}`));
+        const eqRows = Object.values(VS_NORMS).filter(n => match(`${n.label} ${n.wt} ${n.bvm} ${n.nasal} ${n.oral} ${n.blade} ${n.ett} ${n.lma} ${n.glide} ${n.iv} ${n.cvl} ${n.ngt} ${n.foley} ${n.ct}`));
+        const labRows = LAB_CATALOG.filter(lb => {
+          const m = TUBE_META[lb.top] || TUBE_META.red;
+          return match(`${m.label} ${lb.name} ${lb.submit} ${lb.volLabel} ${lb.note} ${lb.alert || ''}`);
+        });
+
+        document.getElementById('ref-tables-wrap').innerHTML = `
+          <div class="card stack" style="gap:8px;">
+            <h3 class="sub-title">1. UP-PGH Normal Vital Signs by Age</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Age</th><th>HR (bpm)</th><th>BP (mmHg)</th><th>RR (cpm)</th></tr></thead>
+                <tbody>
+                  ${vsRows.map(n => `<tr><td><strong>${esc(n.label)}</strong></td><td>${n.hr[0]}–${n.hr[1]}</td><td>${n.sbp[0]}–${n.sbp[1]} / ${n.dbp[0]}–${n.dbp[1]}</td><td>${n.rr[0]}–${n.rr[1]}</td></tr>`).join('') || '<tr><td colspan="4" class="muted">No matching rows.</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card stack" style="gap:8px;">
+            <h3 class="sub-title">2. Estimated BP / MAP &amp; ETT Formulas</h3>
+            <div class="sub-box" style="font-size:12px;">
+              <strong>SBP 50th%:</strong> 90 + (age &times; 2) &nbsp;|&nbsp;
+              <strong>SBP 5th%:</strong> 60 (neonate), 70 (1mo–1yr), 70 + (age &times; 2) (2–10yr), &lt;90 (&gt;10yr)<br>
+              <strong>MAP:</strong> 50th% = 55 + (age &times; 1.5); 5th% = 40 + (age &times; 1.5) &nbsp;|&nbsp;
+              <strong>ETT:</strong> Uncuffed = age/4 + 4; Cuffed = age/4 + 3; Lip Depth = ETT size &times; 3
+            </div>
+          </div>
+
+          <div class="card stack" style="gap:8px;">
+            <h3 class="sub-title">3. Pediatric Equipment Sizes by Age</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Age</th><th>Wt</th><th>BVM</th><th>Nasal / Oral</th><th>Blade</th><th>ETT</th><th>LMA</th><th>Glide</th><th>IV / CVL</th><th>NGT</th><th>CT / Foley</th></tr></thead>
+                <tbody>
+                  ${eqRows.map(n => `<tr><td><strong>${esc(n.label)}</strong></td><td>${n.wt} kg</td><td>${esc(n.bvm)}</td><td>${esc(n.nasal)} / ${esc(n.oral)}</td><td>${esc(n.blade)}</td><td>${esc(n.ett)}</td><td>${esc(n.lma)}</td><td>${esc(n.glide)}</td><td>${esc(n.iv)} / ${esc(n.cvl)}</td><td>${esc(n.ngt)}</td><td>${esc(n.ct)} / ${esc(n.foley)}</td></tr>`).join('') || '<tr><td colspan="11" class="muted">No matching rows.</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card stack" style="gap:9px;">
+            <h3 class="sub-title">4. UP-PGH Blood Extraction Order of Draw &amp; Lab Submission Guide</h3>
+            <div class="order-strip">
+              <span style="color:var(--primary-text);">ORDER OF DRAW:</span>
+              <span class="order-step">1. ${tubeDoodle('bloodcs')} Blood CS</span> &rarr;
+              <span class="order-step">2. ${tubeDoodle('blue')} Blue (Invert 5&times;)</span> &rarr;
+              <span class="order-step">3. ${tubeDoodle('red')} Red</span> &rarr;
+              <span class="order-step">4. ${tubeDoodle('green')} Green (NO Tourniquet!)</span> &rarr;
+              <span class="order-step">5. ${tubeDoodle('purple')} Purple (Invert 8&times;)</span> &rarr;
+              <span class="order-step">6. ${tubeDoodle('igra')} IGRA (Gray&rarr;Green&rarr;Yellow&rarr;Purple)</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Tube</th><th>Test</th><th>Submit To</th><th>Volume</th><th>Combinable &amp; Special Alerts</th></tr></thead>
+                <tbody>
+                  ${labRows.map(lb => {
+                    const meta = TUBE_META[lb.top] || TUBE_META.red;
+                    return `
+                      <tr>
+                        <td style="white-space:nowrap;">${tubeDoodle(lb.top)} <strong>${esc(meta.label)}</strong></td>
+                        <td><strong>${esc(lb.name)}</strong></td>
+                        <td><span class="submit-tag">${esc(lb.submit)}</span></td>
+                        <td style="white-space:nowrap;">${esc(lb.volLabel)}</td>
+                        <td>${lb.combineKey ? '<span class="badge badge-ok">Combinable</span>' : '<span class="badge badge-warn">Separate</span>'} ${esc(lb.note)}</td>
+                      </tr>
+                    `;
+                  }).join('') || '<tr><td colspan="5" class="muted">No matching lab tests.</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      /* =======================================================================
+         6. MODALS, BACKUP/RESTORE & .ICS EXPORT
+         ======================================================================= */
+      function openModal(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('open');
+      }
+      function closeModal(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('open');
+      }
+
+      function syncModalAreaFields(area) {
+        const wEl = document.getElementById('fields-ward');
+        const eEl = document.getElementById('fields-er');
+        const dEl = document.getElementById('fields-dri');
+        if (wEl) wEl.classList.toggle('active', area === 'Ward 9');
+        if (eEl) eEl.classList.toggle('active', area === 'PER');
+        if (dEl) dEl.classList.toggle('active', area === 'DRI');
+      }
+
+      function openPatientModal(ptId, prefill) {
+        const pt = ptId ? store.patients.find(p => p.id === ptId) : null;
+        const area = pt ? pt.area : ((prefill && prefill.area) || 'Ward 9');
+        const latest = pt && pt.logs && pt.logs[0] ? pt.logs[0] : (prefill || {});
+
+        document.getElementById('modal-pt-title').textContent = pt ? `Edit ${pt.wardBed}-${pt.lastName}` : 'Add Patient';
+        document.getElementById('pt-edit-id').value = pt ? pt.id : '';
+        document.getElementById('pt-area').value = area;
+        document.getElementById('pt-age-preset').value = pt ? (pt.agePreset || '3-6 yrs') : ((prefill && prefill.agePreset) || (area === 'DRI' ? 'Newborn' : '3-6 yrs'));
+        document.getElementById('pt-wardbed').value = pt ? pt.wardBed : ((prefill && prefill.wardBed) || (area === 'DRI' ? 'W15-' : (area === 'PER' ? 'PER-' : 'W9-')));
+        document.getElementById('pt-last').value = pt ? pt.lastName : ((prefill && prefill.lastName) || '');
+        document.getElementById('pt-age-disp').value = pt ? (pt.ageDisp || '') : ((prefill && prefill.ageDisp) || (area === 'DRI' ? '12 hrs' : '3 yo'));
+        document.getElementById('pt-wt').value = pt ? pt.weight : ((prefill && prefill.weight) || (area === 'DRI' ? 3.0 : 14));
+        document.getElementById('pt-dx').value = pt ? pt.dx : '';
+
+        document.getElementById('pt-hd').value = pt ? (pt.hd || 'HD 1') : 'HD 1';
+        document.getElementById('pt-status').value = pt ? (pt.status || 'Non-Toxic') : 'Non-Toxic';
+        document.getElementById('pt-meds-ward').value = pt && pt.area === 'Ward 9' ? (pt.meds || '') : '';
+        document.getElementById('pt-carry-ward').value = '';
+
+        document.getElementById('pt-acuity').value = pt ? (pt.acuity || 'Urgent') : 'Urgent';
+        document.getElementById('pt-dispo').value = pt ? (pt.dispo || '') : '';
+        document.getElementById('pt-cc').value = pt ? (pt.cc || '') : '';
+        document.getElementById('pt-er-tx').value = pt && pt.area === 'PER' ? (pt.meds || '') : '';
+
+        document.getElementById('pt-aog').value = pt ? (pt.aog || '') : '';
+        document.getElementById('pt-matrisk').value = pt ? (pt.matRisk || '') : '';
+        document.getElementById('pt-feeding').value = pt ? (pt.feeding || '') : '';
+        const driSet = new Set(pt && Array.isArray(pt.driCare) ? pt.driCare : []);
+        document.querySelectorAll('#modal-dri-checks input[type="checkbox"]').forEach(cb => { cb.checked = driSet.has(cb.value); });
+
+        document.getElementById('pt-hr').value = latest.hr || '';
+        document.getElementById('pt-rr').value = latest.rr || '';
+        document.getElementById('pt-bp').value = (latest.sbp && latest.dbp) ? `${latest.sbp}/${latest.dbp}` : '';
+        document.getElementById('pt-temp').value = latest.temp || '';
+        document.getElementById('pt-spo2').value = latest.spo2 || '';
+        document.getElementById('pt-subj').value = Array.isArray(latest.subj) ? latest.subj.join(', ') : '';
+        document.getElementById('pt-pe').value = latest.pe || '';
+
+        syncModalAreaFields(area);
+        openModal('modal-pt');
+      }
+
+      function openLogModal(ptId) {
+        const pt = store.patients.find(p => p.id === ptId);
+        if (!pt) return;
+        const last = (pt.logs && pt.logs[0]) || {};
+        document.getElementById('modal-log-title').textContent = `Log VS — ${pt.wardBed}-${pt.lastName}`;
+        document.getElementById('log-pt-id').value = pt.id;
+        document.getElementById('log-hr').value = last.hr || '';
+        document.getElementById('log-rr').value = last.rr || '';
+        document.getElementById('log-bp').value = (last.sbp && last.dbp) ? `${last.sbp}/${last.dbp}` : '';
+        document.getElementById('log-temp').value = last.temp || '';
+        document.getElementById('log-spo2').value = last.spo2 || '';
+        document.getElementById('log-subj-text').value = '';
+        document.getElementById('log-pe').value = '';
+        document.getElementById('log-plan').value = '';
+
+        const chips = pt.area === 'DRI' ? DRI_CHIPS : WARD_ER_CHIPS;
+        document.getElementById('log-chips-label').textContent = pt.area === 'DRI'
+          ? 'Quick DRI Newborn Observations (tap to toggle)'
+          : 'Quick Subjective Complaints (tap to toggle)';
+        document.getElementById('log-subj-chips').innerHTML = chips.map(ch =>
+          `<button type="button" class="chip" data-action="toggle-log-chip" data-val="${esc(ch)}">${esc(ch)}</button>`
+        ).join('');
+        openModal('modal-log');
+      }
+
+      function openLabModal(ptId) {
+        document.getElementById('lab-pt-id').value = ptId;
+        document.getElementById('custom-lab-name').value = '';
+        const order = ['bloodcs', 'blue', 'red', 'green', 'purple', 'igra'];
+        document.getElementById('lab-quick-groups').innerHTML = order.map(k => {
+          const meta = TUBE_META[k];
+          const items = LAB_CATALOG.filter(l => l.top === k);
+          return `
+            <div class="sub-box stack" style="gap:6px;">
+              <div class="row" style="gap:6px;">${tubeDoodle(k)}<strong style="font-size:12px;">${esc(meta.label)}</strong></div>
+              <div class="muted" style="font-size:10.5px;">${esc(meta.banner)}</div>
+              <div class="chip-group">
+                ${items.map(lb => `<button type="button" class="chip" data-action="qadd-lab" data-cid="${lb.id}">+ ${esc(lb.name)}</button>`).join('')}
+              </div>
+            </div>
+          `;
+        }).join('');
+        openModal('modal-lab');
+      }
+
+      function renderBackupModal() {
+        const box = document.getElementById('backup-status-box');
+        if (!box) return;
+        box.className = isPersistent ? 'backup-status ok' : 'backup-status warn';
+        box.innerHTML = `
+          <div><strong>${isPersistent ? 'Saved locally (Auto-Save Active)' : 'Temp mode — use Backup! (file:// or private browser detected)'}</strong></div>
+          <div style="margin-top:4px;">Patients: <strong>${store.patients.length}</strong> &bull; Completed Shifts: <strong>${store.doneDays.length}/28</strong> &bull; Reqs: <strong>${store.doneReqs.length}</strong><br>Last Backup: <strong>${esc(store.lastBackup || 'None yet')}</strong></div>
+        `;
+      }
+
+      function restoreFromJsonText(rawText) {
+        try {
+          const parsed = JSON.parse(String(rawText || '').trim());
+          const candidate = (parsed && parsed.data && typeof parsed.data === 'object') ? parsed.data : parsed;
+          if (!candidate || (!Array.isArray(candidate.patients) && !Array.isArray(candidate.doneDays))) {
+            toast('Invalid backup format.');
+            return;
+          }
+          const clean = normalizeState(candidate);
+          store.theme = clean.theme;
+          store.doneDays = clean.doneDays;
+          store.doneTasks = clean.doneTasks;
+          store.customTasks = clean.customTasks;
+          store.doneReqs = clean.doneReqs;
+          store.doneOrals = clean.doneOrals;
+          store.patients = clean.patients;
+          store.lastBackup = clean.lastBackup;
+          safeSave(store);
+
+          applyTheme(store.theme);
+          renderSchedule();
+          renderPatients();
+          renderVSCalcResults();
+          renderReqs();
+          renderRef();
+          closeModal('modal-backup');
+          toast('Backup restored successfully!');
+        } catch (err) {
+          toast('Could not read backup JSON. Check the file/text.');
+        }
+      }
+
+      function exportICS() {
+        const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Clk Balay Pedia 251//EN'];
+        const pad = n => String(n).padStart(2, '0');
+        const nextDay = iso => {
+          const d = new Date(iso + 'T12:00:00');
+          d.setDate(d.getDate() + 1);
+          return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
+        };
+        const addEvt = (uid, start, end, summary, desc) => {
+          lines.push('BEGIN:VEVENT', `UID:${uid}@pedia251balay`, `DTSTART:${start}`, `DTEND:${end}`, `SUMMARY:${summary}`, `DESCRIPTION:${desc}`, 'END:VEVENT');
+        };
+        SCHEDULE.forEach(d => {
+          const ymd = d.date.replace(/-/g, '');
+          const nxt = nextDay(d.date);
+          if (d.post === 'Ward 9' && d.type === 'Duty') {
+            addEvt(ymd + 'a', ymd + 'T070000', ymd + 'T120000', 'Ward 9 Duty (AM SIC)', 'Co-clerk: ' + d.co);
+            addEvt(ymd + 'b', ymd + 'T170000', nxt + 'T050000', 'Ward 9 Overnight Duty', 'Co-clerk: ' + d.co);
+          } else if (d.post === 'Ward 9' && d.type === 'Pre-Duty') {
+            addEvt(ymd, ymd + 'T070000', ymd + 'T170000', 'Ward 9 Pre-Duty', 'Co-clerk: ' + d.co);
+          } else if (d.post === 'Ward 9' && d.type === 'Post') {
+            addEvt(ymd, ymd + 'T070000', ymd + 'T120000', 'Ward 9 Post-Duty', 'Co-clerk: ' + d.co);
+          } else if (d.truePost) {
+            addEvt(ymd, ymd + 'T080000', ymd + 'T090000', `${d.post} True Post (OFF)`, 'Full day off');
+          } else if (d.post === 'PER' && d.type === 'AM') {
+            addEvt(ymd, ymd + 'T070000', ymd + 'T190000', `PER AM Duty (${d.co})`, d.time);
+          } else if (d.post === 'PER' && d.type === 'PM') {
+            addEvt(ymd, ymd + 'T190000', nxt + 'T070000', `PER PM Overnight (${d.co})`, d.time);
+          } else if (d.post === 'DR/DRI' && d.type === 'AM') {
+            addEvt(ymd, ymd + 'T070000', ymd + 'T190000', 'DR Catcher AM (w/ Alarin)', d.time);
+          } else if (d.post === 'DR/DRI' && d.type === 'PM') {
+            addEvt(ymd + 'a', ymd + 'T070000', ymd + 'T120000', 'DRI AM (Wards 15-16, w/ Alarin)', 'Morning DRI');
+            addEvt(ymd + 'b', ymd + 'T190000', nxt + 'T070000', 'DR Catcher Overnight (w/ Alarin)', 'Evening DR Catcher');
+          }
+        });
+        lines.push('END:VCALENDAR');
+        try {
+          const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'Clk_Balay_Pedia251_Schedule.ics';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          toast('Exported .ics calendar!');
+        } catch (err) {
+          toast('Export blocked in this preview.');
+        }
+      }
+
+      /* =======================================================================
+         7. SINGLE DOMContentLoaded WITH CLEAN EVENT DELEGATION
+         ======================================================================= */
+      document.addEventListener('DOMContentLoaded', function () {
+        updateStorageBadge();
+        applyTheme(store.theme);
+        renderSchedule();
+        renderPatients();
+        renderVSCalcResults();
+        renderReqs();
+        renderRef();
+
+        // CLICK DELEGATION
+        document.addEventListener('click', function (e) {
+          if (e.target && e.target.classList && e.target.classList.contains('modal-backdrop')) {
+            e.target.classList.remove('open');
+            return;
+          }
+          const el = e.target.closest('[data-action]');
+          if (!el) return;
+          const act = el.getAttribute('data-action');
+
+          if (act === 'switch-tab') {
+            const tab = el.getAttribute('data-tab');
+            ui.tab = tab;
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + tab));
+            document.querySelectorAll('[data-action="switch-tab"]').forEach(b => b.classList.toggle('active', b.getAttribute('data-tab') === tab));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else if (act === 'toggle-theme') {
+            applyTheme(store.theme === 'dark' ? 'light' : 'dark');
+          } else if (act === 'print-page') {
+            window.print();
+          } else if (act === 'export-ics') {
+            exportICS();
+          } else if (act === 'open-backup') {
+            renderBackupModal();
+            openModal('modal-backup');
+          } else if (act === 'download-backup') {
+            const stamp = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            store.lastBackup = stamp;
+            safeSave(store);
+            renderBackupModal();
+            const payload = { app: 'pedia251_balay', version: 7, exportedAt: stamp, data: store };
+            const fname = `clk_balay_pedia251_backup_${new Date().toISOString().slice(0, 10)}.json`;
+            try {
+              const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = fname;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+              toast(`Downloaded ${fname}`);
+            } catch (err) {
+              toast('Use "Generate & Copy Backup Text" instead.');
+            }
+          } else if (act === 'trigger-restore-file') {
+            const fi = document.getElementById('backup-file-input');
+            if (fi) { fi.value = ''; fi.click(); }
+          } else if (act === 'copy-backup-text') {
+            const stamp = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            store.lastBackup = stamp;
+            safeSave(store);
+            renderBackupModal();
+            const txt = JSON.stringify({ app: 'pedia251_balay', version: 7, exportedAt: stamp, data: store });
+            const ta = document.getElementById('backup-text-area');
+            if (ta) ta.value = txt;
+            copyText(txt);
+          } else if (act === 'restore-backup-text') {
+            const ta = document.getElementById('backup-text-area');
+            if (!ta || !ta.value.trim()) { toast('Paste backup text first.'); return; }
+            restoreFromJsonText(ta.value);
+          } else if (act === 'pearl-prev') {
+            ui.pearlIdx = (ui.pearlIdx - 1 + DAILY_PEARLS.length) % DAILY_PEARLS.length;
+            renderDailyPearl();
+          } else if (act === 'pearl-next') {
+            ui.pearlIdx = (ui.pearlIdx + 1) % DAILY_PEARLS.length;
+            renderDailyPearl();
+          } else if (act === 'pearl-shuffle') {
+            let next = Math.floor(Math.random() * DAILY_PEARLS.length);
+            if (next === ui.pearlIdx) next = (next + 1) % DAILY_PEARLS.length;
+            ui.pearlIdx = next;
+            renderDailyPearl();
+          } else if (act === 'pearl-today') {
+            ui.pearlIdx = getTodayPearlIndex();
+            renderDailyPearl();
+          } else if (act === 'toggle-sched-view') {
+            ui.schedView = ui.schedView === 'cards' ? 'calendar' : 'cards';
+            renderSchedule();
+          } else if (act === 'reset-sched') {
+            if (!ui.confirmResetSched) {
+              ui.confirmResetSched = true;
+              renderSchedule();
+              setTimeout(() => { ui.confirmResetSched = false; renderSchedule(); }, 3500);
+            } else {
+              ui.confirmResetSched = false;
+              store.doneDays = [];
+              store.doneTasks = [];
+              safeSave(store);
+              renderSchedule();
+              toast('Schedule checks reset.');
+            }
+          } else if (act === 'sched-filter') {
+            ui.schedFilter = el.getAttribute('data-filter');
+            renderSchedule();
+          } else if (act === 'toggle-day-tasks') {
+            const d = el.getAttribute('data-date');
+            if (ui.expandedDays.has(d)) ui.expandedDays.delete(d); else ui.expandedDays.add(d);
+            renderSchedule();
+          } else if (act === 'add-ctask') {
+            const d = el.getAttribute('data-date');
+            const inp = document.getElementById('ctask-in-' + d);
+            const val = inp ? inp.value.trim() : '';
+            if (!val) return;
+            if (!store.customTasks[d]) store.customTasks[d] = [];
+            store.customTasks[d].push(val);
+            safeSave(store);
+            renderSchedule();
+          } else if (act === 'del-ctask') {
+            const d = el.getAttribute('data-date');
+            const idx = parseInt(el.getAttribute('data-idx'), 10);
+            if (store.customTasks[d]) {
+              store.customTasks[d].splice(idx, 1);
+              safeSave(store);
+              renderSchedule();
+            }
+          } else if (act === 'pt-filter') {
+            ui.ptFilter = el.getAttribute('data-filter');
+            renderPatients();
+          } else if (act === 'clear-samples') {
+            if (!ui.confirmClearSamples) {
+              ui.confirmClearSamples = true;
+              renderPatients();
+              setTimeout(() => { ui.confirmClearSamples = false; renderPatients(); }, 3500);
+            } else {
+              ui.confirmClearSamples = false;
+              store.patients = store.patients.filter(p => !p.sample);
+              safeSave(store);
+              renderPatients();
+              toast('Sample patients cleared.');
+            }
+          } else if (act === 'open-add-pt') {
+            openPatientModal(null, null);
+          } else if (act === 'edit-pt') {
+            openPatientModal(el.getAttribute('data-id'), null);
+          } else if (act === 'del-pt') {
+            const id = el.getAttribute('data-id');
+            store.patients = store.patients.filter(p => p.id !== id);
+            safeSave(store);
+            renderPatients();
+            toast('Patient deleted.');
+          } else if (act === 'toggle-dri-care') {
+            const pt = store.patients.find(p => p.id === el.getAttribute('data-id'));
+            const item = el.getAttribute('data-item');
+            if (!pt) return;
+            const set = new Set(pt.driCare || []);
+            if (set.has(item)) set.delete(item); else set.add(item);
+            pt.driCare = Array.from(set);
+            safeSave(store);
+            renderPatients();
+          } else if (act === 'save-pt') {
+            const editId = document.getElementById('pt-edit-id').value;
+            const area = document.getElementById('pt-area').value;
+            const wardBed = document.getElementById('pt-wardbed').value.trim() || (area === 'DRI' ? 'W15-1' : (area === 'PER' ? 'PER-1' : 'W9-1'));
+            const lastName = document.getElementById('pt-last').value.trim() || 'Patient';
+            const agePreset = document.getElementById('pt-age-preset').value;
+            const ageDisp = document.getElementById('pt-age-disp').value.trim() || agePreset;
+            const weight = parseFloat(document.getElementById('pt-wt').value) || 10;
+            const dx = document.getElementById('pt-dx').value.trim() || 'Pending Dx';
+            const driChecks = Array.from(document.querySelectorAll('#modal-dri-checks input[type="checkbox"]:checked')).map(c => c.value);
+
+            const hr = parseFloat(document.getElementById('pt-hr').value) || 0;
+            const rr = parseFloat(document.getElementById('pt-rr').value) || 0;
+            const bp = parseBP(document.getElementById('pt-bp').value);
+            const temp = parseFloat(document.getElementById('pt-temp').value) || 0;
+            const spo2 = parseFloat(document.getElementById('pt-spo2').value) || 0;
+            const subjRaw = document.getElementById('pt-subj').value.trim();
+            const peRaw = document.getElementById('pt-pe').value.trim();
+            const hasVS = hr || rr || bp.sbp || temp || spo2 || subjRaw || peRaw;
+            const now = new Date();
+            const ts = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ', ' + now.toTimeString().slice(0, 5);
+
+            const payload = {
+              area, wardBed, lastName, agePreset, ageDisp, weight, dx,
+              hd: area === 'Ward 9' ? document.getElementById('pt-hd').value.trim() : '',
+              status: area === 'Ward 9' ? document.getElementById('pt-status').value : 'Non-Toxic',
+              meds: area === 'Ward 9' ? document.getElementById('pt-meds-ward').value.trim() : (area === 'PER' ? document.getElementById('pt-er-tx').value.trim() : ''),
+              acuity: area === 'PER' ? document.getElementById('pt-acuity').value : '',
+              dispo: area === 'PER' ? document.getElementById('pt-dispo').value.trim() : '',
+              cc: area === 'PER' ? document.getElementById('pt-cc').value.trim() : '',
+              aog: area === 'DRI' ? document.getElementById('pt-aog').value.trim() : '',
+              matRisk: area === 'DRI' ? document.getElementById('pt-matrisk').value.trim() : '',
+              feeding: area === 'DRI' ? document.getElementById('pt-feeding').value.trim() : '',
+              driCare: area === 'DRI' ? driChecks : []
+            };
+
+            if (editId) {
+              const idx = store.patients.findIndex(p => p.id === editId);
+              if (idx >= 0) {
+                const existing = store.patients[idx];
+                const updatedLogs = Array.isArray(existing.logs) ? existing.logs.slice() : [];
+                if (hasVS) {
+                  updatedLogs[0] = { ts, hr, rr, sbp: bp.sbp, dbp: bp.dbp, temp, spo2, subj: subjRaw ? subjRaw.split(',').map(s => s.trim()).filter(Boolean) : [], pe: peRaw, plan: '' };
+                }
+                store.patients[idx] = { ...existing, ...payload, sample: false, logs: updatedLogs };
+              }
+            } else {
+              const initTodos = [];
+              const carry = document.getElementById('pt-carry-ward').value.trim();
+              if (area === 'Ward 9' && carry) initTodos.push({ id: 'td_' + Date.now(), text: carry, done: false });
+              const initLogs = hasVS ? [{ ts, hr, rr, sbp: bp.sbp, dbp: bp.dbp, temp, spo2, subj: subjRaw ? subjRaw.split(',').map(s => s.trim()).filter(Boolean) : [], pe: peRaw, plan: '' }] : [];
+              store.patients.unshift({ id: 'pt_' + Date.now(), sample: false, ...payload, todos: initTodos, labs: [], logs: initLogs });
+            }
+
+            if (ui.ptFilter !== 'all' && ui.ptFilter !== area) ui.ptFilter = 'all';
+            safeSave(store);
+            closeModal('modal-pt');
+            renderPatients();
+            toast(`Saved ${wardBed}-${lastName}!`);
+          } else if (act === 'open-log') {
+            openLogModal(el.getAttribute('data-id'));
+          } else if (act === 'toggle-log-chip') {
+            el.classList.toggle('active');
+          } else if (act === 'save-log') {
+            const id = document.getElementById('log-pt-id').value;
+            const pt = store.patients.find(p => p.id === id);
+            if (!pt) return;
+            const bp = parseBP(document.getElementById('log-bp').value);
+            const chips = Array.from(document.querySelectorAll('#log-subj-chips .chip.active')).map(c => c.getAttribute('data-val'));
+            const extra = document.getElementById('log-subj-text').value.trim();
+            if (extra) chips.push(extra);
+            const now = new Date();
+            const ts = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ', ' + now.toTimeString().slice(0, 5);
+            if (!pt.logs) pt.logs = [];
+            pt.logs.unshift({
+              ts,
+              hr: parseFloat(document.getElementById('log-hr').value) || 0,
+              rr: parseFloat(document.getElementById('log-rr').value) || 0,
+              sbp: bp.sbp, dbp: bp.dbp,
+              temp: parseFloat(document.getElementById('log-temp').value) || 0,
+              spo2: parseFloat(document.getElementById('log-spo2').value) || 0,
+              subj: chips,
+              pe: document.getElementById('log-pe').value.trim(),
+              plan: document.getElementById('log-plan').value.trim()
+            });
+            safeSave(store);
+            closeModal('modal-log');
+            renderPatients();
+            toast('VS & update logged!');
+          } else if (act === 'open-tg') {
+            const pt = store.patients.find(p => p.id === el.getAttribute('data-id'));
+            if (!pt) return;
+            document.getElementById('tg-textarea').value = buildTGReferral(pt);
+            openModal('modal-tg');
+          } else if (act === 'quick-tg') {
+            const pt = store.patients.find(p => p.id === el.getAttribute('data-id'));
+            if (pt) copyText(buildTGReferral(pt));
+          } else if (act === 'bulk-tg') {
+            const area = el.getAttribute('data-area');
+            const pts = store.patients.filter(p => p.area === area);
+            if (!pts.length) { toast(`No ${area} patients to copy.`); return; }
+            copyText(pts.map(buildTGReferral).join('\n\n---\n\n'));
+          } else if (act === 'copy-tg-modal') {
+            copyText(document.getElementById('tg-textarea').value);
+          } else if (act === 'toggle-work') {
+            const id = el.getAttribute('data-id');
+            if (ui.openWork.has(id)) ui.openWork.delete(id); else ui.openWork.add(id);
+            renderPatients();
+          } else if (act === 'toggle-hist') {
+            const id = el.getAttribute('data-id');
+            if (ui.openHist.has(id)) ui.openHist.delete(id); else ui.openHist.add(id);
+            renderPatients();
+          } else if (act === 'add-pt-todo') {
+            const id = el.getAttribute('data-id');
+            const pt = store.patients.find(p => p.id === id);
+            const inp = document.getElementById('pt-todo-in-' + id);
+            const val = inp ? inp.value.trim() : '';
+            if (!pt || !val) return;
+            if (!pt.todos) pt.todos = [];
+            pt.todos.push({ id: 'td_' + Date.now(), text: val, done: false });
+            safeSave(store);
+            renderPatients();
+          } else if (act === 'del-pt-todo') {
+            const pt = store.patients.find(p => p.id === el.getAttribute('data-id'));
+            const tid = el.getAttribute('data-tid');
+            if (pt && pt.todos) {
+              pt.todos = pt.todos.filter(t => t.id !== tid);
+              safeSave(store);
+              renderPatients();
+            }
+          } else if (act === 'open-lab') {
+            openLabModal(el.getAttribute('data-id'));
+          } else if (act === 'qadd-lab') {
+            const pt = store.patients.find(p => p.id === document.getElementById('lab-pt-id').value);
+            const cat = LAB_CATALOG.find(l => l.id === el.getAttribute('data-cid'));
+            if (!pt || !cat) return;
+            if (!pt.labs) pt.labs = [];
+            pt.labs.push({ id: 'lb_' + Date.now() + Math.floor(Math.random() * 99), cid: cat.id, name: cat.name, top: cat.top, submit: cat.submit, volMl: cat.volMl, volLabel: cat.volLabel, combineKey: cat.combineKey, alert: cat.alert || '', status: 'Pending' });
+            safeSave(store);
+            ui.openWork.add(pt.id);
+            renderPatients();
+            toast(`Added ${cat.name}`);
+          } else if (act === 'add-custom-lab') {
+            const pt = store.patients.find(p => p.id === document.getElementById('lab-pt-id').value);
+            const name = document.getElementById('custom-lab-name').value.trim();
+            const top = document.getElementById('custom-lab-top').value;
+            if (!pt || !name) return;
+            if (!pt.labs) pt.labs = [];
+            pt.labs.push({ id: 'lb_' + Date.now(), cid: 'custom', name, top, submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: null, alert: '', status: 'Pending' });
+            safeSave(store);
+            ui.openWork.add(pt.id);
+            closeModal('modal-lab');
+            renderPatients();
+            toast(`Added ${name}`);
+          } else if (act === 'cycle-lab') {
+            const pt = store.patients.find(p => p.id === el.getAttribute('data-id'));
+            const lid = el.getAttribute('data-lid');
+            if (!pt || !pt.labs) return;
+            const lb = pt.labs.find(x => x.id === lid);
+            if (!lb) return;
+            const seq = ['Pending', 'Extracted', 'Sent', 'Result In'];
+            lb.status = seq[(seq.indexOf(lb.status) + 1) % seq.length];
+            safeSave(store);
+            renderPatients();
+          } else if (act === 'del-lab') {
+            const pt = store.patients.find(p => p.id === el.getAttribute('data-id'));
+            const lid = el.getAttribute('data-lid');
+            if (pt && pt.labs) {
+              pt.labs = pt.labs.filter(x => x.id !== lid);
+              safeSave(store);
+              renderPatients();
+            }
+          } else if (act === 'vscalc-preset') {
+            const pKey = el.getAttribute('data-preset');
+            const n = VS_NORMS[pKey];
+            if (!n) return;
+            ui.vcPreset = pKey;
+            document.querySelectorAll('#vscalc-presets .chip').forEach(c => c.classList.toggle('active', c.getAttribute('data-preset') === pKey));
+            document.getElementById('vc-age').value = n.ageYr;
+            document.getElementById('vc-wt').value = n.wt;
+            renderVSCalcResults();
+          } else if (act === 'vscalc-flag') {
+            const fl = el.getAttribute('data-flag');
+            if (ui.vcFlags.has(fl)) { ui.vcFlags.delete(fl); el.classList.remove('flag-active'); }
+            else { ui.vcFlags.add(fl); el.classList.add('flag-active'); }
+            renderVSCalcResults();
+          } else if (act === 'vscalc-copy-tg') {
+            const rawLabel = document.getElementById('vc-label').value.trim() || 'W9-Bed-Pt';
+            const parts = rawLabel.split('-');
+            const lastName = parts.length > 1 ? parts.pop() : rawLabel;
+            const wardBed = parts.length ? parts.join('-') : 'W9';
+            copyText(buildTGReferral({
+              area: 'Ward 9', wardBed, lastName, agePreset: ui.vcPreset,
+              weight: parseFloat(document.getElementById('vc-wt').value) || 10,
+              dx: 'Pending clinical impression',
+              logs: [{
+                hr: parseFloat(document.getElementById('vc-hr').value) || 0,
+                rr: parseFloat(document.getElementById('vc-rr').value) || 0,
+                sbp: parseFloat(document.getElementById('vc-sbp').value) || 0,
+                dbp: parseFloat(document.getElementById('vc-dbp').value) || 0,
+                temp: parseFloat(document.getElementById('vc-temp').value) || 0,
+                spo2: parseFloat(document.getElementById('vc-spo2').value) || 0,
+                subj: Array.from(ui.vcFlags), pe: ''
+              }],
+              todos: [], labs: []
+            }));
+          } else if (act === 'vscalc-save-pt') {
+            const rawLabel = document.getElementById('vc-label').value.trim() || 'W9-Bed-Pt';
+            const parts = rawLabel.split('-');
+            const lastName = parts.length > 1 ? parts.pop() : rawLabel;
+            const wardBed = parts.length ? parts.join('-') : 'W9';
+            openPatientModal(null, {
+              area: 'Ward 9',
+              wardBed, lastName,
+              agePreset: ui.vcPreset,
+              ageDisp: (document.getElementById('vc-age').value || '2') + ' yo',
+              weight: parseFloat(document.getElementById('vc-wt').value) || 10,
+              hr: parseFloat(document.getElementById('vc-hr').value) || 0,
+              rr: parseFloat(document.getElementById('vc-rr').value) || 0,
+              sbp: parseFloat(document.getElementById('vc-sbp').value) || 0,
+              dbp: parseFloat(document.getElementById('vc-dbp').value) || 0,
+              temp: parseFloat(document.getElementById('vc-temp').value) || 0,
+              spo2: parseFloat(document.getElementById('vc-spo2').value) || 0,
+              subj: Array.from(ui.vcFlags)
+            });
+          } else if (act === 'toggle-oral') {
+            const topic = el.getAttribute('data-topic');
+            const set = new Set(store.doneOrals);
+            if (set.has(topic)) set.delete(topic); else set.add(topic);
+            store.doneOrals = Array.from(set);
+            safeSave(store);
+            renderReqs();
+          } else if (act === 'close-modal') {
+            closeModal(el.getAttribute('data-modal'));
+          }
+        });
+
+        // INPUT DELEGATION (Never re-renders active inputs)
+        document.addEventListener('input', function (e) {
+          const inp = e.target.closest('[data-input]');
+          if (!inp) return;
+          const kind = inp.getAttribute('data-input');
+          if (kind === 'vscalc') renderVSCalcResults();
+          else if (kind === 'ref-search') {
+            ui.refQuery = inp.value;
+            renderRef();
+          }
+        });
+
+        // CHANGE DELEGATION (Checkboxes, Area Switcher, File Restore)
+        document.addEventListener('change', function (e) {
+          if (e.target && e.target.id === 'backup-file-input') {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (ev) { restoreFromJsonText(ev.target.result); };
+            reader.onerror = function () { toast('Could not read file.'); };
+            reader.readAsText(file);
+            return;
+          }
+          const ch = e.target.closest('[data-change]');
+          if (!ch) return;
+          const kind = ch.getAttribute('data-change');
+          if (kind === 'pt-area-switch') {
+            syncModalAreaFields(ch.value);
+          } else if (kind === 'toggle-day-done') {
+            const d = ch.getAttribute('data-date');
+            const set = new Set(store.doneDays);
+            if (ch.checked) set.add(d); else set.delete(d);
+            store.doneDays = Array.from(set);
+            safeSave(store);
+            renderSchedule();
+          } else if (kind === 'toggle-task-done') {
+            const tid = ch.getAttribute('data-tid');
+            const set = new Set(store.doneTasks);
+            if (ch.checked) set.add(tid); else set.delete(tid);
+            store.doneTasks = Array.from(set);
+            safeSave(store);
+            renderSchedule();
+          } else if (kind === 'toggle-pt-todo') {
+            const pt = store.patients.find(p => p.id === ch.getAttribute('data-id'));
+            const tid = ch.getAttribute('data-tid');
+            if (pt && pt.todos) {
+              const t = pt.todos.find(x => x.id === tid);
+              if (t) { t.done = ch.checked; safeSave(store); renderPatients(); }
+            }
+          } else if (kind === 'toggle-req') {
+            const rid = ch.getAttribute('data-rid');
+            const set = new Set(store.doneReqs);
+            if (ch.checked) set.add(rid); else set.delete(rid);
+            store.doneReqs = Array.from(set);
+            safeSave(store);
+            renderReqs();
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
