@@ -1,0 +1,1856 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Clk. Balay — UP-PGH Pedia 251 Dashboard</title>
+  <style>
+    /* =========================================================================
+       1. DESIGN TOKENS & THEME VARIABLES
+       ========================================================================= */
+    :root {
+      --bg: #f6f8fb;
+      --surface: #ffffff;
+      --surface-soft: #f1f5f9;
+      --border: #dbe3ee;
+      --text: #0f172a;
+      --text-muted: #52627a;
+      --primary: #0f766e;
+      --primary-hover: #115e59;
+      --primary-soft: #ccfbf1;
+      --primary-text: #115e59;
+
+      --ward: #d97706;
+      --ward-soft: #fef3c7;
+      --ward-text: #92400e;
+
+      --er: #be185d;
+      --er-soft: #fce7f3;
+      --er-text: #9d174d;
+
+      --dri: #6d28d9;
+      --dri-soft: #ede9fe;
+      --dri-text: #5b21b6;
+
+      --ok: #15803d;
+      --ok-soft: #dcfce7;
+      --ok-text: #166534;
+
+      --warn: #b45309;
+      --warn-soft: #fef3c7;
+      --warn-text: #92400e;
+
+      --crit: #dc2626;
+      --crit-soft: #fee2e2;
+      --crit-text: #991b1b;
+
+      --tg: #0284c7;
+      --tg-soft: #e0f2fe;
+      --tg-text: #075985;
+
+      /* Pastel Doodle Tokens */
+      --ink: #1e293b;
+      --d-mint: #a7f3d0;
+      --d-sky: #bae6fd;
+      --d-lav: #ddd6fe;
+      --d-peach: #fed7aa;
+      --d-butter: #fef08a;
+      --d-rose: #fbcfe8;
+
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 8px 22px rgba(15, 23, 42, 0.09);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-pill: 999px;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    html.dark {
+      --bg: #0b1120;
+      --surface: #131d31;
+      --surface-soft: #1b2842;
+      --border: #263550;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #14b8a6;
+      --primary-hover: #2dd4bf;
+      --primary-soft: rgba(20, 184, 166, 0.16);
+      --primary-text: #5eead4;
+
+      --ward: #f59e0b;
+      --ward-soft: rgba(245, 158, 11, 0.16);
+      --ward-text: #fcd34d;
+
+      --er: #ec4899;
+      --er-soft: rgba(236, 72, 153, 0.16);
+      --er-text: #f9a8d4;
+
+      --dri: #a78bfa;
+      --dri-soft: rgba(167, 139, 250, 0.16);
+      --dri-text: #ddd6fe;
+
+      --ok: #22c55e;
+      --ok-soft: rgba(34, 197, 94, 0.16);
+      --ok-text: #86efac;
+
+      --warn: #f59e0b;
+      --warn-soft: rgba(245, 158, 11, 0.16);
+      --warn-text: #fde68a;
+
+      --crit: #ef4444;
+      --crit-soft: rgba(239, 68, 68, 0.18);
+      --crit-text: #fca5a5;
+
+      --tg: #38bdf8;
+      --tg-soft: rgba(56, 189, 248, 0.16);
+      --tg-text: #7dd3fc;
+
+      --ink: #e2e8f0;
+      --d-mint: #0f766e;
+      --d-sky: #0369a1;
+      --d-lav: #5b21b6;
+      --d-peach: #9a3412;
+      --d-butter: #a16207;
+      --d-rose: #9d174d;
+
+      --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.35);
+      --shadow-md: 0 10px 26px rgba(0, 0, 0, 0.45);
+    }
+
+    /* =========================================================================
+       2. STRICT ANTI-ERRATIC BASE & SVG SAFETY RULES
+       ========================================================================= */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.48;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* STRICT SVG SAFETY: Never intercept clicks, never blow up, never shift layout */
+    svg, svg * { pointer-events: none !important; }
+    svg { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+
+    button, input, select, textarea { font-family: inherit; color: inherit; }
+    button { cursor: pointer; }
+    a { color: var(--primary-text); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* =========================================================================
+       3. HEADER & NAVIGATION
+       ========================================================================= */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .brand-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--d-mint), var(--d-sky));
+      border: 1.5px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 2px 2px 0 rgba(15, 23, 42, 0.12);
+    }
+    .brand-title {
+      margin: 0;
+      font-size: 14.5px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .brand-sub {
+      margin: 0;
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .desktop-nav {
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+    @media (min-width: 820px) {
+      .desktop-nav { display: flex; }
+      .bottom-nav { display: none !important; }
+    }
+    .dnav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 11px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 700;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    .dnav-btn:hover { background: var(--surface-soft); color: var(--text); }
+    .dnav-btn.active {
+      background: var(--primary-soft);
+      color: var(--primary-text);
+      border-color: rgba(15, 118, 110, 0.25);
+    }
+    .dnav-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: var(--radius-pill);
+      background: var(--primary);
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 800;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Fixed Mobile Bottom Nav */
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 100;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+      box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.08);
+    }
+    .bottom-nav-inner {
+      max-width: 560px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+    }
+    .bnav-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 6px 2px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 10.5px;
+      font-weight: 700;
+      min-height: 48px;
+    }
+    .bnav-btn.active {
+      background: var(--primary-soft);
+      color: var(--primary-text);
+    }
+    .bnav-badge {
+      position: absolute;
+      top: 3px;
+      right: 12%;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: var(--radius-pill);
+      background: var(--er);
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* =========================================================================
+       4. LAYOUT, CARDS, BUTTONS, INPUTS, BADGES
+       ========================================================================= */
+    .main-wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 14px 96px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .stack { display: flex; flex-direction: column; gap: 12px; }
+    .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .row-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    @media (min-width: 760px) {
+      .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .sub-box {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+    }
+
+    .sec-title { margin: 0; font-size: 16px; font-weight: 800; }
+    .sub-title { margin: 0; font-size: 13.5px; font-weight: 800; }
+    .muted { color: var(--text-muted); font-size: 12px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 12.5px;
+      font-weight: 700;
+      min-height: 36px;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+    .btn:hover { background: var(--surface-soft); }
+    .btn-sm { padding: 5px 9px; font-size: 11.5px; min-height: 30px; }
+    .btn-xs { padding: 3px 7px; font-size: 11px; min-height: 24px; }
+    .btn-icon { width: 34px; height: 34px; padding: 0; }
+    .btn-primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-tg { background: var(--tg); border-color: var(--tg); color: #fff; }
+    .btn-tg-soft { background: var(--tg-soft); border-color: transparent; color: var(--tg-text); }
+    .btn-ward { background: var(--ward-soft); border-color: transparent; color: var(--ward-text); }
+    .btn-crit { background: var(--crit-soft); border-color: transparent; color: var(--crit-text); }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      min-height: 32px;
+    }
+    .pill.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge-ward { background: var(--ward-soft); color: var(--ward-text); }
+    .badge-er { background: var(--er-soft); color: var(--er-text); }
+    .badge-dri { background: var(--dri-soft); color: var(--dri-text); }
+    .badge-ok { background: var(--ok-soft); color: var(--ok-text); }
+    .badge-warn { background: var(--warn-soft); color: var(--warn-text); }
+    .badge-crit { background: var(--crit-soft); color: var(--crit-text); }
+    .badge-crit-solid { background: var(--crit); color: #fff; }
+    .badge-neutral { background: var(--surface-soft); color: var(--text-muted); }
+
+    .input, .select, .textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 13px;
+    }
+    .input:focus, .select:focus, .textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+    .field-label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 9px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+    .chip.active {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      color: var(--primary-text);
+    }
+    .chip.flag-active {
+      background: var(--crit-soft);
+      border-color: var(--crit);
+      color: var(--crit-text);
+    }
+
+    /* Progress Bar */
+    .progress-track {
+      width: 100%;
+      height: 9px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-soft);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #14b8a6);
+      border-radius: var(--radius-pill);
+      transition: width 0.25s ease;
+    }
+
+    /* =========================================================================
+       5. SCHEDULE SPECIFIC STYLES
+       ========================================================================= */
+    .hero-banner {
+      background: linear-gradient(135deg, #0f766e, #0e7490);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 15px 16px;
+      box-shadow: var(--shadow-md);
+    }
+    .hero-banner .muted { color: rgba(255, 255, 255, 0.85); }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.2);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .week-heading {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--primary-text);
+      margin: 4px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .day-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 12px 13px;
+      box-shadow: var(--shadow-sm);
+    }
+    .day-card.post-ward { border-left-color: var(--ward); }
+    .day-card.post-er { border-left-color: var(--er); }
+    .day-card.post-dri { border-left-color: var(--dri); }
+    .day-card.done { opacity: 0.62; }
+
+    .day-check {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .collapsible {
+      display: none;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+    .collapsible.open { display: block; }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: var(--surface-soft);
+      font-size: 12.5px;
+    }
+    .task-item.checked span { text-decoration: line-through; color: var(--text-muted); }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    @media (min-width: 760px) {
+      .cal-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+    }
+    .cal-cell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--primary);
+      border-radius: 12px;
+      padding: 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 11.5px;
+      box-shadow: var(--shadow-sm);
+    }
+    .cal-cell.post-ward { border-top-color: var(--ward); }
+    .cal-cell.post-er { border-top-color: var(--er); }
+    .cal-cell.post-dri { border-top-color: var(--dri); }
+    .cal-cell.done { opacity: 0.58; }
+
+    /* =========================================================================
+       6. PATIENTS, LABS & VS CALC STYLES
+       ========================================================================= */
+    .pt-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--ward);
+      border-radius: var(--radius);
+      padding: 13px;
+      box-shadow: var(--shadow-sm);
+    }
+    .pt-card.area-er { border-left-color: var(--er); }
+
+    .vs-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .vs-box {
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .vs-box.abn {
+      background: var(--crit-soft);
+      border-color: var(--crit);
+      color: var(--crit-text);
+    }
+
+    .lab-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 7px 9px;
+      border-radius: 9px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .submit-tag {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .status-pill {
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: none;
+      font-size: 10.5px;
+      font-weight: 800;
+    }
+    .st-pending { background: var(--warn-soft); color: var(--warn-text); }
+    .st-extracted { background: var(--tg-soft); color: var(--tg-text); }
+    .st-sent { background: var(--dri-soft); color: var(--dri-text); }
+    .st-done { background: var(--ok-soft); color: var(--ok-text); }
+
+    .combine-box {
+      background: var(--primary-soft);
+      border: 1px solid rgba(15, 118, 110, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+    }
+    .combine-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 7px 9px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .lab-alert {
+      margin-top: 3px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--crit-text);
+    }
+
+    .order-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .order-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 7px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+
+    /* Tables */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th, td {
+      padding: 7px 9px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    thead th {
+      background: var(--surface-soft);
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+
+    /* Grading Bar */
+    .grade-bar {
+      display: flex;
+      width: 100%;
+      height: 14px;
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      gap: 2px;
+    }
+
+    /* Collapsible details */
+    details.card summary {
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 13.5px;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    details.card summary::-webkit-details-marker { display: none; }
+
+    /* =========================================================================
+       7. STRICT MODALS & TOASTS
+       ========================================================================= */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(15, 23, 42, 0.58);
+      padding: 14px;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-dialog {
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow-md);
+    }
+    .tg-preview {
+      width: 100%;
+      min-height: 230px;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.48;
+      resize: vertical;
+    }
+
+    #toast-wrap {
+      position: fixed;
+      left: 50%;
+      bottom: 76px;
+      transform: translateX(-50%);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      pointer-events: none;
+      width: min(92vw, 380px);
+    }
+    .toast {
+      background: #0f172a;
+      color: #fff;
+      padding: 9px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 12.5px;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+    }
+    html.dark .toast {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    @media print {
+      .app-header, .bottom-nav, #toast-wrap, .modal-backdrop { display: none !important; }
+      .main-wrap { padding: 0; max-width: 100%; }
+      body { background: #fff; color: #000; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== STICKY HEADER ==================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-avatar" aria-hidden="true">
+          <!-- Cute Smiling Dino Mascot wearing a tiny Stethoscope (34x34) -->
+          <svg width="34" height="34" viewBox="0 0 40 40" fill="none">
+            <path d="M12 31c-2.5 0-4.5-1.6-4.5-4 0-2 1.2-3.5 3-4.2l1.5-8.5C12.6 10 15.6 7.5 20 7.5c4.2 0 7.2 2.4 7.2 6.2 0 3.2-2.2 5.4-5.4 5.7l.6 4.4c2.4.8 4.4 2.7 4.4 5.4 0 1.4-.6 2.8-2 2.8H12z" fill="var(--d-mint)" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13 11.5l-2.4-1.2 1.5-2.1M11.6 16.2l-2.6-.5 1.1-2.2" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="22.8" cy="13.5" r="1.4" fill="var(--d-rose)"/>
+            <circle cx="19.5" cy="12" r="1.1" fill="var(--ink)"/>
+            <path d="M21 15c1.1.8 2.3.8 3.2 0" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M15.2 20.5c1.4 3 5.2 3.2 6.8.5M18.6 22.8v3.2" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="18.6" cy="27.3" r="2.1" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.6"/>
+            <path d="M32 7v4M30 9h4" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div style="min-width:0;">
+          <h1 class="brand-title">Clk. Balay &mdash; Pedia 251</h1>
+          <p class="brand-sub">UP-PGH LU6 Block 1 &middot; Nov 23 – Dec 20, 2026</p>
+        </div>
+      </div>
+
+      <nav class="desktop-nav" aria-label="Desktop Navigation">
+        <button type="button" class="dnav-btn active" data-action="switch-tab" data-tab="schedule">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2"/><path d="M3.5 10h17M8 3.2v3.2M16 3.2v3.2" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/><path d="M12 12.6l.9 1.8 2 .3-1.4 1.4.3 2-1.8-1-1.8 1 .3-2-1.4-1.4 2-.3z" fill="var(--d-peach)" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Schedule
+        </button>
+        <button type="button" class="dnav-btn" data-action="switch-tab" data-tab="patients">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="4.5" width="14" height="16.5" rx="3" fill="var(--d-sky)" stroke="var(--ink)" stroke-width="2"/><rect x="8.5" y="2.8" width="7" height="3.2" rx="1.4" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.8"/><path d="M12 16.5s-3.3-2-3.3-4.1c0-1.1.9-1.9 1.9-1.9.7 0 1.2.4 1.4 1 .2-.6.7-1 1.4-1 1 0 1.9.8 1.9 1.9 0 2.1-3.3 4.1-3.3 4.1z" fill="var(--d-rose)" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          Patients <span class="dnav-pill" id="dnav-pt-badge">0</span>
+        </button>
+        <button type="button" class="dnav-btn" data-action="switch-tab" data-tab="vscalc">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-7.5-10A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7.5 3c0 5.3-7.5 10-7.5 10z" fill="var(--d-rose)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M6.8 12.2h2.4l1.3-2.6 1.8 4.8 1.3-2.2h3.4" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          VS Calc
+        </button>
+        <button type="button" class="dnav-btn" data-action="switch-tab" data-tab="reqs">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="13.5" height="17" rx="2.8" fill="var(--d-lav)" stroke="var(--ink)" stroke-width="2"/><path d="M7.5 9l1.3 1.3 2.7-2.7M7.5 14.5l1.3 1.3 2.7-2.7" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 13.5l4-4 1.8 1.8-4 4-2.3.5z" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          Reqs
+        </button>
+        <button type="button" class="dnav-btn" data-action="switch-tab" data-tab="ref">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3.5 6.5c2.5-1.2 5.8-1.2 8.5.5 2.7-1.7 6-1.7 8.5-.5v12.5c-2.5-1.2-5.8-1.2-8.5.5-2.7-1.7-6-1.7-8.5-.5z" fill="var(--d-mint)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M12 7v12.5M6.5 10h2.8M14.7 10h2.8" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Ref
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" class="btn btn-primary btn-sm" data-action="export-ics" title="Export .ics Calendar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15.5" rx="3.2" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2"/><path d="M3.5 10h17M8 3.2v3M16 3.2v3M12 12.5v4.5M9.8 15l2.2 2.2 2.2-2.2" stroke="var(--ink)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          .ics
+        </button>
+        <button type="button" class="btn btn-icon btn-sm" data-action="print-page" aria-label="Print / Save PDF" title="Print / Save PDF">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M7 8V4h10v4" fill="var(--d-sky)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><rect x="4" y="8" width="16" height="8" rx="2.5" fill="var(--d-lav)" stroke="var(--ink)" stroke-width="2"/><rect x="7" y="13" width="10" height="7" rx="1.5" fill="#fff" stroke="var(--ink)" stroke-width="2"/><path d="M9.5 16h5" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </button>
+        <button type="button" class="btn btn-icon btn-sm" data-action="toggle-theme" aria-label="Toggle Light/Dark Mode" title="Toggle Light/Dark Mode">
+          <span id="theme-icon"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="main-wrap">
+
+    <!-- ==================== TAB 1: SCHEDULE ==================== -->
+    <section id="tab-schedule" class="tab-panel active">
+      <div class="stack">
+        <div id="hero-banner" class="hero-banner"></div>
+
+        <div class="card stack" style="gap:9px;">
+          <div class="row-between">
+            <div>
+              <strong style="font-size:13px;">Rotation Progress</strong>
+              <span id="sched-progress-text" class="muted" style="margin-left:8px;">0 / 28 days (0%)</span>
+            </div>
+            <div class="row" style="gap:6px;">
+              <button type="button" class="btn btn-sm" data-action="toggle-sched-view" id="btn-sched-view">Calendar View</button>
+              <button type="button" class="btn btn-sm" data-action="reset-sched" id="btn-reset-sched">Reset Checks</button>
+            </div>
+          </div>
+          <div class="progress-track"><div id="sched-progress-bar" class="progress-fill" style="width:0%;"></div></div>
+          <div class="row" id="sched-summary-badges"></div>
+        </div>
+
+        <div class="row" id="sched-filters"></div>
+        <div id="schedule-output" class="stack"></div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: PATIENTS ==================== -->
+    <section id="tab-patients" class="tab-panel">
+      <div class="stack">
+        <div class="card stack" style="gap:10px;">
+          <div class="row-between">
+            <div>
+              <h2 class="sec-title">Monitored Patients (Ward &amp; PER)</h2>
+              <p class="muted" style="margin:2px 0 0;">Saved offline on this device. Use [Ward-Bed]-[Last Name] format.</p>
+            </div>
+            <div class="row" style="gap:6px;">
+              <button type="button" class="btn btn-sm btn-ward" id="btn-clear-samples" data-action="clear-samples">Clear Samples</button>
+              <button type="button" class="btn btn-primary btn-sm" data-action="open-add-pt">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="10" cy="8" r="3.5" fill="var(--d-peach)" stroke="var(--ink)" stroke-width="2"/><path d="M4 19c.6-3.4 3-5 6-5s5.4 1.6 6 5" fill="var(--d-mint)" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/><path d="M18.5 7v5M16 9.5h5" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/></svg>
+                Add Patient
+              </button>
+            </div>
+          </div>
+
+          <div class="row-between">
+            <div class="row" id="pt-filters"></div>
+            <div class="row" style="gap:6px;">
+              <button type="button" class="btn btn-tg-soft btn-sm" data-action="bulk-tg" data-area="Ward">Bulk Ward TG</button>
+              <button type="button" class="btn btn-tg-soft btn-sm" data-action="bulk-tg" data-area="ER">Bulk ER TG</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="patients-output" class="stack"></div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: VS CALC ==================== -->
+    <section id="tab-vscalc" class="tab-panel">
+      <div class="stack">
+        <div class="card stack">
+          <div class="row-between">
+            <div>
+              <h2 class="sec-title">Bedside Pediatric VS, Equipment &amp; Action Plan</h2>
+              <p class="muted" style="margin:2px 0 0;">UP-PGH Pediatrics 251 thresholds, BP/MAP/ETT formulas &amp; concise TG referral.</p>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" data-action="vscalc-save-pt">+ Save to Patients</button>
+          </div>
+
+          <!-- Static Preset Chips (updated via class toggle only) -->
+          <div>
+            <span class="field-label">Age Group Preset</span>
+            <div class="chip-group" id="vscalc-presets">
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset="premie">Premie</button>
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset="0-3mo">0–3 mo</button>
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset="3-6mo">3–6 mo</button>
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset="6-12mo">6–12 mo</button>
+              <button type="button" class="chip active" data-action="vscalc-preset" data-preset="1-3yr">1–3 yr</button>
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset="3-6yr">3–6 yr</button>
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset="6-12yr">6–12 yr</button>
+              <button type="button" class="chip" data-action="vscalc-preset" data-preset=">12yr">&gt;12 yr</button>
+            </div>
+          </div>
+
+          <!-- Static Inputs (NEVER re-rendered while typing) -->
+          <div class="grid-3">
+            <div>
+              <label class="field-label" for="vc-label">Patient Label (Ward-Bed-Last)</label>
+              <input id="vc-label" class="input" type="text" value="W9-Bed-Pt" data-input="vscalc" />
+            </div>
+            <div>
+              <label class="field-label" for="vc-age">Exact Age (years)</label>
+              <input id="vc-age" class="input" type="number" step="0.1" min="0" max="18" value="2" data-input="vscalc" />
+            </div>
+            <div>
+              <label class="field-label" for="vc-wt">Weight (kg)</label>
+              <input id="vc-wt" class="input" type="number" step="0.1" min="0.5" max="100" value="12" data-input="vscalc" />
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div>
+              <label class="field-label" for="vc-hr">HR (bpm)</label>
+              <input id="vc-hr" class="input" type="number" value="145" data-input="vscalc" />
+            </div>
+            <div>
+              <label class="field-label" for="vc-rr">RR (cpm)</label>
+              <input id="vc-rr" class="input" type="number" value="38" data-input="vscalc" />
+            </div>
+            <div>
+              <label class="field-label" for="vc-sbp">SBP (mmHg)</label>
+              <input id="vc-sbp" class="input" type="number" value="88" data-input="vscalc" />
+            </div>
+            <div>
+              <label class="field-label" for="vc-dbp">DBP (mmHg)</label>
+              <input id="vc-dbp" class="input" type="number" value="54" data-input="vscalc" />
+            </div>
+            <div>
+              <label class="field-label" for="vc-temp">Temp (&deg;C)</label>
+              <input id="vc-temp" class="input" type="number" step="0.1" value="38.8" data-input="vscalc" />
+            </div>
+            <div>
+              <label class="field-label" for="vc-spo2">SpO2 (%)</label>
+              <input id="vc-spo2" class="input" type="number" min="40" max="100" value="93" data-input="vscalc" />
+            </div>
+          </div>
+
+          <div>
+            <span class="field-label">Optional Red Flags / Complaints (tap to toggle)</span>
+            <div class="chip-group" id="vc-flags">
+              <button type="button" class="chip" data-action="vscalc-flag" data-flag="Altered sensorium">Altered sensorium</button>
+              <button type="button" class="chip" data-action="vscalc-flag" data-flag="Severe retractions / grunting">Severe retractions / grunting</button>
+              <button type="button" class="chip" data-action="vscalc-flag" data-flag="Poor perfusion / CRT >3s">Poor perfusion / CRT &gt;3s</button>
+              <button type="button" class="chip" data-action="vscalc-flag" data-flag="Active seizure">Active seizure</button>
+              <button type="button" class="chip" data-action="vscalc-flag" data-flag="Apnea / cyanosis">Apnea / cyanosis</button>
+              <button type="button" class="chip" data-action="vscalc-flag" data-flag="Persistent vomiting / poor PO">Persistent vomiting / poor PO</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dedicated Output Container -->
+        <div id="vscalc-results" class="stack"></div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: REQS ==================== -->
+    <section id="tab-reqs" class="tab-panel">
+      <div class="stack">
+        <div class="card stack" style="gap:10px;">
+          <div class="row-between">
+            <div>
+              <h2 class="sec-title">Pediatrics 251 Grading Breakdown</h2>
+              <p class="muted" style="margin:2px 0 0;">LU6 Integrated Clinical Clerkship II &middot; AY 2026–2027</p>
+            </div>
+            <span class="badge badge-ok" id="reqs-progress-badge">0% Done</span>
+          </div>
+          <div class="grade-bar">
+            <div style="width:5%; background:#0ea5e9;" title="Quizzes 5%"></div>
+            <div style="width:20%; background:#0f766e;" title="Preceptorials 20%"></div>
+            <div style="width:20%; background:#d97706;" title="Supervisor Eval 20%"></div>
+            <div style="width:20%; background:#be185d;" title="Oral Exam 20%"></div>
+            <div style="width:15%; background:#6d28d9;" title="Final Exam 15%"></div>
+            <div style="width:10%; background:#475569;" title="Comp Exam 10%"></div>
+            <div style="width:10%; background:#15803d;" title="Portfolio 10%"></div>
+          </div>
+          <div class="row" style="gap:6px;">
+            <span class="badge badge-neutral">Quizzes 5%</span>
+            <span class="badge badge-ok">Preceptorials 20%</span>
+            <span class="badge badge-ward">Supervisor Eval 20%</span>
+            <span class="badge badge-er">Oral Exam 20%</span>
+            <span class="badge badge-dri">Final Exam 15%</span>
+            <span class="badge badge-neutral">Comp Exam 10%</span>
+            <span class="badge badge-ok">Portfolio 10%</span>
+          </div>
+        </div>
+
+        <div id="reqs-checklists" class="grid-2"></div>
+
+        <div class="card stack" style="gap:10px;">
+          <div class="row-between">
+            <h3 class="sub-title">Oral Exam 18 Must-Know Topics (20% of Grade)</h3>
+            <span class="badge badge-dri" id="oral-count-badge">0 / 18 Reviewed</span>
+          </div>
+          <div class="chip-group" id="oral-topics-wrap"></div>
+        </div>
+
+        <div class="card stack" style="gap:10px;">
+          <h3 class="sub-title">Block 1 Contacts &amp; Rotation Logistics</h3>
+          <div class="grid-3">
+            <div>
+              <strong style="font-size:12px; color:var(--primary-text);">Faculty &amp; Block 1 Preceptors</strong>
+              <ul style="margin:5px 0 0 16px; padding:0; font-size:12.5px;">
+                <li><strong>LU6 Coordinator:</strong> Dr. Lourdes Paula Resontoc</li>
+                <li><strong>Asst. Coordinator:</strong> Dr. Ma Cristina Lozada</li>
+                <li><strong>Block 1 Preceptors:</strong> Dr. Lorna Abad &amp; Dr. Lourdes Paula Resontoc</li>
+                <li><strong>Bioethics:</strong> Dr. Mary Ann Abacan (Week 2–3)</li>
+              </ul>
+            </div>
+            <div>
+              <strong style="font-size:12px; color:var(--primary-text);">Resident Monitors &amp; UPHS</strong>
+              <ul style="margin:5px 0 0 16px; padding:0; font-size:12.5px;">
+                <li><strong>Dr. Joice So:</strong> <a href="tel:09190683989">0919-068-3989</a></li>
+                <li><strong>Dr. Nikka Costales:</strong> <a href="tel:09959630130">0995-963-0130</a></li>
+                <li><strong>UPHS:</strong> <a href="tel:09617321764">0961-732-1764</a> &middot; <a href="mailto:hs.uppgh@up.edu.ph">hs.uppgh@up.edu.ph</a></li>
+              </ul>
+            </div>
+            <div>
+              <strong style="font-size:12px; color:var(--primary-text);">Deadlines &amp; Policies</strong>
+              <ul style="margin:5px 0 0 16px; padding:0; font-size:12.5px;">
+                <li><strong>VLE Quizzes:</strong> Open Day 1 7AM – Last Day 5PM (Dec 20).</li>
+                <li><strong>Portfolio:</strong> Handwritten daily charts, due Dec 20.</li>
+                <li><strong>Reflection Paper:</strong> Due Dec 27 &rarr; upcmlu6pediatrics@gmail.com.</li>
+                <li><strong>Absences:</strong> 1:1 excused, 1:2 unexcused. Lectures/preceptorials take priority.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <details class="card">
+            <summary>
+              <span>Preceptorial Grading Rubric (100 pts)</span>
+              <span class="badge badge-neutral">Tap to expand</span>
+            </summary>
+            <div class="table-wrap" style="margin-top:10px;">
+              <table>
+                <thead><tr><th>Category</th><th>Pts</th></tr></thead>
+                <tbody>
+                  <tr><td>Complete &amp; relevant history</td><td><strong>15</strong></td></tr>
+                  <tr><td>Physical examination findings to look out for</td><td><strong>15</strong></td></tr>
+                  <tr><td>Differential diagnosis</td><td><strong>15</strong></td></tr>
+                  <tr><td>Working impression &amp; patient problem list</td><td><strong>10</strong></td></tr>
+                  <tr><td>Appropriate management plan</td><td><strong>5</strong></td></tr>
+                  <tr><td>Answers pertinent questions adequately</td><td><strong>5</strong></td></tr>
+                  <tr><td>Utilizes critically appraised medical literature</td><td><strong>5</strong></td></tr>
+                  <tr><td>Organized, integrated &amp; clear presentation</td><td><strong>5</strong></td></tr>
+                  <tr><td>Appropriate, concise visual aids</td><td><strong>5</strong></td></tr>
+                  <tr><td>Good communication skills</td><td><strong>5</strong></td></tr>
+                  <tr><td>Enthusiasm &amp; initiative</td><td><strong>5</strong></td></tr>
+                  <tr><td>Respect for preceptor &amp; peers</td><td><strong>5</strong></td></tr>
+                  <tr><td>Good time management</td><td><strong>5</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+          <details class="card">
+            <summary>
+              <span>Reflection Paper Guide Questions (Due Dec 27)</span>
+              <span class="badge badge-neutral">Tap to expand</span>
+            </summary>
+            <ul style="margin:10px 0 0 18px; padding:0; font-size:12.5px; display:flex; flex-direction:column; gap:6px;">
+              <li>What did I learn from my clerkship rotation in Pediatrics?</li>
+              <li>How were my interactions with my blockmates and with the preceptors?</li>
+              <li>Did I maximize my rotation? How could I have maximized it more?</li>
+              <li>How do I feel rotating in Pedia now compared to when I was an LU5 student?</li>
+              <li>What are my suggestions to improve my rotation in Pedia?</li>
+              <li>What other teaching-learning activities could I suggest?</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 5: REF ==================== -->
+    <section id="tab-ref" class="tab-panel">
+      <div class="stack">
+        <div class="card stack" style="gap:8px;">
+          <h2 class="sec-title">UP-PGH Pediatric Quick Reference</h2>
+          <input id="ref-search" class="input" type="search" placeholder="Search age, ETT, BP, lab test, MRL, Nuclear Med, ice, tourniquet..." data-input="ref-search" />
+        </div>
+
+        <div id="ref-tables-wrap" class="stack"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== MOBILE 5-TAB BOTTOM NAV ==================== -->
+  <nav class="bottom-nav" aria-label="Mobile Navigation">
+    <div class="bottom-nav-inner">
+      <button type="button" class="bnav-btn active" data-action="switch-tab" data-tab="schedule">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2"/><path d="M3.5 10h17M8 3.2v3.2M16 3.2v3.2" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/><path d="M12 12.6l.9 1.8 2 .3-1.4 1.4.3 2-1.8-1-1.8 1 .3-2-1.4-1.4 2-.3z" fill="var(--d-peach)" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span>Schedule</span>
+      </button>
+      <button type="button" class="bnav-btn" data-action="switch-tab" data-tab="patients">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="5" y="4.5" width="14" height="16.5" rx="3" fill="var(--d-sky)" stroke="var(--ink)" stroke-width="2"/><rect x="8.5" y="2.8" width="7" height="3.2" rx="1.4" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.8"/><path d="M12 16.5s-3.3-2-3.3-4.1c0-1.1.9-1.9 1.9-1.9.7 0 1.2.4 1.4 1 .2-.6.7-1 1.4-1 1 0 1.9.8 1.9 1.9 0 2.1-3.3 4.1-3.3 4.1z" fill="var(--d-rose)" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <span>Patients</span>
+        <span id="bnav-pt-badge" class="bnav-badge">0</span>
+      </button>
+      <button type="button" class="bnav-btn" data-action="switch-tab" data-tab="vscalc">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-7.5-10A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7.5 3c0 5.3-7.5 10-7.5 10z" fill="var(--d-rose)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M6.8 12.2h2.4l1.3-2.6 1.8 4.8 1.3-2.2h3.4" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>VS Calc</span>
+      </button>
+      <button type="button" class="bnav-btn" data-action="switch-tab" data-tab="reqs">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="13.5" height="17" rx="2.8" fill="var(--d-lav)" stroke="var(--ink)" stroke-width="2"/><path d="M7.5 9l1.3 1.3 2.7-2.7M7.5 14.5l1.3 1.3 2.7-2.7" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 13.5l4-4 1.8 1.8-4 4-2.3.5z" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <span>Reqs</span>
+      </button>
+      <button type="button" class="bnav-btn" data-action="switch-tab" data-tab="ref">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3.5 6.5c2.5-1.2 5.8-1.2 8.5.5 2.7-1.7 6-1.7 8.5-.5v12.5c-2.5-1.2-5.8-1.2-8.5.5-2.7-1.7-6-1.7-8.5-.5z" fill="var(--d-mint)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M12 7v12.5M6.5 10h2.8M14.7 10h2.8" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Ref</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==================== MODAL 1: ADD / EDIT PATIENT ==================== -->
+  <div id="modal-pt" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-dialog stack">
+      <div class="row-between">
+        <h3 class="sec-title" id="modal-pt-title">Add Patient</h3>
+        <button type="button" class="btn btn-icon btn-sm" data-action="close-modal" data-modal="modal-pt">&times;</button>
+      </div>
+      <input type="hidden" id="pt-edit-id" />
+      <div class="grid-2">
+        <div>
+          <label class="field-label" for="pt-area">Area</label>
+          <select id="pt-area" class="select">
+            <option value="Ward">Ward (Ward 9)</option>
+            <option value="ER">ER (PER)</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="pt-status">Status</label>
+          <select id="pt-status" class="select">
+            <option value="Non-Toxic">Non-Toxic / Stable</option>
+            <option value="Toxic">Toxic / Unstable</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="pt-wardbed">Ward-Bed (e.g., W9-4 or PER-B2)</label>
+          <input id="pt-wardbed" class="input" type="text" placeholder="W9-4" />
+        </div>
+        <div>
+          <label class="field-label" for="pt-last">Last Name / Alias</label>
+          <input id="pt-last" class="input" type="text" placeholder="Reyes" />
+        </div>
+        <div>
+          <label class="field-label" for="pt-age">Age (number)</label>
+          <input id="pt-age" class="input" type="number" step="0.1" min="0" value="2" />
+        </div>
+        <div>
+          <label class="field-label" for="pt-ageunit">Age Unit</label>
+          <select id="pt-ageunit" class="select">
+            <option value="yr">yr</option>
+            <option value="mo">mo</option>
+            <option value="d">days (newborn)</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="pt-wt">Weight (kg)</label>
+          <input id="pt-wt" class="input" type="number" step="0.1" min="0.5" value="12" />
+        </div>
+        <div>
+          <label class="field-label" for="pt-hd">HD / Acuity (e.g., HD3 or Acuity 2)</label>
+          <input id="pt-hd" class="input" type="text" placeholder="HD2" />
+        </div>
+      </div>
+      <div>
+        <label class="field-label" for="pt-dx">Chart Working Diagnosis</label>
+        <input id="pt-dx" class="input" type="text" placeholder="e.g., PCAP-C; Moderate Dehydration" />
+      </div>
+      <div>
+        <label class="field-label" for="pt-meds">Active IVF / Meds / Key Context</label>
+        <input id="pt-meds" class="input" type="text" placeholder="e.g., D5 0.3 NaCl @ 45 cc/hr; Ampicillin + Gentamicin" />
+      </div>
+      <div class="row-between">
+        <button type="button" class="btn" data-action="close-modal" data-modal="modal-pt">Cancel</button>
+        <button type="button" class="btn btn-primary" data-action="save-pt">Save Patient</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 2: LOG VS / UPDATE ==================== -->
+  <div id="modal-log" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-dialog stack">
+      <div class="row-between">
+        <h3 class="sec-title" id="modal-log-title">Log VS &amp; Subjective Update</h3>
+        <button type="button" class="btn btn-icon btn-sm" data-action="close-modal" data-modal="modal-log">&times;</button>
+      </div>
+      <input type="hidden" id="log-pt-id" />
+      <div class="grid-3">
+        <div><label class="field-label" for="log-hr">HR (bpm)</label><input id="log-hr" class="input" type="number" /></div>
+        <div><label class="field-label" for="log-rr">RR (cpm)</label><input id="log-rr" class="input" type="number" /></div>
+        <div><label class="field-label" for="log-sbp">SBP</label><input id="log-sbp" class="input" type="number" /></div>
+        <div><label class="field-label" for="log-dbp">DBP</label><input id="log-dbp" class="input" type="number" /></div>
+        <div><label class="field-label" for="log-temp">Temp (&deg;C)</label><input id="log-temp" class="input" type="number" step="0.1" /></div>
+        <div><label class="field-label" for="log-spo2">SpO2 (%)</label><input id="log-spo2" class="input" type="number" /></div>
+      </div>
+      <div>
+        <span class="field-label">Quick Subjective Complaints (tap to toggle)</span>
+        <div class="chip-group" id="log-subj-chips">
+          <button type="button" class="chip" data-action="toggle-log-chip" data-val="Febrile">Febrile</button>
+          <button type="button" class="chip" data-action="toggle-log-chip" data-val="DOB / retractions">DOB / retractions</button>
+          <button type="button" class="chip" data-action="toggle-log-chip" data-val="Poor PO intake">Poor PO intake</button>
+          <button type="button" class="chip" data-action="toggle-log-chip" data-val="Vomiting">Vomiting</button>
+          <button type="button" class="chip" data-action="toggle-log-chip" data-val="Lethargy / irritable">Lethargy / irritable</button>
+          <button type="button" class="chip" data-action="toggle-log-chip" data-val="Decreased UO">Decreased UO</button>
+          <button type="button" class="chip" data-action="toggle-log-chip" data-val="Seizure">Seizure</button>
+          <button type="button" class="chip" data-action="toggle-log-chip" data-val="Comfortable / no complaints">Comfortable / no complaints</button>
+        </div>
+      </div>
+      <div>
+        <label class="field-label" for="log-subj-text">Additional Subjective Notes</label>
+        <input id="log-subj-text" class="input" type="text" placeholder="e.g., 2 episodes non-bilious vomiting" />
+      </div>
+      <div>
+        <label class="field-label" for="log-pe">Pertinent PE / I&amp;O</label>
+        <input id="log-pe" class="input" type="text" placeholder="e.g., crackles R base, CRT 2s, UO 1.5 cc/kg/hr" />
+      </div>
+      <div>
+        <label class="field-label" for="log-plan">Custom Plan Note (optional)</label>
+        <input id="log-plan" class="input" type="text" placeholder="e.g., ff-up CXR result" />
+      </div>
+      <div class="row-between">
+        <button type="button" class="btn" data-action="close-modal" data-modal="modal-log">Cancel</button>
+        <button type="button" class="btn btn-primary" data-action="save-log">Save Update</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 3: ADD LAB PICKER ==================== -->
+  <div id="modal-lab" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-dialog stack">
+      <div class="row-between">
+        <h3 class="sec-title">Add Pediatric Lab (UP-PGH Order of Draw)</h3>
+        <button type="button" class="btn btn-icon btn-sm" data-action="close-modal" data-modal="modal-lab">&times;</button>
+      </div>
+      <input type="hidden" id="lab-pt-id" />
+      <div id="lab-quick-groups" class="stack" style="gap:8px;"></div>
+      <div class="sub-box stack" style="gap:8px;">
+        <strong style="font-size:12px;">Or Add Custom Lab</strong>
+        <div class="grid-2">
+          <input id="custom-lab-name" class="input" type="text" placeholder="Lab name (e.g., Urinalysis)" />
+          <select id="custom-lab-top" class="select">
+            <option value="red">Red-Top (Serum)</option>
+            <option value="purple">Purple-Top (EDTA)</option>
+            <option value="green">Green-Top (Heparin)</option>
+            <option value="blue">Blue-Top (Citrate)</option>
+            <option value="bloodcs">Blood CS</option>
+            <option value="igra">IGRA (4 tubes)</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" data-action="add-custom-lab">+ Add Custom Lab</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 4: TG REFERRAL PREVIEW ==================== -->
+  <div id="modal-tg" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-dialog stack">
+      <div class="row-between">
+        <h3 class="sec-title" style="display:flex; align-items:center; gap:7px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 4L3.5 11.2l6.2 2.4L19 6.5l-6.6 8.3 4.8 4.2z" fill="var(--d-sky)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/></svg>
+          TG RIC Referral
+        </h3>
+        <button type="button" class="btn btn-icon btn-sm" data-action="close-modal" data-modal="modal-tg">&times;</button>
+      </div>
+      <textarea id="tg-textarea" class="tg-preview"></textarea>
+      <div class="row-between">
+        <button type="button" class="btn" data-action="close-modal" data-modal="modal-tg">Close</button>
+        <button type="button" class="btn btn-tg" data-action="copy-tg-modal">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="13" rx="2.5" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2"/><path d="M16 8V5.5A2.5 2.5 0 0 0 13.5 3h-7A2.5 2.5 0 0 0 4 5.5v9A2.5 2.5 0 0 0 6.5 17H8" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/></svg>
+          Copy to Clipboard
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-wrap" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* =======================================================================
+         1. SAFE VERSIONED STORAGE (v6) WITH IN-MEMORY FALLBACK
+         ======================================================================= */
+      const STORAGE_KEY = 'pedia251_balay_v6';
+      let memoryStore = null;
+
+      function defaultStore() {
+        return {
+          theme: 'light',
+          doneDays: [],
+          doneTasks: [],
+          customTasks: {},
+          doneReqs: [],
+          doneOrals: [],
+          patients: getSamplePatients()
+        };
+      }
+
+      function loadStore() {
+        try {
+          const raw = window.localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            const fresh = defaultStore();
+            saveStore(fresh);
+            return fresh;
+          }
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== 'object') return defaultStore();
+          return {
+            theme: parsed.theme === 'dark' ? 'dark' : 'light',
+            doneDays: Array.isArray(parsed.doneDays) ? parsed.doneDays : [],
+            doneTasks: Array.isArray(parsed.doneTasks) ? parsed.doneTasks : [],
+            customTasks: parsed.customTasks && typeof parsed.customTasks === 'object' ? parsed.customTasks : {},
+            doneReqs: Array.isArray(parsed.doneReqs) ? parsed.doneReqs : [],
+            doneOrals: Array.isArray(parsed.doneOrals) ? parsed.doneOrals : [],
+            patients: Array.isArray(parsed.patients) ? parsed.patients : getSamplePatients()
+          };
+        } catch (err) {
+          if (!memoryStore) memoryStore = defaultStore();
+          return memoryStore;
+        }
+      }
+
+      function saveStore(obj) {
+        memoryStore = obj;
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+        } catch (err) {
+          /* Fallback silently to memoryStore */
+        }
+      }
+
+      /* =======================================================================
+         2. STATIC CLINICAL & SCHEDULE DATA (UP-PGH PEDIATRICS 251)
+         ======================================================================= */
+      const DOODLE = {
+        ward: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="8" width="18" height="8" rx="4" transform="rotate(-25 12 12)" fill="var(--d-peach)" stroke="var(--ink)" stroke-width="2"/><rect x="9" y="9" width="6" height="6" rx="1" transform="rotate(-25 12 12)" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.6"/><circle cx="11.2" cy="11.2" r=".8" fill="var(--ink)"/><circle cx="13.2" cy="12.6" r=".8" fill="var(--ink)"/></svg>',
+        er: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 15V8.5A2 2 0 0 1 5 6.5h9v9.5H3z" fill="var(--d-rose)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M14 9.5h4l2.8 3.2V16H14z" fill="var(--d-sky)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M8.5 9v4M6.5 11h4" stroke="var(--ink)" stroke-width="1.9" stroke-linecap="round"/><circle cx="7" cy="17.2" r="2" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.8"/><circle cx="17" cy="17.2" r="2" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="1.8"/></svg>',
+        dri: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="13.2" rx="6.5" ry="7.8" fill="var(--d-lav)" stroke="var(--ink)" stroke-width="2"/><circle cx="12" cy="9.5" r="3.6" fill="var(--d-peach)" stroke="var(--ink)" stroke-width="1.8"/><circle cx="10.8" cy="9.2" r=".7" fill="var(--ink)"/><circle cx="13.2" cy="9.2" r=".7" fill="var(--ink)"/><path d="M11.2 10.8c.5.5 1.1.5 1.6 0M7 14.5c3.2 1.2 6.8 1.2 10 0" stroke="var(--ink)" stroke-width="1.5" stroke-linecap="round"/></svg>',
+        moon: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M16.5 15.8A7.2 7.2 0 0 1 8.8 5.2a7.5 7.5 0 1 0 10.2 10.2 6.5 6.5 0 0 1-2.5.4z" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M18.5 5v3M17 6.5h3" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/></svg>',
+        sun: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.8" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4" stroke="var(--ink)" stroke-width="1.9" stroke-linecap="round"/><path d="M10.5 12.6c.8.8 2.2.8 3 0" stroke="var(--ink)" stroke-width="1.4" stroke-linecap="round"/></svg>',
+        star: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 3.2l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.2-4.1 5.8-.8z" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/></svg>',
+        plane: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M21 4L3.5 11.2l6.2 2.4L19 6.5l-6.6 8.3 4.8 4.2z" fill="var(--d-sky)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/></svg>',
+        copy: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="13" rx="2.5" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2"/><path d="M16 8V5.5A2.5 2.5 0 0 0 13.5 3h-7A2.5 2.5 0 0 0 4 5.5v9A2.5 2.5 0 0 0 6.5 17H8" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/></svg>',
+        pulse: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2.2-6 3.6 12 2.2-6H21" stroke="var(--ink)" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        alert: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3.5L21 19.5H3z" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M12 9.5v4.5M12 16.8v.4" stroke="var(--ink)" stroke-width="2.1" stroke-linecap="round"/></svg>',
+        emptyPt: '<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="10" y="9" width="28" height="33" rx="5" fill="var(--d-sky)" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round"/><rect x="17" y="5" width="14" height="7" rx="2.5" fill="var(--d-butter)" stroke="var(--ink)" stroke-width="2.2"/><path d="M24 31s-6-3.7-6-7.6c0-2 1.6-3.5 3.5-3.5 1.2 0 2.1.7 2.5 1.7.4-1 1.3-1.7 2.5-1.7 1.9 0 3.5 1.5 3.5 3.5 0 3.9-6 7.6-6 7.6z" fill="var(--d-rose)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M39 10v4M37 12h4" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/></svg>'
+      };
+
+      function postDoodle(post) {
+        if (post === 'Ward 9') return DOODLE.ward;
+        if (post === 'PER') return DOODLE.er;
+        return DOODLE.dri;
+      }
+
+      function tubeDoodle(top) {
+        const capMap = {
+          bloodcs: '#94a3b8',
+          blue: '#38bdf8',
+          red: '#ef4444',
+          green: '#16a34a',
+          purple: '#9333ea',
+          igra: '#eab308'
+        };
+        const cap = capMap[top] || '#ef4444';
+        return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="7.5" y="3" width="9" height="4" rx="1.4" fill="${cap}" stroke="var(--ink)" stroke-width="1.8"/><path d="M8.5 7v10.2a3.5 3.5 0 0 0 7 0V7z" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.8 13.5h6.4v3.5a3.2 3.2 0 0 1-6.4 0z" fill="${cap}" opacity="0.45"/><path d="M10.5 10.5h3" stroke="var(--ink)" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+      }
+
+      const SCHEDULE = [
+        // Week 1 — Ward 9 (w/ Abarca)
+        { date: '2026-11-23', disp: 'Nov 23', day: 'Mon', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Duty', time: '7AM–12NN; 5PM–5AM', co: 'Abarca', overnight: true, truePost: false, solo: false, tasks: ['7:30–8AM Admission Conf (Student presenters)', 'SIC morning rounds & handwritten SOAP/orders', 'Rest 12NN–5PM; 5PM endorsement & overnight duty (5PM–5AM)', 'Start VLE pre-tests & 5 videos'] },
+        { date: '2026-11-24', disp: 'Nov 24', day: 'Tue', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Post', time: '7AM–12NN', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['7:30–8AM Admission Conf (Resident presenters)', 'Break 8–9AM; SIC rounds & carry-overs 9AM–12NN', 'Endorse crit patients to Pre-Duty clerk at 12NN'] },
+        { date: '2026-11-25', disp: 'Nov 25', day: 'Wed', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Pre-Duty', time: '7AM–5PM', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['SIC rounds & handwritten portfolio charting', 'Cover Ward 9 patients during Duty PM break / Post', '5PM endorsement of crit patients to Duty team'] },
+        { date: '2026-11-26', disp: 'Nov 26', day: 'Thu', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Duty', time: '7AM–12NN; 5PM–5AM', co: 'Abarca', overnight: true, truePost: false, solo: false, tasks: ['7:30–8AM Admission Conf (Student presenters)', 'SIC rounds & handwritten SOAP/orders', 'Rest 12NN–5PM; 5PM endorsement & overnight duty'] },
+        { date: '2026-11-27', disp: 'Nov 27', day: 'Fri', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Post', time: '7AM–12NN', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['7:30–8AM Admission Conf & Friday Ward Wars w/ Dr. Abad', 'SIC rounds 9AM–12NN & endorse to Pre-Duty'] },
+        { date: '2026-11-28', disp: 'Nov 28', day: 'Sat', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Pre-Duty', time: '7AM–5PM', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['SIC morning rounds & portfolio SOAP update', 'Cover Ward 9 afternoon carry-overs; 5PM endorsement'] },
+        { date: '2026-11-29', disp: 'Nov 29', day: 'Sun', week: 1, wLabel: 'Week 1 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Duty', time: '7AM–12NN; 5PM–5AM', co: 'Abarca', overnight: true, truePost: false, solo: false, tasks: ['SIC morning rounds & orders (7AM–12NN)', 'Rest 12NN–5PM; 5PM endorsement & overnight duty'] },
+
+        // Week 2 — Ward 9 (w/ Abarca)
+        { date: '2026-11-30', disp: 'Nov 30', day: 'Mon', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Post', time: '7AM–12NN', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['7:30–8AM Admission Conf (Student presenters)', 'SIC rounds 9AM–12NN; schedule Bioethics w/ Dr. Abacan'] },
+        { date: '2026-12-01', disp: 'Dec 1', day: 'Tue', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Pre-Duty', time: '7AM–5PM', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['7:30–8AM Admission Conf (Resident presenters)', 'SIC rounds, handwritten charting & 5PM endorsement'] },
+        { date: '2026-12-02', disp: 'Dec 2', day: 'Wed', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Duty', time: '7AM–12NN; 5PM–5AM', co: 'Abarca', overnight: true, truePost: false, solo: false, tasks: ['SIC rounds & portfolio check w/ service senior', 'Rest 12NN–5PM; 5PM endorsement & overnight duty'] },
+        { date: '2026-12-03', disp: 'Dec 3', day: 'Thu', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Post', time: '7AM–12NN', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['7:30–8AM Admission Conf (Student presenters)', 'SIC rounds 9AM–12NN; prep Graded Preceptorial #1'] },
+        { date: '2026-12-04', disp: 'Dec 4', day: 'Fri', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Pre-Duty', time: '7AM–5PM', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['Friday Ward Wars w/ Dr. Lorna Abad', 'SIC rounds, cover PM break & 5PM endorsement'] },
+        { date: '2026-12-05', disp: 'Dec 5', day: 'Sat', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Duty', time: '7AM–12NN; 5PM–5AM', co: 'Abarca', overnight: true, truePost: false, solo: false, tasks: ['Attend Intern\'s Hour', 'SIC rounds 7AM–12NN; rest 12NN–5PM', '5PM endorsement & final Ward 9 overnight duty'] },
+        { date: '2026-12-06', disp: 'Dec 6', day: 'Sun', week: 2, wLabel: 'Week 2 — Ward 9 (w/ Abarca)', post: 'Ward 9', type: 'Post', time: '7AM–12NN', co: 'Abarca', overnight: false, truePost: false, solo: false, tasks: ['Final Ward 9 SIC rounds & endorse patients to next SIC', 'Request Ward Senior & Junior Resident Evaluations'] },
+
+        // Week 3 — PER (Updated Decking: Solo Mon–Fri, w/ Alarin Sat–Sun)
+        { date: '2026-12-07', disp: 'Dec 7', day: 'Mon', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'AM', time: '7AM–7PM', co: 'Solo', overnight: false, truePost: false, solo: true, tasks: ['PER AM Duty (Solo): resuscitations, procedures & VS monitoring', 'Join PER service/consultant rounds'] },
+        { date: '2026-12-08', disp: 'Dec 8', day: 'Tue', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'AM', time: '7AM–7PM', co: 'Solo', overnight: false, truePost: false, solo: true, tasks: ['PER AM Duty (Solo — 2nd consecutive AM)', 'Facilitate PER workups, labs & endorsements (24h breather after 7PM)'] },
+        { date: '2026-12-09', disp: 'Dec 9', day: 'Wed', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'PM', time: '7PM–7AM', co: 'Solo', overnight: true, truePost: false, solo: true, tasks: ['Daytime rest before 7PM shift', 'PER PM Overnight Duty (Solo): resuscitations & admissions'] },
+        { date: '2026-12-10', disp: 'Dec 10', day: 'Thu', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'Post', time: 'True Post', co: 'Solo', overnight: false, truePost: true, solo: true, tasks: ['Full True Post recovery day', 'Prep Graded Preceptorial #2 / catch up on VLE quizzes'] },
+        { date: '2026-12-11', disp: 'Dec 11', day: 'Fri', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'AM', time: '7AM–7PM', co: 'Solo', overnight: false, truePost: false, solo: true, tasks: ['Final solo PER shift (AM 7AM–7PM)', 'PER rounds, procedures & lab follow-ups'] },
+        { date: '2026-12-12', disp: 'Dec 12', day: 'Sat', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'AM', time: '7AM–7PM', co: 'Alarin', overnight: false, truePost: false, solo: false, tasks: ['PER AM Duty (paired w/ Alarin)', 'Split PER monitoring, admissions & carry-overs'] },
+        { date: '2026-12-13', disp: 'Dec 13', day: 'Sun', week: 3, wLabel: 'Week 3 — PER (Solo Mon–Fri, w/ Alarin Sat–Sun)', post: 'PER', type: 'PM', time: '7PM–7AM', co: 'Alarin', overnight: true, truePost: false, solo: false, tasks: ['Final PER PM Overnight Duty (w/ Alarin)', 'Request ER Senior Resident Evaluation before leaving'] },
+
+        // Week 4 — DR/DRI (w/ Alarin)
+        { date: '2026-12-14', disp: 'Dec 14', day: 'Mon', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'Post', time: 'True Post', co: 'Alarin', overnight: false, truePost: true, solo: false, tasks: ['Full True Post recovery after PER PM', 'Review Oral Exam 18 must-know topics'] },
+        { date: '2026-12-15', disp: 'Dec 15', day: 'Tue', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'AM', time: '7AM–7PM (Catcher)', co: 'Alarin', overnight: false, truePost: false, solo: false, tasks: ['DR Catcher AM: assist deliveries & newborn resuscitation', 'Delivery paperwork, recovery room monitoring & breastfeeding support'] },
+        { date: '2026-12-16', disp: 'Dec 16', day: 'Wed', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'PM', time: 'DRI 7AM–12NN; DR/C 7PM–7AM', co: 'Alarin', overnight: true, truePost: false, solo: false, tasks: ['DRI (Ward 15/16) 7AM–12NN: newborn care, vaccinations & rounds', 'Rest 12NN–7PM; DR Catcher Overnight 7PM–7AM'] },
+        { date: '2026-12-17', disp: 'Dec 17', day: 'Thu', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'Post', time: 'True Post', co: 'Alarin', overnight: false, truePost: true, solo: false, tasks: ['Full True Post recovery day', 'Finalize Oral Exam review & compile handwritten Portfolio'] },
+        { date: '2026-12-18', disp: 'Dec 18', day: 'Fri', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'AM', time: '7AM–7PM (Catcher)', co: 'Alarin', overnight: false, truePost: false, solo: false, tasks: ['DR Catcher AM: deliveries, procedures & recovery room', 'Check Oral Exam schedule w/ Block 1 preceptors'] },
+        { date: '2026-12-19', disp: 'Dec 19', day: 'Sat', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'PM', time: 'DRI 7AM–12NN; DR/C 7PM–7AM', co: 'Alarin', overnight: true, truePost: false, solo: false, tasks: ['DRI 7AM–12NN (newborn care & vaccinations); rest 12NN–7PM', 'Final DR Catcher Overnight 7PM–7AM; request Catcher Resident Eval'] },
+        { date: '2026-12-20', disp: 'Dec 20', day: 'Sun', week: 4, wLabel: 'Week 4 — DR / DRI (w/ Alarin)', post: 'DR/DRI', type: 'Post', time: 'True Post', co: 'Alarin', overnight: false, truePost: true, solo: false, tasks: ['Last Day of Rotation — True Post!', 'Submit handwritten Portfolio to service senior', 'Complete all 5 VLE post-test quizzes before 5PM'] }
+      ];
+
+      const VS_NORMS = {
+        premie: { label: 'Premie', ageYr: 0, wt: 2.5, hr: [120, 170], rr: [40, 70], sbp: [55, 75], dbp: [35, 45], sbp5: 55, bvm: 'Infant', nasal: '12 Fr', oral: 'Infant 50mm', blade: 'MIL 0', ett: '2.5–3.0', lma: '1', iv: '22–24 ga', cvl: '3 Fr', ngt: '5 Fr', ct: '10–12 Fr', foley: '6 Fr' },
+        '0-3mo': { label: '0–3 mo', ageYr: 0.1, wt: 4.5, hr: [110, 160], rr: [30, 60], sbp: [65, 85], dbp: [45, 55], sbp5: 60, bvm: 'Infant', nasal: '12 Fr', oral: 'Small 60mm', blade: 'MIL 0', ett: '3.0–3.5', lma: '1', iv: '22–24 ga', cvl: '3–4 Fr', ngt: '5–8 Fr', ct: '10–12 Fr', foley: '8 Fr' },
+        '3-6mo': { label: '3–6 mo', ageYr: 0.4, wt: 7, hr: [100, 150], rr: [30, 45], sbp: [70, 90], dbp: [50, 65], sbp5: 70, bvm: 'Small Child', nasal: '14–16 Fr', oral: 'Small 60mm', blade: 'MIL 1', ett: '3.5–4.0', lma: '1.5', iv: '20–24 ga', cvl: '4 Fr', ngt: '8 Fr', ct: '12–18 Fr', foley: '8 Fr' },
+        '6-12mo': { label: '6–12 mo', ageYr: 0.8, wt: 10, hr: [90, 130], rr: [25, 40], sbp: [80, 100], dbp: [55, 65], sbp5: 70, bvm: 'Small Child', nasal: '14–16 Fr', oral: 'Small 60mm', blade: 'MIL 1 / MAC 2', ett: '4.0–4.5', lma: '2', iv: '20–24 ga', cvl: '4–5 Fr', ngt: '10 Fr', ct: '16–20 Fr', foley: '8 Fr' },
+        '1-3yr': { label: '1–3 yr', ageYr: 2, wt: 13, hr: [80, 125], rr: [20, 30], sbp: [90, 105], dbp: [55, 70], sbp5: 74, bvm: 'Child', nasal: '14–18 Fr', oral: 'Small 70mm', blade: 'MIL 1–2 / MAC 2', ett: '4.5–5.0', lma: '2', iv: '18–22 ga', cvl: '4–5 Fr', ngt: '10–12 Fr', ct: '16–24 Fr', foley: '8 Fr' },
+        '3-6yr': { label: '3–6 yr', ageYr: 5, wt: 20, hr: [70, 115], rr: [20, 25], sbp: [95, 110], dbp: [60, 75], sbp5: 80, bvm: 'Child', nasal: '14–18 Fr', oral: 'Small 70–80mm', blade: 'MIL 2 / MAC 2–3', ett: '5.0–5.5', lma: '2.5', iv: '18–22 ga', cvl: '5 Fr', ngt: '12–14 Fr', ct: '20–28 Fr', foley: '8 Fr' },
+        '6-12yr': { label: '6–12 yr', ageYr: 9, wt: 30, hr: [60, 100], rr: [14, 22], sbp: [100, 120], dbp: [60, 75], sbp5: 88, bvm: 'Child / Sm Adult', nasal: '16–20 Fr', oral: 'Med 80–90mm', blade: 'MIL 2 / MAC 3', ett: '5.5–6.5', lma: '2.5–3', iv: '18–22 ga', cvl: '5 Fr', ngt: '12–14 Fr', ct: '20–32 Fr', foley: '8–10 Fr' },
+        '>12yr': { label: '>12 yr', ageYr: 14, wt: 50, hr: [60, 100], rr: [12, 18], sbp: [100, 120], dbp: [70, 80], sbp5: 90, bvm: 'Adult', nasal: '18–36 Fr', oral: 'Med 90mm', blade: 'MIL 2 / MAC 3', ett: '6.5–8.0', lma: '3–4', iv: '16–20 ga', cvl: '7 Fr', ngt: '14–18 Fr', ct: '28–42 Fr', foley: '10–12 Fr' }
+      };
+
+      const TUBE_META = {
+        bloodcs: { order: 1, label: 'Blood CS', banner: 'Draw FIRST! 2 sets: different sites AND different sides (R & L).' },
+        blue: { order: 2, label: 'Blue-Top (Citrate)', banner: 'Invert 5x. Check tube line: 1.8 mL or 2.7 mL.' },
+        red: { order: 3, label: 'Red-Top (No Anticoag)', banner: 'Routine Central Lab tests can combine; check separate/special tubes below.' },
+        green: { order: 4, label: 'Green-Top (Heparin)', banner: 'NO TOURNIQUET for Lactate/NH3/Plasma K (remove right after backflow). Strict 4 mL line.' },
+        purple: { order: 5, label: 'Purple-Top (EDTA)', banner: 'Invert 8x. Blood Typing & Renin need separate purple tops.' },
+        igra: { order: 6, label: 'IGRA (4 Tubes)', banner: 'Immunopathology: Gray -> Green -> Yellow -> Purple to line; mix 10x; Radish-ed; until 3PM.' }
+      };
+
+      const LAB_CATALOG = [
+        // 1. Blood CS
+        { id: 'blood_cs', name: 'Blood CS (2 sets, R & L)', top: 'bloodcs', submit: 'Central Lab / Micro', volMl: 2, volLabel: '1–3 mL x2', combineKey: null, note: 'Done twice: different sites AND different sides (R & L).' },
+        // 2. Blue-Top
+        { id: 'pt_ptt', name: 'PT / PTT', top: 'blue', submit: 'Central Lab', volMl: 2.7, volLabel: '1.8 or 2.7 mL', combineKey: 'blue_central', note: 'Invert 5x; fill strictly to tube line (1.8 or 2.7 mL).' },
+        { id: 'ddimer_fib', name: 'D-dimer / Fibrinogen', top: 'blue', submit: 'Central Lab', volMl: 2.7, volLabel: '1.8 or 2.7 mL', combineKey: 'blue_central', note: 'Invert 5x; combinable with PT/PTT in 1 blue top.' },
+        { id: 'factor_ix', name: 'Factor IX / Bethesda', top: 'blue', submit: 'MRL', volMl: 2.7, volLabel: '2.7 mL', combineKey: null, note: 'Submit to MRL; pt & unrelated reference person must both fast 8h.' },
+        // 3. Red-Top Combinable Central Lab
+        { id: 'electrolytes', name: 'Serum Electrolytes (Na/K/Cl/Ca/Mg)', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2–3 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'bun_crea', name: 'BUN / Creatinine', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'ast_alt', name: 'AST / ALT', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'albumin', name: 'Albumin', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'rbs', name: 'RBS', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'tco2', name: 'TCO2', top: 'red', submit: 'Central Lab', volMl: 4, volLabel: '4 mL (FILL TO LINE)', combineKey: 'red_central', alert: 'TCO2: MUST fill red top to 4 mL line!', note: 'May combine with other red-top tests BUT fill strictly to 4 mL line.' },
+        { id: 'tb_db_ib', name: 'TB / DB / IB', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'red_central', alert: 'TB/DB/IB: Cover tube with paper (light protection)!', note: 'Cover tube with paper to protect from light.' },
+        { id: 'trop_i', name: 'Trop I / Cardiac Biomarkers', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2–3 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'iron_panel', name: 'Serum Iron / Ferritin / TIBC', top: 'red', submit: 'Central Lab', volMl: 3, volLabel: '3 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'hepa_prof', name: 'Hepatitis Profile', top: 'red', submit: 'Central Lab', volMl: 3, volLabel: '3 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        { id: 'var_rub', name: 'Varicella IgG / Rubella IgG', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'red_central', note: 'Combinable with routine Central Lab red-top tests.' },
+        // 3b. Red-Top Separate / Special
+        { id: 'ldh_crp_pct', name: 'LDH / CRP / Procalcitonin', top: 'red', submit: 'Central Lab', volMl: 3, volLabel: '3 mL (Separate)', combineKey: 'red_inflam', alert: 'Separate red top (ensure adequate 3 mL volume).', note: 'Separate red top for LDH/CRP/Procalcitonin; adequate volume 3 mL.' },
+        { id: 'phenobarb', name: 'Phenobarbital (pb) Assay', top: 'red', submit: 'Clinical Chemistry', volMl: 3, volLabel: '>=3 mL Adult Red', combineKey: null, alert: 'Call Clinical Chem (3212) first! Adult red tube (>=3 cc, NO microtainer).', note: 'Call Clinical Chemistry (3212) first; adult red tube >=3 cc.' },
+        { id: 'vanco_trough', name: 'Vancomycin Trough', top: 'red', submit: 'Central Lab', volMl: 3, volLabel: '3 mL', combineKey: null, alert: 'Cover in carbon paper BEFORE filling!', note: 'Cover tube in carbon paper before filling.' },
+        { id: 'ana', name: 'ANA (Anti-Nuclear Ab)', top: 'red', submit: 'MRL', volMl: 3, volLabel: '3 mL', combineKey: null, alert: 'Submit to MRL w/ resident signature; fasting 6h.', note: 'Submitted to MRL with resident signature; needs 6h fasting.' },
+        { id: 'c3', name: 'C3', top: 'red', submit: 'MRL', volMl: 3, volLabel: '3 mL', combineKey: null, alert: 'Submit to MRL.', note: 'Submitted to MRL (Medical Research Laboratory).' },
+        { id: 'tsh_ft4_ft3', name: 'TSH / FT4 / FT3', top: 'red', submit: 'Nuclear Medicine', volMl: 3, volLabel: '3 mL', combineKey: 'red_nucmed_thyroid', alert: 'Nuclear Med: TSH/FT4 daily; FT3 Mon/Wed/Fri only.', note: 'Submit to Nuclear Medicine. TSH/FT4 daily; FT3 Mon/Wed/Fri only.' },
+        { id: 'aldosterone', name: 'Aldosterone', top: 'red', submit: 'Nuclear Medicine', volMl: 3, volLabel: '3 mL', combineKey: null, alert: 'Submit to Nuclear Medicine.', note: 'Submitted to Nuclear Medicine.' },
+        { id: 'cortisol', name: 'Serum Cortisol', top: 'red', submit: 'Nuclear Medicine', volMl: 3, volLabel: '3 mL', combineKey: null, alert: 'Submit to Nuclear Medicine.', note: 'Submitted to Nuclear Medicine.' },
+        { id: 'vitd_ipth', name: 'Vitamin D / iPTH', top: 'red', submit: 'Nuclear Medicine', volMl: 4, volLabel: '3–5 mL each', combineKey: 'red_vitd_ipth', alert: 'Nuclear Med: 8h fasting; run Mon & Wed only (3–5 cc).', note: '1 red top for both (3–5 cc each); 8h fasting; Mon & Wed only.' },
+        // 4. Green-Top
+        { id: 'ica_nh3_lac', name: 'iCa / Ammonia (NH3) / Lactate', top: 'green', submit: 'Central Lab (Direct)', volMl: 4, volLabel: '4 mL (Strict)', combineKey: 'green_ice', alert: 'NO TOURNIQUET! Glove + ICE ONLY (no water); submit direct <15 min!', note: 'Strict 4 mL line; glove in ICE only (no water); direct to lab <15 min; remove tourniquet on backflow.' },
+        { id: 'plasma_k', name: 'Plasma Potassium', top: 'green', submit: 'Central Lab', volMl: 4, volLabel: '4 mL (Strict)', combineKey: null, alert: 'NO TOURNIQUET after backflow! 4 mL line (no ice needed).', note: 'Follow 4 mL line; no ice needed; remove tourniquet right after backflow.' },
+        // 5. Purple-Top
+        { id: 'cbc', name: 'CBC / ESR / PBS', top: 'purple', submit: 'Central Lab', volMl: 2, volLabel: '1–2 mL', combineKey: 'purple_central', note: 'Invert 8x. Combinable with HbA1c.' },
+        { id: 'hba1c', name: 'HbA1c', top: 'purple', submit: 'Central Lab', volMl: 2, volLabel: '2 mL', combineKey: 'purple_central', note: 'Invert 8x. Combinable with CBC.' },
+        { id: 'blood_typing', name: 'Blood Typing', top: 'purple', submit: 'Blood Bank / Central Lab', volMl: 2, volLabel: '2 mL (Separate)', combineKey: null, alert: 'Separate purple top! Invert 8x.', note: 'Must have a separate purple top for blood typing.' },
+        { id: 'renin', name: 'Renin', top: 'purple', submit: 'Nuclear Medicine', volMl: 3, volLabel: '3 mL', combineKey: null, alert: 'Nuclear Med: 8–12h fasting; run Fridays only!', note: 'Submit to Nuclear Medicine; 8–12h fasting; Fridays only.' },
+        // 6. IGRA
+        { id: 'igra', name: 'IGRA (4 Special Tubes)', top: 'igra', submit: 'Immunopathology (<=3PM)', volMl: 4, volLabel: '4 tubes to line', combineKey: null, alert: 'Fill Gray->Green->Yellow->Purple to line; mix 10x; Radish-ed; submit <=3PM!', note: 'Get 4 tubes from Immunopathology (behind Central Labs); fill in order Gray, Green, Yellow, Purple; mix 10x; Radish-ed; until 3PM.' }
+      ];
+
+      const REQ_GROUPS = [
+        {
+          title: 'VLE Videos & Quizzes (5% — Close Dec 20 5PM)',
+          items: [
+            { id: 'vle_hx', text: 'History & PE of Pediatric Patients (Pre-test -> Video -> Post-test)' },
+            { id: 'vle_fe', text: 'Basic Fluids & Electrolytes (Pre-test -> Video -> Post-test)' },
+            { id: 'vle_abg', text: 'ABG Interpretation (Pre-test -> Video -> Post-test)' },
+            { id: 'vle_cxr', text: 'Chest X-Ray Reading (Pre-test -> Video -> Post-test)' },
+            { id: 'vle_ecg', text: 'ECG Interpretation (Pre-test -> Video -> Post-test)' }
+          ]
+        },
+        {
+          title: 'Preceptorials & Bioethics (20%)',
+          items: [
+            { id: 'prec_1', text: 'Preceptorial #1 — Non-graded (Week 1: How to Present)' },
+            { id: 'prec_2', text: 'Preceptorial #2 — Graded Case Presentation (Week 2)' },
+            { id: 'prec_3', text: 'Preceptorial #3 — Graded Case Presentation (Week 3)' },
+            { id: 'bioeth', text: 'Bioethics Encounter w/ Dr. Mary Ann Abacan (Week 2–3, Non-graded)' }
+          ]
+        },
+        {
+          title: 'Portfolio & Reflection Paper (10%)',
+          items: [
+            { id: 'port_chart', text: 'Handwritten daily SOAP & orders (1–2 ward patients, checked by senior)' },
+            { id: 'port_sub', text: 'Submit compiled Portfolio folder on Last Day (Dec 20)' },
+            { id: 'refl_sub', text: 'Reflection Paper submitted via LO to upcmlu6pediatrics@gmail.com (Due Dec 27)' }
+          ]
+        },
+        {
+          title: 'Supervisor Evaluations (20%) & Exams (45%)',
+          items: [
+            { id: 'eval_ward', text: 'Ward 9 Senior & Junior Resident Evaluation' },
+            { id: 'eval_er', text: 'PER Senior Resident Evaluation' },
+            { id: 'eval_dr', text: 'DR Catcher Resident Evaluation' },
+            { id: 'exam_oral', text: 'Oral Examination — 15-min case w/ Block 1 preceptor (20%, Week 4)' },
+            { id: 'exam_final', text: '100-pt Final Written Examination (15%, End of Year)' },
+            { id: 'exam_comp', text: 'UPCM LU6 Comprehensive Examination (10%)' }
+          ]
+        }
+      ];
+
+      const ORAL_TOPICS = [
+        'Anaphylaxis', 'AGE with signs of dehydration', 'Anemia', 'RHD',
+        'CAH in crisis', 'DKA', 'Biliary atresia', 'MSUD in crisis',
+        'Dengue with warning signs', 'PTB', 'Febrile seizures', 'Meningitis',
+        'PCAP C or D', 'Asthma in exacerbation', 'Nephritic syndrome', 'UTI',
+        'HMD', 'Neonatal jaundice'
+      ];
+
+      function getSamplePatients() {
+        return [
+          {
+            id: 'sample_w9',
+            sample: true,
+            area: 'Ward',
+            toxic: 'Toxic',
+            wardBed: 'W9-4',
+            lastName: 'Reyes',
+            ageNum: 2,
+            ageUnit: 'yr',
+            weight: 12,
+            hd: 'HD2',
+            dx: 'PCAP-C; Moderate Dehydration',
+            meds: 'D5 0.3 NaCl @ 45 cc/hr; Ampicillin + Gentamicin; O2 @ 2 LPM NC',
+            todos: [
+              { id: 't1', text: 'Follow up repeat CXR AP/L', done: false },
+              { id: 't2', text: 'Strict I&O q shift; monitor WOB', done: false }
+            ],
+            labs: [
+              { id: 'l1', cid: 'cbc', name: 'CBC / ESR / PBS', top: 'purple', submit: 'Central Lab', volMl: 2, volLabel: '1–2 mL', combineKey: 'purple_central', status: 'Pending' },
+              { id: 'l2', cid: 'electrolytes', name: 'Serum Electrolytes (Na/K/Cl/Ca/Mg)', top: 'red', submit: 'Central Lab', volMl: 2, volLabel: '2–3 mL', combineKey: 'red_central', status: 'Pending' },
+              { id: 'l3', cid: 'tco2', name: 'TCO2', top: 'red', submit: 'Central Lab', volMl: 4, volLabel: '4 mL (FILL TO LINE)', combineKey: 'red_central', alert: 'TCO2: MUST fill red top to 4 mL line!', status: 'Pending' }
+            ],
+            logs: [
+              {
+                ts: 'Nov 23, 08:30',
+                hr: 148, rr: 42, sbp: 88, dbp: 54, temp: 38.9, spo2: 92,
+                subj: ['Febrile', 'DOB / retractions'],
+                pe: 'subcostal retractions, crackles R base, CRT 2s',
+                plan: ''
+              }
+            ]
+          },
+          {
+            id: 'sample_er',
+            sample: true,
+            area: 'ER',
+            toxic: 'Toxic',
+            wardBed: 'PER-B2',
+            lastName: 'Santos',
+            ageNum: 8,
+            ageUnit: 'mo',
+            weight: 8.5,
+            hd: 'Acuity 2',
+            dx: 'AGE with Severe Dehydration',
+            meds: 'PNSS bolus 170 mL IV underway; NPO',
+            todos: [
+              { id: 't3', text: 'Reassess perfusion & HR post-bolus', done: false }
+            ],
+            labs: [
+              { id: 'l4', cid: 'ica_nh3_lac', name: 'iCa / Ammonia (NH3) / Lactate', top: 'green', submit: 'Central Lab (Direct)', volMl: 4, volLabel: '4 mL (Strict)', combineKey: 'green_ice', alert: 'NO TOURNIQUET! Glove + ICE ONLY (no water); submit direct <15 min!', status: 'Pending' },
+              { id: 'l5', cid: 'blood_cs', name: 'Blood CS (2 sets, R & L)', top: 'bloodcs', submit: 'Central Lab / Micro', volMl: 2, volLabel: '1–3 mL x2', combineKey: null, status: 'Pending' }
+            ],
+            logs: [
+              {
+                ts: 'Dec 7, 10:15',
+                hr: 162, rr: 46, sbp: 66, dbp: 40, temp: 38.2, spo2: 96,
+                subj: ['Vomiting', 'Lethargy / irritable', 'Decreased UO'],
+                pe: 'sunken eyeballs, dry lips, CRT 4s, weak pulses',
+                plan: ''
+              }
+            ]
+          }
+        ];
+      }
+
+      /* =======================================================================
+         3. RUNTIME STATE
+         ======================================================================= */
+      const store = loadStore();
+      const ui = {
+        tab: 'schedule',
+        schedFilter: 'all',
+        schedView: 'cards',
+        expandedDays: new Set(),
+        ptFilter: 'all',
+        openWork: new Set(),
+        openHist: new Set(),
+        vcPreset: '1-3yr',
+        vcFlags: new Set(),
+        refQuery: '',
+        confirmResetSched: false,
+        confirmClearSamples: false
+      };
+
+      /* =======================================================================
+         4. UTILITIES (ESCAPE, TOAST, CLIPBOARD, CLINICAL EVALUATION)
+         ======================================================================= */
+      function esc(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function toast(msg) {
+        const wrap = document.getElementById('toast-wrap');
+        if (!wrap) return;
+        const div = document.createElement('div');
+        div.className = 'toast';
+        div.textContent = msg;
+        wrap.appendChild(div);
+        setTimeout(() => { if (div.parentNode) div.parentNode.removeChild(div); }, 2300);
+      }
+
+      function copyText(text) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          toast('Copied to clipboard!');
+        } catch (err) {
+          toast('Could not copy automatically — select text manually.');
+        }
+      }
+
+      function ageToYears(num, unit) {
+        const n = parseFloat(num) || 0;
+        if (unit === 'd') return n / 365;
+        if (unit === 'mo') return n / 12;
+        return n;
+      }
+
+      function presetForAgeYr(yr) {
+        if (yr <= 0.02) return 'premie';
+        if (yr <= 0.25) return '0-3mo';
+        if (yr <= 0.5) return '3-6mo';
+        if (yr <= 1) return '6-12mo';
+        if (yr <= 3) return '1-3yr';
+        if (yr <= 6) return '3-6yr';
+        if (yr <= 12) return '6-12yr';
+        return '>12yr';
+      }
+
+      function evaluateVS(ageYr, wt, vs, flagsArr) {
+        const pKey = presetForAgeYr(ageYr);
+        const norm = VS_NORMS[pKey] || VS_NORMS['1-3yr'];
+        const sbp5 = ageYr < 0.08 ? 60 : (ageYr < 1 ? 70 : (ageYr <= 10 ? Math.round(70 + ageYr * 2) : 90));
+        const sbp50 = Math.round(90 + ageYr * 2);
+        const map50 = Math.round(55 + ageYr * 1.5);
+        const map5 = Math.round(40 + ageYr * 1.5);
+        const mapVal = (vs.sbp && vs.dbp) ? Math.round((vs.sbp + 2 * vs.dbp) / 3) : null;
+
+        const flags = [];
+        const abn = { hr: false, rr: false, bp: false, temp: false, spo2: false };
+
+        if (vs.hr > norm.hr[1]) { abn.hr = true; flags.push(`tachycardia (HR ${vs.hr})`); }
+        else if (vs.hr > 0 && vs.hr < norm.hr[0]) { abn.hr = true; flags.push(`bradycardia (HR ${vs.hr})`); }
+
+        if (vs.rr > norm.rr[1]) { abn.rr = true; flags.push(`tachypnea (RR ${vs.rr})`); }
+        else if (vs.rr > 0 && vs.rr < norm.rr[0]) { abn.rr = true; flags.push(`bradypnea (RR ${vs.rr})`); }
+
+        if (vs.sbp > 0 && vs.sbp < sbp5) { abn.bp = true; flags.push(`hypotension (BP ${vs.sbp}/${vs.dbp || '?'})`); }
+        else if (vs.sbp > norm.sbp[1] + 10) { abn.bp = true; flags.push(`elevated BP (${vs.sbp}/${vs.dbp || '?'})`); }
+
+        if (vs.temp >= 37.8) { abn.temp = true; flags.push(`febrile (T ${vs.temp}C)`); }
+        else if (vs.temp > 0 && vs.temp < 36.0) { abn.temp = true; flags.push(`hypothermia (T ${vs.temp}C)`); }
+
+        if (vs.spo2 > 0 && vs.spo2 < 95) { abn.spo2 = true; flags.push(`desaturation (SpO2 ${vs.spo2}%)`); }
+
+        const bolusMl = Math.min(1000, Math.round((wt || 10) * 20));
+        const paraMg = Math.min(1000, Math.round((wt || 10) * 15));
+
+        const plan = [];
+        const rfText = (flagsArr || []).join(' ').toLowerCase();
+        const needsAirway = (vs.spo2 > 0 && vs.spo2 < 90) || (vs.rr > 0 && vs.rr < norm.rr[0]) || rfText.includes('apnea') || rfText.includes('altered');
+        const needsO2 = (vs.spo2 > 0 && vs.spo2 < 95) || vs.rr > norm.rr[1] || rfText.includes('retraction') || rfText.includes('dob');
+        const needsShock = (vs.sbp > 0 && vs.sbp < sbp5) || rfText.includes('perfusion') || rfText.includes('crt');
+
+        if (needsAirway) plan.push('Prepare for intubation; BVM ventilation with 100% O2 if worsening');
+        if (needsO2) plan.push('Start/titrate O2 support (target SpO2 >=95%); suction secretions, elevate HOB');
+        if (needsShock) plan.push(`Secure IV access; give PNSS 20 mL/kg (${bolusMl} mL) bolus IV & reassess perfusion`);
+        else if (abn.hr && vs.hr > norm.hr[1] && !abn.temp) plan.push('Assess perfusion/hydration; consider ECG if persistent tachycardia');
+        if (abn.temp && vs.temp >= 37.8) plan.push(`Give Paracetamol 15 mg/kg (${paraMg} mg) + tepid sponge bath`);
+        if (abn.temp && vs.temp < 36.0) plan.push('Active rewarming; check CBG & evaluate for sepsis');
+        if (rfText.includes('seizure')) plan.push('Protect airway, check stat CBG, prepare IV benzodiazepine');
+        if (!plan.length) plan.push('Continue current meds/IVF & routine VS/I&O monitoring');
+        else plan.push('Close VS & I&O monitoring; expedite pending workup');
+
+        const ettUncuffed = ageYr >= 1 ? ((ageYr / 4) + 4).toFixed(1) : norm.ett;
+        const ettCuffed = ageYr >= 1 ? ((ageYr / 4) + 3).toFixed(1) : norm.ett;
+        const ettDepth = ageYr >= 1 ? (parseFloat(ettCuffed) * 3).toFixed(1) : 'Size x 3';
+
+        return {
+          norm, sbp5, sbp50, map50, map5, mapVal,
+          abn, flags, anyAbn: flags.length > 0,
+          plan, bolusMl, paraMg, ettUncuffed, ettCuffed, ettDepth
+        };
+      }
+
+      /* Strictly concise TG RIC Referral (NO equipment sizes, NO handwritten SOAP line, ends w/ Thank you!) */
+      function buildTGReferral(pt) {
+        const latest = (pt.logs && pt.logs.length) ? pt.logs[0] : null;
+        const ageYr = ageToYears(pt.ageNum, pt.ageUnit);
+        const vs = latest || { hr: 0, rr: 0, sbp: 0, dbp: 0, temp: 0, spo2: 0 };
+        const subjArr = latest ? (latest.subj || []) : [];
+        const ev = evaluateVS(ageYr, pt.weight, vs, subjArr);
+
+        const reasonParts = [];
+        if (ev.flags.length) reasonParts.push(ev.flags.join(', '));
+        const activeSubj = subjArr.filter(x => !x.toLowerCase().includes('no complaints'));
+        if (activeSubj.length) reasonParts.push(activeSubj.join(', '));
+        const reasonStr = reasonParts.length ? reasonParts.join(' & ') : 'routine update / monitoring';
+
+        const sLine = activeSubj.length ? activeSubj.join('; ') : 'No new acute complaints';
+        const oParts = [];
+        if (latest) {
+          oParts.push(`HR ${vs.hr}, RR ${vs.rr}, BP ${vs.sbp}/${vs.dbp}, T ${vs.temp}C, SpO2 ${vs.spo2}%`);
+          if (latest.pe) oParts.push(latest.pe);
+        } else {
+          oParts.push('No VS logged yet');
+        }
+
+        const aParts = [pt.dx || 'Pending Dx'];
+        if (ev.flags.length) aParts.push(`with ${ev.flags.join(', ')}`);
+        else aParts.push('currently stable VS');
+
+        const pBullets = ev.plan.slice();
+        if (latest && latest.plan) pBullets.push(latest.plan);
+        const pendingLabs = (pt.labs || []).filter(l => l.status !== 'Result In').map(l => l.name);
+        if (pendingLabs.length) pBullets.push(`Pending labs: ${pendingLabs.join(', ')}`);
+        const pendingTodos = (pt.todos || []).filter(t => !t.done).map(t => t.text);
+        if (pendingTodos.length) pBullets.push(`Carry-over: ${pendingTodos.join('; ')}`);
+
+        // Safeguard: never include "Handwritten SOAP note before RIC rounds"
+        const cleanPlan = pBullets
+          .filter(line => !/handwritten\s+soap/i.test(line))
+          .map(line => `- ${line}`)
+          .join('\n');
+
+        return [
+          `Respectfully referring pt ${pt.wardBed}-${pt.lastName} for ${reasonStr}.`,
+          '',
+          `S> ${sLine}`,
+          `O> ${oParts.join(' | ')}`,
+          `A> ${aParts.join('; ')}`,
+          `P>\n${cleanPlan}`,
+          '',
+          'Thank you!'
+        ].join('\n');
+      }
+
+      /* Auto-Combine Pediatric Lab Extraction Engine (UP-PGH Order of Draw) */
+      function computeLabPlan(labs) {
+        const active = (labs || []).filter(l => l.status === 'Pending');
+        const groups = {};
+        let sepIdx = 0;
+
+        active.forEach(l => {
+          const meta = TUBE_META[l.top] || TUBE_META.red;
+          const key = l.combineKey ? `${l.top}__${l.combineKey}` : `${l.top}__sep_${sepIdx++}`;
+          if (!groups[key]) {
+            groups[key] = {
+              top: l.top,
+              order: meta.order,
+              label: meta.label,
+              submit: l.submit,
+              names: [],
+              alerts: new Set(),
+              canCombine: Boolean(l.combineKey),
+              maxMl: 0,
+              tco2Flag: false
+            };
+          }
+          const g = groups[key];
+          g.names.push(l.nam
